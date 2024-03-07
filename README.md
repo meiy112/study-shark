@@ -34,3 +34,10 @@ The database schema consists of the following tables:
 - **Joins:** Tracks users joining study groups.
 - **Shares:** Tracks sharing of study material between users and groups.
 - **Likes:** Represents likes given by users to study material.
+
+
+
+Note on the different accounts:
+We accidentally used our non ubc accounts at first:
+UBCStudent = oyik
+Falconfeather4 = ehuang07
