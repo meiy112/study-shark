@@ -2,6 +2,7 @@
 # Project Summary
 Our project allows users to create and keep track of their own topics, notes, quizzes, and flashcards to help them study. They can also share their study material with other users, search for other user’s study material, and join study groups. Users can also search for and use other user’s shared study notes.
 
+
 ## Features
 - **Create and Manage Topics:** Users can create their own topics to organize their study material. Each topic can have a title, description, and privacy settings.
 
