@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>Hello</Text>
+      <Text>Hi</Text>
       <Text>{data[0].id}</Text>
       <Text>{data[0].text}</Text>
       <Text>{data[0].userId}</Text>
