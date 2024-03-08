@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 
 app.use('/users', routes.user);
 app.use('/messages', routes.message);
+app.use("/test", routes.test);
 
 const ipAddress = '0.0.0.0';
 app.listen(process.env.PORT, ipAddress, () => {
