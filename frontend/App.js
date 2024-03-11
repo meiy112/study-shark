@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import axios from 'axios'
+import { PaperProvider } from 'react-native-paper'
 
 import { UserApi } from './api/UserApi';
 import { useEffect, useState } from 'react';
@@ -23,10 +24,13 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>Hello</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text>Hello</Text>
+        <StatusBar style="auto" />
+      </View>
+    </PaperProvider>
+    
   );
 }
 
