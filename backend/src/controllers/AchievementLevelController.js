@@ -14,6 +14,17 @@ class AchievementLevelController {
     });
   }
 
+  postAchievementLevel(req, res) {
+    achievementLevelService.postAchievementLevel(req, (err, rows) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+      res.send(rows);
+    });
+  }
+
   //more methods here
 }
 

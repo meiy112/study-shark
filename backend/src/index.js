@@ -5,10 +5,6 @@ const express = require('express');
 
 const routes = require('./routes');
 
-const args = process.argv.slice(2); // for debugging, you can ignore this or delete it
-
-console.log('Command-line arguments:', args);
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -20,5 +16,5 @@ app.use("/achievement-level", routes.achievementLevel);
 
 const ipAddress = '0.0.0.0';
 app.listen(3000, ipAddress, () => {
-  console.log(`App listening on ${process.env.PORT}`);
+  console.log(`App listening on 3000`);
 });
