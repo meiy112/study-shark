@@ -8,28 +8,12 @@ import Home from './components/Home/Home';
 import Explore from './components/Explore/Explore';
 import Groups from './components/Groups/Groups';
 import Profile from './components/Profile/Profile';
+import NavBarAddButton from './components/Misc/NavbarAddButton';
 
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  // code for testing pls ignore
-  // const [data, setData] = useState({});
-
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const res = await fetch("http://192.168.86.21:3000/messages/");
-  //       const resData = await res.json();
-  //       setData(resData);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -53,6 +37,13 @@ export default function App() {
             }}
           />
           <Tab.Screen
+            name="Add"
+            component={NavBarAddButton}
+            options={{
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
             name="Groups"
             component={Groups}
             options={{
@@ -66,7 +57,7 @@ export default function App() {
               tabBarLabel: 'Profile',
             }}
           />
-      </Tab.Navigator>
+        </Tab.Navigator>
       </NavigationContainer>
     </PaperProvider>
     
