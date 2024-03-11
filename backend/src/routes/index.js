@@ -1,7 +1,9 @@
-import user from "./user";
-import message from "./message";
+const achievementLevel = require('./AchievementLevel')
 
-export default {
-  user,
-  message
-}
+module.exports = {
+  achievementLevel,
+  // put the rest of your routes here, ex:
+  // user,
+  // Achievement,
+  // etc...
+};

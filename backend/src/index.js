@@ -1,29 +1,24 @@
-import { v4 as uuidv4 } from 'uuid';
-import cors from 'cors';
-import 'dotenv/config';
-import express from 'express'
+const { v4: uuidv4 } = require('uuid'); // I think this will be useful but u dont have to use it
+const cors = require('cors');
+require('dotenv/config');
+const express = require('express');
 
-import models from './models'
-import routes from './routes';
+const routes = require('./routes');
+
+const args = process.argv.slice(2); // for debugging, you can ignore this or delete it
+
+console.log('Command-line arguments:', args);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// provides authenticated user as well as model context to the rest of the application
-app.use((req, res, next) => {
-  req.context = {
-    models,
-    me: models.users[1]
-  };
-  next();
-});
 
-
-app.use('/users', routes.user);
-app.use('/messages', routes.message);
+app.use("/achievement-level", routes.achievementLevel);
+// add more here, for example:
+// app.use('/users', routes.user);
 
 const ipAddress = '0.0.0.0';
-app.listen(process.env.PORT, ipAddress, () => {
+app.listen(3000, ipAddress, () => {
   console.log(`App listening on ${process.env.PORT}`);
 });
