@@ -175,6 +175,6 @@ CREATE TABLE Likes (
 
 -- dummy values for testing, you can keep them or delete them later
 
-INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('medium', '12', 'yellow');
-INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('easy', '5', 'green');
-INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('very very hard', '40', 'dark red');
+INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('medium', '12', 'yellow');
+INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('easy', '5', 'green');
+INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('very very hard', '40', 'dark red');
