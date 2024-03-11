@@ -1,9 +1,9 @@
-const user = require('./user');
-const message = require('./message');
-const test = require('./test');
+const achievementLevel = require('./AchievementLevel')
 
 module.exports = {
-  user,
-  message,
-  test,
+  achievementLevel,
+  // put the rest of your routes here, ex:
+  // user,
+  // Achievement,
+  // etc...
 };
