@@ -1,16 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import axios from 'axios'
 import { PaperProvider } from 'react-native-paper'
-
-import { UserApi } from './api/UserApi';
-import { useEffect, useState } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Topic from './components/Topic/Topic';
-import Settings from './components/Topic/Settings';
+import Home from './components/Home/Home';
+import Explore from './components/Explore/Explore';
+import Groups from './components/Groups/Groups';
+import Profile from './components/Profile/Profile';
 
 
 const Tab = createBottomTabNavigator();
@@ -42,17 +39,31 @@ export default function App() {
         }}
       >
           <Tab.Screen
-            name="Topic"
-            component={Topic}
+            name="Home"
+            component={Home}
             options={{
-              tabBarLabel: 'Topic',
+              tabBarLabel: 'Home',
             }}
           />
           <Tab.Screen
-            name="Settings"
-            component={Settings}
+            name="Explore"
+            component={Explore}
             options={{
-              tabBarLabel: 'Settings',
+              tabBarLabel: 'Explore',
+            }}
+          />
+          <Tab.Screen
+            name="Groups"
+            component={Groups}
+            options={{
+              tabBarLabel: 'Groups',
+            }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              tabBarLabel: 'Profile',
             }}
           />
       </Tab.Navigator>
