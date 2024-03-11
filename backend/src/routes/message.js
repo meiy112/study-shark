@@ -1,4 +1,4 @@
-import { Router } from 'express'
+const { Router } = require('express');
 
 const router = Router();
 
@@ -35,4 +35,4 @@ router.delete('/:messageId', (req, res) => {
 });
 
 
-export default router
+module.exports = router;

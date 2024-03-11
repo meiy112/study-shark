@@ -1,6 +1,6 @@
-import 'dotenv/config';
+require('dotenv/config');
 
-import { createConnection } from 'mysql2';
+const { createConnection } = require('mysql2');
 
 const db = createConnection({
   host: 'localhost',
@@ -8,6 +8,7 @@ const db = createConnection({
   user: 'root',
   password: process.env.DB_PW,
   database: process.env.DB,
+  multipleStatements: true,
 });
 
 db.connect((err) => {
@@ -19,4 +20,4 @@ db.connect((err) => {
 });
 
 
-export default db;
+module.exports = db;

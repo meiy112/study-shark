@@ -1,10 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
-import cors from 'cors';
-import 'dotenv/config';
-import express from 'express'
+const { v4: uuidv4 } = require('uuid');
+const cors = require('cors');
+require('dotenv/config');
+const express = require('express');
 
-import models from './models'
-import routes from './routes';
+const models = require('./models');
+const routes = require('./routes');
+
+const args = process.argv.slice(2); // Removing the first two elements
+
+console.log('Command-line arguments:', args);
 
 const app = express();
 app.use(cors());

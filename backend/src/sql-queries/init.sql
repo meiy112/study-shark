@@ -1,3 +1,29 @@
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS AchievementLevel;
+DROP TABLE IF EXISTS `Group`;
+DROP TABLE IF EXISTS Tag;
+DROP TABLE IF EXISTS QuizQuestionDifficulty;
+DROP TABLE IF EXISTS StudyMaterialType;
+DROP TABLE IF EXISTS School;
+DROP TABLE IF EXISTS Reputation;
+DROP TABLE IF EXISTS Achievement;
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Obtains;
+DROP TABLE IF EXISTS CreatesTopic;
+DROP TABLE IF EXISTS Has;
+DROP TABLE IF EXISTS ContainsStudyMaterial;
+DROP TABLE IF EXISTS OwnsQuizQuestion;
+DROP TABLE IF EXISTS OwnsCard;
+DROP TABLE IF EXISTS Joins;
+DROP TABLE IF EXISTS Shares;
+DROP TABLE IF EXISTS Likes;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+
 CREATE TABLE AchievementLevel (
     difficulty VARCHAR(255) PRIMARY KEY,
     points INT NOT NULL,
@@ -145,3 +171,10 @@ CREATE TABLE Likes (
     FOREIGN KEY (studyMaterialTitle, topicId) REFERENCES ContainsStudyMaterial(title, topicId) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
 );
+
+
+-- dummy values for testing, you can keep them or delete them later
+
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('medium', '12', 'yellow');
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('easy', '5', 'green');
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('very very hard', '40', 'dark red');

@@ -1,9 +1,9 @@
-import user from "./user";
-import message from "./message";
-import test from "./test";
+const user = require('./user');
+const message = require('./message');
+const test = require('./test');
 
-export default {
+module.exports = {
   user,
   message,
-  test
-}
+  test,
+};

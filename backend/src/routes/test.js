@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import db from '../configs/db'; // Import the database connection
+const { Router } = require('express');
+const db = require('../configs/db');
 
 const router = Router();
 
@@ -14,4 +14,4 @@ router.get('/', (req, res) => {
   });
 });
 
-export default router;
+module.exports = router;
