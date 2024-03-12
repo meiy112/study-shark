@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
-
+import { useFonts } from "expo-font";
 import { PaperProvider } from "react-native-paper";
 import {
   Ionicons,
@@ -38,6 +38,12 @@ function CustomTabBarIcon({ name, color, size, focused }) {
 }
 
 export default function App() {
+  const [loaded, error] = useFonts({
+    mon: require("../frontend/assets/fonts/Montserrat-Regular.ttf"),
+    "mon-m": require("../frontend/assets/fonts/Montserrat-Medium.ttf"),
+    "mon-sb": require("../frontend/assets/fonts/Montserrat-SemiBold.ttf"),
+    "mon-l": require("../frontend/assets/fonts/Montserrat-Light.ttf"),
+  });
   const [showModal, setShowModal] = useState(false);
 
   return (
