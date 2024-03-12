@@ -21,7 +21,7 @@ const AddModal = (props) => {
       ></TouchableOpacity>
       <View style={[styles.centeredView]}>
         <View style={[styles.addModal, styles.shadow]}>
-          <Text>
+          <Text style={{ fontFamily: "mon", fontSize: 12 }}>
             H-hi would you like to add something? Um, but only if you want to,
             I-I'm not forcing you or anything...
           </Text>
