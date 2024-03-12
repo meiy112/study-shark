@@ -10,6 +10,8 @@ import Groups from './components/Groups/Groups';
 import Profile from './components/Profile/Profile';
 import NavBarAddButton from './components/Misc/NavbarAddButton';
 
+import Topic from './components/Topic/Topic';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -59,6 +61,7 @@ export default function App() {
           />
         </Tab.Navigator>
       </NavigationContainer>
+      <Topic />
     </PaperProvider>
     
   );
