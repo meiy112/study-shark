@@ -5,7 +5,9 @@ import { Text } from "react-native-paper";
 export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Home - Outside.js</Text>
+      <View>
+        <Text>My Topics</Text>
+      </View>
     </SafeAreaView>
   );
 }
