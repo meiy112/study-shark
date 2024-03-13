@@ -27,7 +27,7 @@ let fakeStudyMaterial = [
   {title: "3", type: "Notes", lastOpened: new Date()},
   {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
-let fakeMostUsedTag = {name: "fluid dynamics", color: '#519dFF'};
+let fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
 //--------------------------------------------------------
 
 
@@ -55,9 +55,9 @@ export default function Topic({id}) {
     console.log("called onFilter: " + selected);
    }
 
-   function onEdit() {
+   function onDelete(studyMaterial) {
     // TODO
-    console.log("called onEdit");
+    console.log("deleting " + studyMaterial.title);
    }
 
   return (
@@ -66,8 +66,8 @@ export default function Topic({id}) {
       <Divider />
       <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
         <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
-        <SortAndEdit onSort={onSort} onFilter={onFilter} onEdit={onEdit} />
-        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} />
+        <SortAndEdit onSort={onSort} onFilter={onFilter} />
+        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} onDelete={onDelete} />
       </ScrollView>
     </View>
   );
@@ -88,7 +88,7 @@ function Header({ topic, color }) {
     <View>
       <Appbar.Header style={{backgroundColor: color}}>
         <Appbar.BackAction color="#FFFFFF" onPress={handleBackButtonPress} />
-        <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20}}/>
+        <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20, fontFamily: 'mon-sb'}}/>
         <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={navigateToSettings}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
@@ -105,8 +105,8 @@ function Info({ topic, tags, mostUsedTag }) {
     style={{borderBottomRightRadius: 20, borderBottomLeftRadius: 20}}
   >
       <View style={{padding: 15, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
-        <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
-        <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
+        <Text style={{color: 'white', fontFamily: 'mon-sb'}} variant="titleSmall">Description</Text>
+        <Text style={{padding:10, marginBottom:15, color: 'white', fontFamily: 'mon-m'}} variant="bodySmall">{topic.description}</Text>
         <Tags tags={tags} mostUsedTag={mostUsedTag}/>
       </View>
   </LinearGradient>
@@ -133,7 +133,7 @@ function Tags({ tags, mostUsedTag }) {
               borderWidth: 2,
               marginRight: 8,
             }}
-            textStyle={{color: "#FFFFFF"}}
+            textStyle={{color: "#FFFFFF", fontFamily: 'mon-m'}}
           >
             {tag.name}
           </Chip>
@@ -154,7 +154,7 @@ function Tags({ tags, mostUsedTag }) {
   );
 }
 
-function SortAndEdit({ onSort, onFilter, onEdit }) {
+function SortAndEdit({ onSort, onFilter }) {
   const [selected, setSelected] = useState("None");
 
   const dropdownData = [
@@ -178,17 +178,16 @@ function SortAndEdit({ onSort, onFilter, onEdit }) {
         />
       </View>
       <View style={{flexDirection: 'row'}}>
-        <IconButton style={{borderRadius: 5}} containerColor="#E4E9F5" mode="contained" icon="sort" color="000" size={25} onPress={onSort} />
-        <IconButton style={{borderRadius: 5}} containerColor="#E4E9F5" mode="contained" icon="pencil" color="000" size={25} onPress={onEdit} />
+        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor="#E4E9F5" mode="contained" icon="sort" color="000" size={25} onPress={onSort} />
       </View>
     </View>
     
   );
 }
 
-function StudyMaterial({ studyMaterial, topicId, mostUsedTag }) {
+function StudyMaterial({ studyMaterial, topicId, mostUsedTag, onDelete }) {
   const studyMaterialComponents = studyMaterial.map((item) => {
-    return <StudyMaterialCard studyMaterial={item} topicId={topicId} mostUsedTag={mostUsedTag} key = {item.title} />
+    return <StudyMaterialCard studyMaterial={item} topicId={topicId} mostUsedTag={mostUsedTag} onDelete={onDelete} key={item.title} />
   });
 
     return (
@@ -198,7 +197,7 @@ function StudyMaterial({ studyMaterial, topicId, mostUsedTag }) {
     )
 }
 
-function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
+function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag, onDelete }) {
   const [numItems, setNumItems] = useState(0);
 
   const iconMap = {
@@ -207,7 +206,7 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
     "Flashcards": "card-multiple-outline"
   }
 
-  const studyMaterialTitle = studyMaterial.title.length >= 19? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
+  const studyMaterialTitle = studyMaterial.title.length >= 17? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
 
   useEffect(() => {
     // TODO: api call to set numItems
@@ -222,39 +221,40 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
   return (
     <View style={{width: "45%", padding:15, paddingTop: 0, margin: 8, backgroundColor: '#FFFFFF', borderRadius: 20, shadowColor: 'black', shadowOpacity: 0.1, shadowRadius: 5}}>
       <TouchableOpacity onPress={onPress}>
-        <CardHeader studyNoteType={studyMaterial.type} mostUsedTag={mostUsedTag}/>
+        <CardHeader studyMaterial={studyMaterial} mostUsedTag={mostUsedTag} onDelete={onDelete}/>
         <View style={{alignItems: 'center'}}>
           <Icon source={iconMap[studyMaterial.type]} size={60}/>
         </View>
         <View style={{marginTop: 15, marginBottom: 5}}>
-          <Text style={{fontSize: 14, fontWeight: '600'}}>{studyMaterialTitle}</Text>
+          <Text style={{fontSize: 14, fontFamily: 'mon-m'}}>{studyMaterialTitle}</Text>
           <View style={{marginTop: 6}}>
-            <Text style={{fontSize: 10, fontWeight: '300', color: '#414141'}}>{studyMaterial.lastOpened.toDateString()}</Text>
+            <Text style={{fontSize: 10, color: '#414141', fontFamily: 'mon-l'}}>{studyMaterial.lastOpened.toDateString()}</Text>
           </View>
         </View>
-        <CardFooter studyNoteType={studyMaterial.type} numItems={numItems} />
+        <CardFooter studyNoteType={studyMaterial.type} numItems={numItems} mostUsedTag={mostUsedTag}/>
       </TouchableOpacity>
     </View>
   );
 }
 
-function CardHeader({ studyNoteType, mostUsedTag }) {
+function CardHeader({ studyMaterial, mostUsedTag, onDelete }) {
   function onButtonPress() {
-    // TODO
+    // TODO: make a thing pop up and let user select delete, the onDelete function should go in there
     console.log("pressed the ... button in studynote");
+    onDelete(studyMaterial);
   }
 
   return (
     <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between'}}>
       <View style={{backgroundColor: mostUsedTag.color, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 10}}>
-        <Text style={{color: '#FFFFFF', fontSize: 10, fontWeight: '500'}}>{studyNoteType.toUpperCase()}</Text>
+        <Text style={{color: '#FFFFFF', fontSize: 10, fontFamily: 'mon-m'}}>{studyMaterial.type.toUpperCase()}</Text>
       </View>
-      <IconButton style={{marginRight: 0}} icon="dots-horizontal" color="000" size={18} onPress={onButtonPress}/>
+        <IconButton style={{marginRight: 0}} icon="dots-horizontal" color="000" size={20} onPress={onButtonPress}/>
     </View>
   )
 }
 
-function CardFooter({ studyNoteType, numItems }) {
+function CardFooter({ studyNoteType, numItems, mostUsedTag }) {
   let footerText = {
     "Notes": "Pages",
     "Quiz": "Questions",
@@ -263,8 +263,8 @@ function CardFooter({ studyNoteType, numItems }) {
     
   return (
     <View style={{flexDirection: "row", marginTop: 5, alignItems: "center"}}>
-      <Text style={{height: 28, width: 28, padding: 5, borderColor: '#5F2EB3', borderWidth: 1.5, borderRadius: 14, marginRight: 10, textAlign: "center", lineHeight: 15.5}}>{numItems}</Text>
-      <Text>{footerText[studyNoteType]}</Text>
+      <Text style={{height: 28, width: 28, padding: 5, borderColor: mostUsedTag.color, borderWidth: 1.5, borderRadius: 14, marginRight: 10, textAlign: "center", lineHeight: 15.5, fontFamily: 'mon-m'}}>{numItems}</Text>
+      <Text style={{fontFamily: 'mon-m', fontSize:13}}>{footerText[studyNoteType]}</Text>
     </View>
   )
 }
