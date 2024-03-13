@@ -110,7 +110,6 @@ export default function App() {
           />
         </Tab.Navigator>
       </NavigationContainer>
-      <Topic />
     </PaperProvider>
 
   );
@@ -128,3 +127,6 @@ const styles = StyleSheet.create({
     elevation: 5
   }
 });
+
+
+
