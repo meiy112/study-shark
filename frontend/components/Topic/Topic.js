@@ -64,9 +64,10 @@ export default function Topic({id}) {
     <View>
       <Header topic={topic} color={mostUsedTag.color} />
       <Divider />
-      <ScrollView style={{backgroundColor: '#F8FAFF'}}>
+      <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
         <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
-        <Content studyMaterial={studyMaterial} topicId={topic.id} onSort={onSort} onFilter={onFilter} onEdit={onEdit} mostUsedTag={mostUsedTag}/>
+        <SortAndEdit onSort={onSort} onFilter={onFilter} onEdit={onEdit} />
+        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} />
       </ScrollView>
     </View>
   );
@@ -153,16 +154,6 @@ function Tags({ tags, mostUsedTag }) {
   );
 }
 
-function Content({ studyMaterial, mostUsedTag, topicId, onSort, onFilter, onEdit }) {
-  return (
-    <View>
-      <SortAndEdit onSort={onSort} onFilter={onFilter} onEdit={onEdit} />
-      <StudyMaterial studyMaterial={studyMaterial} topicId={topicId} mostUsedTag={mostUsedTag} />
-    </View>
-  )
-  
-}
-
 function SortAndEdit({ onSort, onFilter, onEdit }) {
   const [selected, setSelected] = useState("None");
 
@@ -174,8 +165,8 @@ function SortAndEdit({ onSort, onFilter, onEdit }) {
   ];
 
   return (
-    <View style={{flexDirection: 'row', margin: 10, justifyContent: "flex-end", zIndex: 2, position: "sticky", top: 0}}>
-      <View style={{position: 'absolute', top: 4, left: 5 }}>
+    <View style={{flexDirection: 'row', padding: 5, justifyContent: "flex-end", zIndex: 2, position: "sticky", top: 0, backgroundColor: '#F8FAFF'}}>
+      <View style={{position: 'absolute', top: 10, left: 13 }}>
         <SelectList
           setSelected={setSelected}
           onSelect={() => onFilter(selected)}
@@ -216,6 +207,8 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
     "Flashcards": "card-multiple-outline"
   }
 
+  const studyMaterialTitle = studyMaterial.title.length >= 19? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
+
   useEffect(() => {
     // TODO: api call to set numItems
     setNumItems(10);
@@ -234,7 +227,7 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
           <Icon source={iconMap[studyMaterial.type]} size={60}/>
         </View>
         <View style={{marginTop: 15, marginBottom: 5}}>
-          <Text style={{fontSize: 14, fontWeight: '600'}}>{studyMaterial.title}</Text>
+          <Text style={{fontSize: 14, fontWeight: '600'}}>{studyMaterialTitle}</Text>
           <View style={{marginTop: 6}}>
             <Text style={{fontSize: 10, fontWeight: '300', color: '#414141'}}>{studyMaterial.lastOpened.toDateString()}</Text>
           </View>
