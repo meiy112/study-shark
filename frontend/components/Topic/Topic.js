@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
 import { Text, Appbar, Divider, Chip, Icon, Surface, IconButton } from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
+import { LinearGradient } from "expo-linear-gradient";
 
 // -------- FAKE DATA - TO BE REPLACED WITH API CALLS ----------
 let fakeTopic = {
@@ -15,15 +16,16 @@ let fakeTags = [ // sorry the colors r ugly
   {name: "waves", color: '#5F2EB3'},
   {name: "fluid dynamics", color: '#519dFF'}, 
   {name: "electromagnetism", color: '#96F3'}, 
-  {name: "kinematics", color: '#9F89'}];
+  {name: "kinematics", color: '#9F89'},
+  {name: "Energy", color: '#A84A5B'}];
 let fakeStudyMaterial = [
   {title: "Wave Interference", type: "Notes", lastOpened: new Date()},
   {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: new Date()},
-  {title: "1", type: "Quiz", lastOpened: new Date()},
-  {title: "2", type: "Notes", lastOpened: new Date()},
-  {title: "3", type: "Flashcards", lastOpened: new Date()},
-  {title: "4", type: "Notes", lastOpened: new Date()},
-  {title: "5", type: "Quiz", lastOpened: new Date()}
+  {title: "Standing Waves", type: "Quiz", lastOpened: new Date()},
+  {title: "1", type: "Notes", lastOpened: new Date()},
+  {title: "2", type: "Flashcards", lastOpened: new Date()},
+  {title: "3", type: "Notes", lastOpened: new Date()},
+  {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
 let fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
 //--------------------------------------------------------
@@ -95,11 +97,19 @@ function Header({ topic, color }) {
 
 function Info({ topic, tags, color }) {
   return (
-    <View style={{padding: 15, backgroundColor: color, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
-      <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
-      <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
-      <Tags tags={tags} color={color}/>
-    </View>
+    <LinearGradient
+    colors={[color, '#2B005A']} // TODO: HARDCODED VALUE
+    start={{ x: 0.5, y: 0 }}
+    end={{ x: 0.5, y: 1 }}
+    style={{borderBottomRightRadius: 20, borderBottomLeftRadius: 20}}
+  >
+      <View style={{padding: 15, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
+        <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
+        <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
+        <Tags tags={tags} color={color}/>
+      </View>
+  </LinearGradient>
+
   )
 }
 
@@ -165,7 +175,7 @@ function SortAndEdit({ onSort, onFilter, onEdit }) {
           data={dropdownData}
           placeholder="Misc (3)"
           search={false}
-          boxStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
+          boxStyles={{borderWidth: 0, backgroundColor: "#E4E9F5", borderRadius: 15}}
           dropdownStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
         />
       </View>
