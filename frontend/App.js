@@ -18,6 +18,8 @@ import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 
+import Topic from "./components/Topic/Topic";
+
 const Tab = createBottomTabNavigator();
 
 function CustomTabBarIcon({ name, color, size, focused }) {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
 import { Text, Appbar, Divider, Chip, Icon, Surface, IconButton } from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
+import { LinearGradient } from "expo-linear-gradient";
 
 // -------- FAKE DATA - TO BE REPLACED WITH API CALLS ----------
 let fakeTopic = {
@@ -15,17 +16,18 @@ let fakeTags = [ // sorry the colors r ugly
   {name: "waves", color: '#5F2EB3'},
   {name: "fluid dynamics", color: '#519dFF'}, 
   {name: "electromagnetism", color: '#96F3'}, 
-  {name: "kinematics", color: '#9F89'}];
+  {name: "kinematics", color: '#9F89'},
+  {name: "Energy", color: '#A84A5B'}];
 let fakeStudyMaterial = [
   {title: "Wave Interference", type: "Notes", lastOpened: new Date()},
   {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: new Date()},
-  {title: "1", type: "Quiz", lastOpened: new Date()},
-  {title: "2", type: "Notes", lastOpened: new Date()},
-  {title: "3", type: "Flashcards", lastOpened: new Date()},
-  {title: "4", type: "Notes", lastOpened: new Date()},
-  {title: "5", type: "Quiz", lastOpened: new Date()}
+  {title: "Standing Waves", type: "Quiz", lastOpened: new Date()},
+  {title: "1", type: "Notes", lastOpened: new Date()},
+  {title: "2", type: "Flashcards", lastOpened: new Date()},
+  {title: "3", type: "Notes", lastOpened: new Date()},
+  {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
-let fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
+let fakeMostUsedTag = {name: "fluid dynamics", color: '#519dFF'};
 //--------------------------------------------------------
 
 
@@ -62,9 +64,10 @@ export default function Topic({id}) {
     <View>
       <Header topic={topic} color={mostUsedTag.color} />
       <Divider />
-      <ScrollView style={{backgroundColor: '#F8FAFF'}}>
-        <Info topic={topic} tags={tags} color={mostUsedTag.color} />
-        <Content studyMaterial={studyMaterial} topicId={topic.id} onSort={onSort} onFilter={onFilter} onEdit={onEdit} mostUsedTag={mostUsedTag}/>
+      <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
+        <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
+        <SortAndEdit onSort={onSort} onFilter={onFilter} onEdit={onEdit} />
+        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} />
       </ScrollView>
     </View>
   );
@@ -93,25 +96,40 @@ function Header({ topic, color }) {
   );
 }
 
-function Info({ topic, tags, color }) {
+function Info({ topic, tags, mostUsedTag }) {
   return (
-    <View style={{padding: 15, backgroundColor: color, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
-      <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
-      <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
-      <Tags tags={tags} color={color}/>
-    </View>
+    <LinearGradient
+    colors={[mostUsedTag.color, '#2B005A']} // TODO: HARDCODED VALUE
+    start={{ x: 0.5, y: 0 }}
+    end={{ x: 0.5, y: 1 }}
+    style={{borderBottomRightRadius: 20, borderBottomLeftRadius: 20}}
+  >
+      <View style={{padding: 15, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
+        <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
+        <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
+        <Tags tags={tags} mostUsedTag={mostUsedTag}/>
+      </View>
+  </LinearGradient>
+
   )
 }
 
-function Tags({ tags, color }) {
+function Tags({ tags, mostUsedTag }) {
+  let sortedTags = [mostUsedTag];
+  for (const tag of tags) {
+    if (tag.name !== mostUsedTag.name) {
+      sortedTags.push(tag);
+    }
+  }
+
   const renderTag = (tag) => {
       return (
         <View style={{marginBottom: 10}}>
           <Chip
             key={tag.name}
             style={{
-              backgroundColor: tag.color === color? 'transparent' : tag.color,
-              borderColor: tag.color === color? 'white' : tag.color,
+              backgroundColor: tag.color === mostUsedTag.color? 'transparent' : tag.color,
+              borderColor: tag.color === mostUsedTag.color? 'white' : tag.color,
               borderWidth: 2,
               marginRight: 8,
             }}
@@ -127,23 +145,13 @@ function Tags({ tags, color }) {
     <View>
       <FlatList
         horizontal
-        data={tags}
+        data={sortedTags}
         keyExtractor={(tag) => tag.name}
         renderItem={({ item }) => renderTag(item)}
         showsHorizontalScrollIndicator={false}
       />
     </View>
   );
-}
-
-function Content({ studyMaterial, mostUsedTag, topicId, onSort, onFilter, onEdit }) {
-  return (
-    <View>
-      <SortAndEdit onSort={onSort} onFilter={onFilter} onEdit={onEdit} />
-      <StudyMaterial studyMaterial={studyMaterial} topicId={topicId} mostUsedTag={mostUsedTag} />
-    </View>
-  )
-  
 }
 
 function SortAndEdit({ onSort, onFilter, onEdit }) {
@@ -157,15 +165,15 @@ function SortAndEdit({ onSort, onFilter, onEdit }) {
   ];
 
   return (
-    <View style={{flexDirection: 'row', margin: 10, justifyContent: "flex-end", zIndex: 2, position: "sticky", top: 0}}>
-      <View style={{position: 'absolute', top: 4, left: 5 }}>
+    <View style={{flexDirection: 'row', padding: 5, justifyContent: "flex-end", zIndex: 2, position: "sticky", top: 0, backgroundColor: '#F8FAFF'}}>
+      <View style={{position: 'absolute', top: 10, left: 13 }}>
         <SelectList
           setSelected={setSelected}
           onSelect={() => onFilter(selected)}
           data={dropdownData}
           placeholder="Misc (3)"
           search={false}
-          boxStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
+          boxStyles={{borderWidth: 0, backgroundColor: "#E4E9F5", borderRadius: 15}}
           dropdownStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
         />
       </View>
@@ -199,6 +207,8 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
     "Flashcards": "card-multiple-outline"
   }
 
+  const studyMaterialTitle = studyMaterial.title.length >= 19? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
+
   useEffect(() => {
     // TODO: api call to set numItems
     setNumItems(10);
@@ -217,7 +227,7 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag }) {
           <Icon source={iconMap[studyMaterial.type]} size={60}/>
         </View>
         <View style={{marginTop: 15, marginBottom: 5}}>
-          <Text style={{fontSize: 14, fontWeight: '600'}}>{studyMaterial.title}</Text>
+          <Text style={{fontSize: 14, fontWeight: '600'}}>{studyMaterialTitle}</Text>
           <View style={{marginTop: 6}}>
             <Text style={{fontSize: 10, fontWeight: '300', color: '#414141'}}>{studyMaterial.lastOpened.toDateString()}</Text>
           </View>
