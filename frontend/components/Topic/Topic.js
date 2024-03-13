@@ -27,7 +27,7 @@ let fakeStudyMaterial = [
   {title: "3", type: "Notes", lastOpened: new Date()},
   {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
-let fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
+let fakeMostUsedTag = {name: "fluid dynamics", color: '#519dFF'};
 //--------------------------------------------------------
 
 
@@ -65,7 +65,7 @@ export default function Topic({id}) {
       <Header topic={topic} color={mostUsedTag.color} />
       <Divider />
       <ScrollView style={{backgroundColor: '#F8FAFF'}}>
-        <Info topic={topic} tags={tags} color={mostUsedTag.color} />
+        <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
         <Content studyMaterial={studyMaterial} topicId={topic.id} onSort={onSort} onFilter={onFilter} onEdit={onEdit} mostUsedTag={mostUsedTag}/>
       </ScrollView>
     </View>
@@ -95,10 +95,10 @@ function Header({ topic, color }) {
   );
 }
 
-function Info({ topic, tags, color }) {
+function Info({ topic, tags, mostUsedTag }) {
   return (
     <LinearGradient
-    colors={[color, '#2B005A']} // TODO: HARDCODED VALUE
+    colors={[mostUsedTag.color, '#2B005A']} // TODO: HARDCODED VALUE
     start={{ x: 0.5, y: 0 }}
     end={{ x: 0.5, y: 1 }}
     style={{borderBottomRightRadius: 20, borderBottomLeftRadius: 20}}
@@ -106,22 +106,29 @@ function Info({ topic, tags, color }) {
       <View style={{padding: 15, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
         <Text style={{color: 'white'}} variant="titleSmall">Description</Text>
         <Text style={{padding:8, marginBottom:15, color: 'white'}} variant="bodySmall">{topic.description}</Text>
-        <Tags tags={tags} color={color}/>
+        <Tags tags={tags} mostUsedTag={mostUsedTag}/>
       </View>
   </LinearGradient>
 
   )
 }
 
-function Tags({ tags, color }) {
+function Tags({ tags, mostUsedTag }) {
+  let sortedTags = [mostUsedTag];
+  for (const tag of tags) {
+    if (tag.name !== mostUsedTag.name) {
+      sortedTags.push(tag);
+    }
+  }
+
   const renderTag = (tag) => {
       return (
         <View style={{marginBottom: 10}}>
           <Chip
             key={tag.name}
             style={{
-              backgroundColor: tag.color === color? 'transparent' : tag.color,
-              borderColor: tag.color === color? 'white' : tag.color,
+              backgroundColor: tag.color === mostUsedTag.color? 'transparent' : tag.color,
+              borderColor: tag.color === mostUsedTag.color? 'white' : tag.color,
               borderWidth: 2,
               marginRight: 8,
             }}
@@ -137,7 +144,7 @@ function Tags({ tags, color }) {
     <View>
       <FlatList
         horizontal
-        data={tags}
+        data={sortedTags}
         keyExtractor={(tag) => tag.name}
         renderItem={({ item }) => renderTag(item)}
         showsHorizontalScrollIndicator={false}
