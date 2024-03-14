@@ -5,20 +5,20 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
 
 // -------- FAKE DATA - TO BE REPLACED WITH API CALLS ----------
-let fakeTopic = {
+const fakeTopic = {
   id: "random_Uuid_for_topic",
   title: "Phys901", 
   description: "With hearts racing like runaway loops, their hands brushed as Backend" 
   + " passed the requested data from the database to Frontend. "
   + " In that instant, amidst the binary buzz, they shared a shy but sweet kiss."
 }
-let fakeTags = [ // sorry the colors r ugly
+const fakeTags = [ // sorry the colors r ugly
   {name: "waves", color: '#5F2EB3'},
   {name: "fluid dynamics", color: '#519dFF'}, 
   {name: "electromagnetism", color: '#0096F3'}, 
   {name: "kinematics", color: '#009F89'},
   {name: "Energy", color: '#A84A5B'}];
-let fakeStudyMaterial = [
+const fakeStudyMaterial = [
   {title: "Wave Interference", type: "Notes", lastOpened: new Date()},
   {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: new Date()},
   {title: "Standing Waves", type: "Quiz", lastOpened: new Date()},
@@ -27,7 +27,7 @@ let fakeStudyMaterial = [
   {title: "3", type: "Notes", lastOpened: new Date()},
   {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
-let fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
+const fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
 //--------------------------------------------------------
 
 
@@ -256,15 +256,19 @@ function CardHeader({ studyMaterial, mostUsedTag, handleDelete, isEditing }) {
           <Text style={{color: '#FFFFFF', fontSize: 10, fontFamily: 'mon-m'}}>{studyMaterial.type.toUpperCase()}</Text>
         </View>
       </View>
-      {isEditing && <IconButton style={{marginRight: 0}} icon="close" color="000" size={18} onPress={showDialog}/>}
+      {isEditing && <IconButton style={{marginRight: -8}} icon="close" color="000" size={18} onPress={showDialog}/>}
       <Portal>
         <Dialog visible={isVisible} onDismiss={hideDialog}>
           <Dialog.Content>
-            <Text variant="bodyMedium">Are you sure you want to delete "{studyMaterial.title}" ?</Text>
+            <Text style={{fontFamily: "mon-m"}} variant="bodyMedium">Are you sure you want to delete "{studyMaterial.title}" ?</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideDialog} title="No"/>
-            <Button onPress={() => {handleDelete(studyMaterial); hideDialog()}} title="Yes"/>
+            <TouchableOpacity onPress={hideDialog} style={{marginRight: 30}}>
+              <Text>No</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {handleDelete(studyMaterial); hideDialog()}}>
+              <Text>Yes</Text>
+            </TouchableOpacity>
           </Dialog.Actions>
         </Dialog>
       </Portal>
