@@ -22,6 +22,8 @@ import colors from "./constants/Colors";
 
 const { active, inactive, background, primary, shadow } = colors;
 
+import Topic from "./components/Topic/Topic";
+
 const Tab = createBottomTabNavigator();
 
 function CustomTabBarIcon({ name, color, size, focused }) {
@@ -187,3 +189,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+
+
