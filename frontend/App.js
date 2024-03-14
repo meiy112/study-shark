@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useFonts } from "expo-font";
 import { PaperProvider } from "react-native-paper";
@@ -7,6 +7,7 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import * as SplashScreen from "expo-splash-screen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,6 +18,9 @@ import Groups from "./components/Groups/Groups";
 import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
+import colors from "./constants/Colors";
+
+const { active, inactive, background, primary, shadow } = colors;
 
 const Tab = createBottomTabNavigator();
 
@@ -38,13 +42,28 @@ function CustomTabBarIcon({ name, color, size, focused }) {
 }
 
 export default function App() {
-  const [loaded, error] = useFonts({
+  const [fontsLoaded] = useFonts({
     mon: require("../frontend/assets/fonts/Montserrat-Regular.ttf"),
     "mon-m": require("../frontend/assets/fonts/Montserrat-Medium.ttf"),
     "mon-sb": require("../frontend/assets/fonts/Montserrat-SemiBold.ttf"),
     "mon-l": require("../frontend/assets/fonts/Montserrat-Light.ttf"),
   });
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // initial screen that displays while the application is loading
+    async function load() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    load();
+  }, []);
+
+  if (!fontsLoaded) {
+    // prevent page from rendering before fonts are loaded
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   return (
     <PaperProvider>
@@ -56,7 +75,7 @@ export default function App() {
             tabBarStyle: {
               position: "absolute",
               elevation: 0,
-              backgroundColor: "#ffffff",
+              backgroundColor: background,
               borderTopLeftRadius: 30,
               borderTopRightRadius: 30,
               height: 90,
@@ -65,9 +84,9 @@ export default function App() {
               paddingHorizontal: "3%",
               ...styles.shadow,
             },
-            tabBarActiveTintColor: "#6138B8",
-            tabBarInactiveTintColor: "#A8A8A8",
-            tabBarIndicatorStyle: { backgroundColor: "#6138B8", height: 5 },
+            tabBarActiveTintColor: active,
+            tabBarInactiveTintColor: inactive,
+            tabBarIndicatorStyle: { backgroundColor: active, height: 5 },
           })}
         >
           <Tab.Screen
@@ -158,7 +177,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#300164",
+    shadowColor: shadow,
     shadowOffset: {
       width: 0,
       height: -3,
