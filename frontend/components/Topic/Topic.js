@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { View, FlatList, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
-import { Text, Appbar, Divider, Chip, Icon, Surface, IconButton } from "react-native-paper"
+import { View, FlatList, StyleSheet, ScrollView, Modal, TouchableOpacity, Button} from "react-native";
+import { Text, Appbar, Divider, Chip, Icon, Menu, IconButton, Dialog, Portal} from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -15,8 +15,8 @@ let fakeTopic = {
 let fakeTags = [ // sorry the colors r ugly
   {name: "waves", color: '#5F2EB3'},
   {name: "fluid dynamics", color: '#519dFF'}, 
-  {name: "electromagnetism", color: '#96F3'}, 
-  {name: "kinematics", color: '#9F89'},
+  {name: "electromagnetism", color: '#0096F3'}, 
+  {name: "kinematics", color: '#009F89'},
   {name: "Energy", color: '#A84A5B'}];
 let fakeStudyMaterial = [
   {title: "Wave Interference", type: "Notes", lastOpened: new Date()},
@@ -36,6 +36,7 @@ export default function Topic({id}) {
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [tags, setTags] = useState([]);
   const [mostUsedTag, setMostUsedTags] = useState({name: "", color: "#FFFFFFFF"});
+  const [isEditing, setIsEditing] = useState(false);
 
    useEffect(() => {
       // TODO: api call to populate topic, tags and studymaterial
@@ -45,19 +46,23 @@ export default function Topic({id}) {
       setMostUsedTags(fakeMostUsedTag);
    }, []);
 
-   function onSort() {
+   function handleSort() {
     // TODO
-    console.log("called onSort");
+    console.log("called handleSort");
    }
 
-   function onFilter(selected) {
+   function handleFilter(selected) {
     // TODO
-    console.log("called onFilter: " + selected);
+    console.log("called handleFilter: " + selected);
    }
 
-   function onDelete(studyMaterial) {
+   function handleDelete(studyMaterial) {
     // TODO
     console.log("deleting " + studyMaterial.title);
+   }
+
+   function toggleEdit() {
+    setIsEditing(!isEditing);
    }
 
   return (
@@ -66,8 +71,8 @@ export default function Topic({id}) {
       <Divider />
       <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
         <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
-        <SortAndEdit onSort={onSort} onFilter={onFilter} />
-        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} onDelete={onDelete} />
+        <SortAndEdit handleSort={handleSort} handleFilter={handleFilter} toggleEdit={toggleEdit}/>
+        <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} mostUsedTag={mostUsedTag} handleDelete={handleDelete} isEditing={isEditing} />
       </ScrollView>
     </View>
   );
@@ -154,7 +159,7 @@ function Tags({ tags, mostUsedTag }) {
   );
 }
 
-function SortAndEdit({ onSort, onFilter }) {
+function SortAndEdit({ handleSort, handleFilter, toggleEdit }) {
   const [selected, setSelected] = useState("None");
 
   const dropdownData = [
@@ -169,25 +174,26 @@ function SortAndEdit({ onSort, onFilter }) {
       <View style={{position: 'absolute', top: 10, left: 13 }}>
         <SelectList
           setSelected={setSelected}
-          onSelect={() => onFilter(selected)}
+          onSelect={() => handleFilter(selected)}
           data={dropdownData}
           placeholder="Misc (3)"
           search={false}
-          boxStyles={{borderWidth: 0, backgroundColor: "#E4E9F5", borderRadius: 15}}
+          boxStyles={{borderWidth: 0, paddingRight: 50, backgroundColor: "#E4E9F5", borderRadius: 15}}
           dropdownStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
         />
       </View>
       <View style={{flexDirection: 'row'}}>
-        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor="#E4E9F5" mode="contained" icon="sort" color="000" size={25} onPress={onSort} />
+        <IconButton style={{borderRadius: 5, marginRight: 8}} containerColor="#E4E9F5" mode="contained" icon="sort" color="000" size={25} onPress={handleSort} />
+        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor="#E4E9F5" mode="contained" icon="pencil" color="000" size={25} onPress={toggleEdit} />
       </View>
     </View>
     
   );
 }
 
-function StudyMaterial({ studyMaterial, topicId, mostUsedTag, onDelete }) {
+function StudyMaterial({ studyMaterial, topicId, mostUsedTag, handleDelete, isEditing }) {
   const studyMaterialComponents = studyMaterial.map((item) => {
-    return <StudyMaterialCard studyMaterial={item} topicId={topicId} mostUsedTag={mostUsedTag} onDelete={onDelete} key={item.title} />
+    return <StudyMaterialCard studyMaterial={item} topicId={topicId} mostUsedTag={mostUsedTag} handleDelete={handleDelete} isEditing={isEditing} key={item.title} />
   });
 
     return (
@@ -197,7 +203,7 @@ function StudyMaterial({ studyMaterial, topicId, mostUsedTag, onDelete }) {
     )
 }
 
-function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag, onDelete }) {
+function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag, handleDelete, isEditing }) {
   const [numItems, setNumItems] = useState(0);
 
   const iconMap = {
@@ -220,8 +226,8 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag, onDelete }) {
 
   return (
     <View style={{width: "45%", padding:15, paddingTop: 0, margin: 8, backgroundColor: '#FFFFFF', borderRadius: 20, shadowColor: 'black', shadowOpacity: 0.1, shadowRadius: 5}}>
-      <TouchableOpacity onPress={onPress}>
-        <CardHeader studyMaterial={studyMaterial} mostUsedTag={mostUsedTag} onDelete={onDelete}/>
+      <TouchableOpacity onPress={onPress} disabled={isEditing}>
+        <CardHeader studyMaterial={studyMaterial} mostUsedTag={mostUsedTag} handleDelete={handleDelete} isEditing={isEditing}/>
         <View style={{alignItems: 'center'}}>
           <Icon source={iconMap[studyMaterial.type]} size={60}/>
         </View>
@@ -237,19 +243,31 @@ function StudyMaterialCard({ studyMaterial, topicId, mostUsedTag, onDelete }) {
   );
 }
 
-function CardHeader({ studyMaterial, mostUsedTag, onDelete }) {
-  function onButtonPress() {
-    // TODO: make a thing pop up and let user select delete, the onDelete function should go in there
-    console.log("pressed the ... button in studynote");
-    onDelete(studyMaterial);
-  }
+function CardHeader({ studyMaterial, mostUsedTag, handleDelete, isEditing }) {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  const showDialog = () => setIsVisible(true);
+  const hideDialog = () => setIsVisible(false);
 
   return (
-    <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between'}}>
-      <View style={{backgroundColor: mostUsedTag.color, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 10}}>
-        <Text style={{color: '#FFFFFF', fontSize: 10, fontFamily: 'mon-m'}}>{studyMaterial.type.toUpperCase()}</Text>
+    <View style={{display:"flex", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between'}}>
+      <View style={{marginTop: 13, marginBottom: 13}}>
+        <View style={{backgroundColor: mostUsedTag.color, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 10}}>
+          <Text style={{color: '#FFFFFF', fontSize: 10, fontFamily: 'mon-m'}}>{studyMaterial.type.toUpperCase()}</Text>
+        </View>
       </View>
-        <IconButton style={{marginRight: 0}} icon="dots-horizontal" color="000" size={20} onPress={onButtonPress}/>
+      {isEditing && <IconButton style={{marginRight: 0}} icon="close" color="000" size={18} onPress={showDialog}/>}
+      <Portal>
+        <Dialog visible={isVisible} onDismiss={hideDialog}>
+          <Dialog.Content>
+            <Text variant="bodyMedium">Are you sure you want to delete "{studyMaterial.title}" ?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog} title="No"/>
+            <Button onPress={() => {handleDelete(studyMaterial); hideDialog()}} title="Yes"/>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   )
 }
