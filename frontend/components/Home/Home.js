@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableHighlight,
   FlatList,
+  Animated,
 } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import {
@@ -30,7 +31,7 @@ const TopicDATA = [
     numNotes: 3,
     numCards: 5,
     numQuizzes: 2,
-    color: "navy",
+    color: "purple",
   },
   {
     title: "Chem123",
@@ -111,14 +112,13 @@ function AchievementButton({ size }) {
 
 // THE HOME PAGE
 export default function Home() {
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
         <Header />
-        <View style={{ padding: 15 }}>
-          <SearchFilter />
-          <TopicList />
-        </View>
+        <SearchFilter scrollOffsetY={scrollOffsetY} />
+        <TopicList scrollOffsetY={scrollOffsetY} />
       </View>
     </SafeAreaView>
   );
@@ -156,11 +156,27 @@ function Header() {
   );
 }
 
+const Search_Max_Height = 70;
+const Search_Min_Height = 0;
+const Scroll_Distance = Search_Max_Height - Search_Min_Height;
+
 // The search bar and filter button
-function SearchFilter() {
+const SearchFilter = ({ scrollOffsetY }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
+
+  const animatedSearchHeight = scrollOffsetY.interpolate({
+    inputRange: [0, Scroll_Distance],
+    outputRange: [Search_Max_Height, Search_Min_Height],
+    extrapolate: "clamp",
+  });
+
   return (
-    <View style={styles.searchContainer}>
+    <Animated.View
+      style={[
+        styles.searchContainer,
+        { height: animatedSearchHeight, overflow: "hidden" },
+      ]}
+    >
       <View style={styles.searchBar}>
         <Searchbar
           placeholder="Search"
@@ -175,17 +191,19 @@ function SearchFilter() {
           }}
         />
       </View>
-      <TouchableHighlight style={styles.filterButton}>
+      <TouchableHighlight style={[styles.filterButton]}>
         <MaterialCommunityIcons name="tune" size={24} color={inactive} />
       </TouchableHighlight>
-    </View>
+    </Animated.View>
   );
-}
+};
 
 // topics listings underneath the search bar
-function TopicList() {
+const TopicList = ({ scrollOffsetY }) => {
   return (
     <FlatList
+      scrollEventThrottle={5}
+      showsVerticalScrollIndicator={false}
       data={TopicDATA}
       style={styles.listingContainer}
       numColumns={2}
@@ -200,10 +218,14 @@ function TopicList() {
           color={item.color}
         />
       )}
-      ListFooterComponent={<View style={{ height: 200 }} />}
+      ListFooterComponent={<View style={{ height: 50 }} />}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+        { useNativeDriver: false }
+      )}
     />
   );
-}
+};
 
 // its time for some CSS HELL YEA
 const styles = StyleSheet.create({
@@ -249,8 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: 12,
-    paddingTop: 5,
+    marginHorizontal: 10,
   },
   // the fake searchbar background
   searchBar: {
@@ -279,5 +300,7 @@ const styles = StyleSheet.create({
   },
   listingContainer: {
     flex: 1,
+    margin: 6,
+    marginTop: 0,
   },
 });

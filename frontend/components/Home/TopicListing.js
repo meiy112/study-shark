@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -21,12 +21,46 @@ const TopicListing = (props) => {
     props;
   // assign color set
   colorStyle = new ColorStyle(color);
+
+  const [scaleValue] = useState(new Animated.Value(1));
+
+  // ---------------------- ANIMATION THINGS ------------------------
+  const animateButton = () => {
+    Animated.timing(scaleValue, {
+      toValue: 0.9,
+      duration: 50,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+  // ----------------------------------------------------------------
+
+  const handleClick = () => {
+    // TODO
+  };
+
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={1}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        styles.shadow,
+        { transform: [{ scale: scaleValue }] },
+      ]}
+      activeOpacity={1}
+      onPress={() => {
+        animateButton();
+        handleClick();
+      }}
+    >
       {/*gradient underneath*/}
       <LinearGradient
         colors={[colorStyle.primary, colorStyle.gradient]}
-        style={styles.gradient}
+        style={[styles.gradient]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
       ></LinearGradient>
@@ -110,6 +144,8 @@ const styles = StyleSheet.create({
     width: 170,
     height: 243,
     flex: 1,
+    borderRadius: 15,
+    maxWidth: "50%",
     margin: 5,
   },
   gradient: {
@@ -119,12 +155,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
+    alignSelf: "center",
   },
   header: {
     height: 114,
     width: 170,
     flex: 1,
     padding: 15,
+    alignSelf: "center",
   },
   // container with title + date
   titleDate: {
@@ -143,6 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 17,
     justifyContent: "space-between",
+    alignSelf: "center",
   },
   studyDataEntryContainer: {
     flexDirection: "row",
@@ -156,6 +195,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
+  },
+  shadow: {
+    shadowColor: shadow,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    elevation: 5,
   },
 });
 
