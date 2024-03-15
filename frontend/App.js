@@ -75,7 +75,6 @@ export default function App() {
             headerShown: false,
             showLabel: false,
             tabBarStyle: {
-              position: "absolute",
               elevation: 0,
               backgroundColor: background,
               borderTopLeftRadius: 30,
@@ -189,6 +188,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-
-
-
