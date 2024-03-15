@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
+import colors from "../../constants/Colors";
+
+const { buttonDark, buttonLight, primary } = colors;
 
 const NavBarAddButton = ({ onPress }) => {
   const [scaleValue] = useState(new Animated.Value(1));
@@ -39,13 +42,13 @@ const NavBarAddButton = ({ onPress }) => {
       <TouchableOpacity style={styles.buttonOutline}></TouchableOpacity>
       <Animated.View style={[{ transform: [{ scale: scaleValue }] }]}>
         <LinearGradient
-          colors={["#2B005A", "#5C00C0"]}
+          colors={[buttonDark, buttonLight]}
           style={styles.gradient}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
         >
           <View style={styles.innerButton}>
-            <MaterialIcons name="add" size={40} color="white" />
+            <MaterialIcons name="add" size={40} color={primary} />
           </View>
         </LinearGradient>
       </Animated.View>
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
     width: 83,
     height: 83,
     borderRadius: 20,
-    backgroundColor: "#ffffff",
+    backgroundColor: primary,
     opacity: 0.5,
     position: "absolute",
   },

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View, StyleSheet, Text, Modal } from "react-native";
+import colors from "../../constants/Colors";
+
+const { active, inactive, background, primary, shadow, line } = colors;
 
 const AddModal = (props) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -25,6 +28,7 @@ const AddModal = (props) => {
             H-hi would you like to add something? Um, but only if you want to,
             I-I'm not forcing you or anything...
           </Text>
+          {/*the triangle under the rectangle part of the modal*/}
           <View style={styles.triangle}></View>
         </View>
       </View>
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   addModal: {
-    backgroundColor: "#ffffff",
+    backgroundColor: primary,
     width: 200,
     height: 150,
     borderRadius: 10,
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   shadow: {
-    shadowColor: "#300164",
+    shadowColor: shadow,
     shadowOffset: {
       width: 0,
       height: 10,
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 20,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderBottomColor: "#ffffff",
+    borderBottomColor: primary,
     position: "absolute",
     bottom: -15,
     transform: [{ rotate: "180deg" }],
