@@ -24,7 +24,6 @@ import Screens from "./screens/Screens";
 
 const { active, inactive, background, primary, shadow } = colors;
 
-import Topic from "./components/Topic/Topic";
 import MockServer from "./api/MockServer";
 
 const Tab = createBottomTabNavigator();
@@ -110,7 +109,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Explore"
-            component={Topic}
+            component={Explore}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (
