@@ -3,15 +3,10 @@ import { View, FlatList, StyleSheet, ScrollView, Modal, TouchableOpacity, Button
 import { Text, Appbar, Divider, Chip, Icon, Menu, IconButton, Dialog, Portal} from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
+import * as SplashScreen from "expo-splash-screen";
+
 
 // -------- FAKE DATA - TO BE REPLACED WITH API CALLS ----------
-const fakeTopic = {
-  id: "random_Uuid_for_topic",
-  title: "Phys901", 
-  description: "With hearts racing like runaway loops, their hands brushed as Backend" 
-  + " passed the requested data from the database to Frontend. "
-  + " In that instant, amidst the binary buzz, they shared a shy but sweet kiss."
-}
 const fakeTags = [ // sorry the colors r ugly
   {name: "waves", color: '#5F2EB3'},
   {name: "fluid dynamics", color: '#519dFF'}, 
@@ -27,7 +22,7 @@ const fakeStudyMaterial = [
   {title: "3", type: "Notes", lastOpened: new Date()},
   {title: "4", type: "Quiz", lastOpened: new Date()}
 ];
-const fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
+const fakeMostUsedTag = { name: "Physics", color: "#5F2EB3" };
 //--------------------------------------------------------
 
 
@@ -39,13 +34,38 @@ export default function Topic({ route, navigation }) {
   const [isEditing, setIsEditing] = useState(false);
 
    useEffect(() => {
-      // TODO: api call to populate topic, tags and studymaterial
-      setTopic(fakeTopic);
-      setStudyMaterial(fakeStudyMaterial);
-      setTags(fakeTags);
-      setMostUsedTags(fakeMostUsedTag);
-      console.log("Fetching data for topic with id: " + route.params.id);
+    async function load() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    load();
+
+    // TODO: api call to populate topic, tags and studymaterial
+    setStudyMaterial(fakeStudyMaterial);
+    setMostUsedTags(fakeMostUsedTag);
+    console.log("Fetching data for topic with id: " + route.params.id);
+
+    async function fetchData() {
+      try {
+        const topicResponse = await fetch("/topic/" + route.params.id + "/general-info");
+        const topic = await topicResponse.json();
+        setTopic(topic.topic);
+
+        const tagsResponse = await fetch("/topic/" + route.params.id + "/tags");
+        const tags = await tagsResponse.json();
+        setTags(tags.tags);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
    }, []);
+
+   if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
+    // prevent page from rendering before fonts are loaded
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
    function handleSort() {
     // TODO
@@ -124,8 +144,8 @@ function Tags({ tags, mostUsedTag }) {
           <Chip
             key={tag.name}
             style={{
-              backgroundColor: tag.color === mostUsedTag.color? 'transparent' : tag.color,
-              borderColor: tag.color === mostUsedTag.color? 'white' : tag.color,
+              backgroundColor: tag.name === mostUsedTag.name? 'transparent' : tag.color,
+              borderColor: tag.name === mostUsedTag.name? 'white' : tag.color,
               borderWidth: 2,
               marginRight: 8,
             }}
