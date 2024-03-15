@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useFonts } from "expo-font";
 import { PaperProvider } from "react-native-paper";
@@ -19,6 +19,7 @@ import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 
 import Topic from "./components/Topic/Topic";
+import MockServer from "./api/MockServer";
 
 const Tab = createBottomTabNavigator();
 
@@ -48,6 +49,12 @@ export default function App() {
   });
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    fetch("/topic")
+      .then((res) => res.json())
+      .then((json) => console.log(json))
+  }, []);
+
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -74,7 +81,7 @@ export default function App() {
         >
           <Tab.Screen
             name="Home"
-            component={Home}
+            component={Topic}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (
