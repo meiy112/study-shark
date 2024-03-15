@@ -25,6 +25,7 @@ const { active, inactive, background, primary, shadow, line, grey } = colors;
 // ---------------------- DATA ------------------------
 const TopicDATA = [
   {
+    id: "1",
     title: "Phys901",
     isPublic: true,
     date: "March 19, 2024",
@@ -34,6 +35,7 @@ const TopicDATA = [
     color: "purple",
   },
   {
+    id: "2",
     title: "Chem123",
     isPublic: false,
     date: "March 23, 2024",
@@ -43,6 +45,7 @@ const TopicDATA = [
     color: "pink",
   },
   {
+    id: "3",
     title: "Math049",
     isPublic: false,
     date: "April 9, 2049",
@@ -52,6 +55,7 @@ const TopicDATA = [
     color: "blue",
   },
   {
+    id: "4",
     title: "Cpsc304",
     isPublic: true,
     date: "March 14, 2024",
@@ -60,6 +64,7 @@ const TopicDATA = [
     numQuizzes: 3,
   },
   {
+    id: "5",
     title: "Hello World",
     isPublic: false,
     date: "January 29, 2025",
@@ -68,6 +73,7 @@ const TopicDATA = [
     numQuizzes: 78,
   },
   {
+    id: "6",
     title: "How to swim",
     isPublic: false,
     date: "tee hee im not a date",
@@ -76,6 +82,7 @@ const TopicDATA = [
     numQuizzes: 5,
   },
   {
+    id: "7",
     title: "Bible Studies",
     isPublic: true,
     date: "December 25, 5 BC",
@@ -96,11 +103,11 @@ const TagDATA = [
 // -----------------------------------------------------
 
 // Achievement Button beside "My Topics"
-function AchievementButton({ size }) {
-  const navigation = useNavigation();
+function AchievementButton({ size, navigation }) {
+  // const navigation = useNavigation(); // I commented this out to set up navigation
 
   const handlePress = () => {
-    // TODO
+    navigation.navigate("Achievement");
   };
 
   return (
@@ -111,21 +118,21 @@ function AchievementButton({ size }) {
 }
 
 // THE HOME PAGE
-export default function Home() {
+export default function Home({ navigation }) {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
-        <Header />
+        <Header navigation={navigation}/>
         <SearchFilter scrollOffsetY={scrollOffsetY} />
-        <TopicList scrollOffsetY={scrollOffsetY} />
+        <TopicList scrollOffsetY={scrollOffsetY} navigation={navigation} />
       </View>
     </SafeAreaView>
   );
 }
 
 // Header (everything above the search bar)
-function Header() {
+function Header({ navigation }) {
   return (
     <View style={[styles.header, styles.shadow]}>
       {/* START: My Topics + AchievementButton*/}
@@ -136,7 +143,7 @@ function Header() {
           size={24}
         />
         <Text style={{ fontFamily: "mon-sb", fontSize: 16 }}>My Topics</Text>
-        <AchievementButton />
+        <AchievementButton navigation={navigation} />
       </View>
       {/* END: My Topics + AchievementButton*/}
       {/*a cute lil line uwu*/}
@@ -199,7 +206,7 @@ const SearchFilter = ({ scrollOffsetY }) => {
 };
 
 // topics listings underneath the search bar
-const TopicList = ({ scrollOffsetY }) => {
+const TopicList = ({ scrollOffsetY, navigation }) => {
   return (
     <FlatList
       scrollEventThrottle={5}
@@ -209,6 +216,7 @@ const TopicList = ({ scrollOffsetY }) => {
       numColumns={2}
       renderItem={({ item }) => (
         <TopicListing
+          id={item.id}
           title={item.title}
           isPublic={item.isPublic}
           date={item.date}
@@ -216,6 +224,7 @@ const TopicList = ({ scrollOffsetY }) => {
           numCards={item.numCards}
           numQuizzes={item.numQuizzes}
           color={item.color}
+          navigation={navigation}
         />
       )}
       ListFooterComponent={<View style={{ height: 50 }} />}

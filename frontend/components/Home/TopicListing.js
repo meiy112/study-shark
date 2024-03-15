@@ -17,7 +17,7 @@ let colorStyle;
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicListing = (props) => {
-  const { title, isPublic, date, numNotes, numCards, numQuizzes, color } =
+  const { id, title, isPublic, date, numNotes, numCards, numQuizzes, color, navigation } =
     props;
   // assign color set
   colorStyle = new ColorStyle(color);
@@ -41,7 +41,7 @@ const TopicListing = (props) => {
   // ----------------------------------------------------------------
 
   const handleClick = () => {
-    // TODO
+    navigation.navigate("Topic", {id: id});
   };
 
   return (

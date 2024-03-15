@@ -20,9 +20,12 @@ import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 import colors from "./constants/Colors";
 
+import Screens from "./screens/Screens";
+
 const { active, inactive, background, primary, shadow } = colors;
 
 import Topic from "./components/Topic/Topic";
+import MockServer from "./api/MockServer";
 
 const Tab = createBottomTabNavigator();
 
@@ -91,8 +94,8 @@ export default function App() {
           })}
         >
           <Tab.Screen
-            name="Home"
-            component={Home}
+            name="HomeScreen"
+            component={Screens.home}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (
@@ -107,7 +110,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Explore"
-            component={Explore}
+            component={Topic}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (

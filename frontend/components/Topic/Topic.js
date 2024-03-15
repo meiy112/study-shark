@@ -31,7 +31,7 @@ const fakeMostUsedTag = {name: "waves", color: '#5F2EB3'};
 //--------------------------------------------------------
 
 
-export default function Topic({id}) {
+export default function Topic({ route, navigation }) {
   const [topic, setTopic] = useState({topicId: "", title: "", description: ""});
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [tags, setTags] = useState([]);
@@ -44,6 +44,7 @@ export default function Topic({id}) {
       setStudyMaterial(fakeStudyMaterial);
       setTags(fakeTags);
       setMostUsedTags(fakeMostUsedTag);
+      console.log("Fetching data for topic with id: " + route.params.id);
    }, []);
 
    function handleSort() {
@@ -67,7 +68,7 @@ export default function Topic({id}) {
 
   return (
     <View>
-      <Header topic={topic} color={mostUsedTag.color} />
+      <Header topic={topic} color={mostUsedTag.color} navigation={navigation} />
       <Divider />
       <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
         <Info topic={topic} tags={tags} mostUsedTag={mostUsedTag} />
@@ -78,23 +79,13 @@ export default function Topic({id}) {
   );
 }
 
-function Header({ topic, color }) {
-  function handleBackButtonPress() {
-    // TODO: navigate to Home page
-    console.log("Back button pressed");
-  }
-
-  function navigateToSettings() {
-    // TODO: navigate to settings page
-    console.log("Navigate to Settings page")
-  }
-
+function Header({ topic, color, navigation }) {
   return(
     <View>
       <Appbar.Header style={{backgroundColor: color}}>
-        <Appbar.BackAction color="#FFFFFF" onPress={handleBackButtonPress} />
+        <Appbar.BackAction color="#FFFFFF" onPress={() => navigation.goBack()} />
         <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20, fontFamily: 'mon-sb'}}/>
-        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={navigateToSettings}></Appbar.Action>
+        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => navigation.navigate("Settings")}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
     </View>
