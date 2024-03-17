@@ -26,12 +26,13 @@ export function startServer() {
       server.create("tag", { name: "Showering", color: "#5F2EB3" });
     },
 
-    // ROUTES - Oscar pls ignore the code inside the route, they dont actually reflect what the backend should do
-    // each route has a path as well as a comment describing what it should return, which is what you should use
-    // as an interface to the backend api. 
-    // Some routes will have an example variable showing what fields are requried, for the ones without examples, 
-    // return the entire entity with all of its fields.
-    // None of these routes are actually complete, they all need user authentication which is not yet included.
+    // ROUTES 
+    // - Oscar pls ignore the code inside the route, they dont actually reflect what the backend should do
+    // - each route has a path as well as a comment describing what it should return. you should use
+    //   as an interface to the backend api. 
+    // - Some routes will have an example variable showing what fields are requried, for the ones without examples, 
+    //   return the entire entity with all of its fields.
+    // - None of these routes are actually complete, they all need user authentication which i have not yet included.
     routes() {
       this.namespace = ""; 
 
@@ -43,7 +44,7 @@ export function startServer() {
 
       // look at hardcoded example below
       this.get("/topic/home-page", (schema) => {
-        return ([
+        const example = [
           {
             id: "1", // topic id
             title: "Phys901", // topic title
@@ -110,7 +111,8 @@ export function startServer() {
             numCards: 3,
             numQuizzes: 13,
           },
-        ]);
+        ];
+        return (example);
       });
 
       // Return topic by id

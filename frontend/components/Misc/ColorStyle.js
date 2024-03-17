@@ -1,6 +1,6 @@
 // color sets (placeholder for our 7th entity)
 class ColorStyle {
-  constructor(color) {
+constructor(color) {
     if (color === "pink") {
       this.primary = "#F5878D";
       this.gradient = "#B9568C";

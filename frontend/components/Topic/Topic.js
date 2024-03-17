@@ -33,25 +33,37 @@ export default function Topic({ route, navigation }) {
   const [mostUsedTag, setMostUsedTags] = useState({name: "", color: "#FFFFFFFF"});
   const [isEditing, setIsEditing] = useState(false);
 
+
+  // LOAD DATA------------------------------------
+  // Splashscreen
+  async function load() {
+    await SplashScreen.preventAutoHideAsync();
+  }
+  load();
+
+  // useEffects are sperate so they can run in parallel - api calls r rly slow
    useEffect(() => {
-    async function load() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    load();
+    setMostUsedTags(fakeMostUsedTag); // TODO: get rid of this in the future
 
-    // TODO: api call to populate topic, tags and studymaterial
-    setStudyMaterial(fakeStudyMaterial);
-    setMostUsedTags(fakeMostUsedTag);
-    console.log("Fetching data for topic with id: " + route.params.id);
-
+    // fetch topic data
     async function fetchData() {
       try {
-        const topicResponse = await fetch("/topic/" + route.params.id + "/general-info");
-        const topic = await topicResponse.json();
+        const response = await fetch("/topic/" + route.params.id + "/general-info");
+        const topic = await response.json();
         setTopic(topic.topic);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+   }, []);
 
-        const tagsResponse = await fetch("/topic/" + route.params.id + "/tags");
-        const tags = await tagsResponse.json();
+   // fetch tags data
+   useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("/topic/" + route.params.id + "/tags");
+        const tags = await response.json();
         setTags(tags.tags);
       } catch (e) {
         console.log(e);
@@ -59,6 +71,20 @@ export default function Topic({ route, navigation }) {
     }
     fetchData();
    }, []);
+
+   // fetch studymaterial data
+   useEffect(() => {
+    async function fetchData() {
+      try {
+        // TODO: api call
+        setStudyMaterial(fakeStudyMaterial); 
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+   }, []);
+   
 
    if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
     // prevent page from rendering before fonts are loaded
