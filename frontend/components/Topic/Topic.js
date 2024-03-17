@@ -229,8 +229,6 @@ function StudyMaterial({ studyMaterial, topicId, handleDelete, isEditing }) {
 }
 
 function StudyMaterialCard({ studyMaterial, topicId, handleDelete, isEditing }) {
-  const [numItems, setNumItems] = useState(0);
-
   const iconMap = {
     "Notes": "note-text-outline",
     "Quiz": "comment-question-outline",
@@ -238,11 +236,6 @@ function StudyMaterialCard({ studyMaterial, topicId, handleDelete, isEditing }) 
   }
 
   const studyMaterialTitle = studyMaterial.title.length >= 17? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
-
-  useEffect(() => {
-    // TODO: api call to set numItems
-    setNumItems(10);
-  }, []);
 
   function onPress() {
     // TODO: navigate to this studynote
@@ -262,7 +255,7 @@ function StudyMaterialCard({ studyMaterial, topicId, handleDelete, isEditing }) 
             <Text style={{fontSize: 10, color: '#414141', fontFamily: 'mon-l'}}>{studyMaterial.lastOpened}</Text>
           </View>
         </View>
-        <CardFooter studyNoteType={studyMaterial.type} numItems={numItems} />
+        <CardFooter studyNoteType={studyMaterial.type} numItems={studyMaterial.numComponents} />
       </TouchableOpacity>
     </View>
   );
