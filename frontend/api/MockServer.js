@@ -7,6 +7,7 @@ export function startServer() {
     models: {
       topic: Model, 
       tag: Model,
+      color: Model,
     },
 
     seeds(server) {
@@ -24,18 +25,25 @@ export function startServer() {
       server.create("tag", { name: "Biology", color: "#399CFF" });
       server.create("tag", { name: "Waves", color: "#9D3CA1" });
       server.create("tag", { name: "Showering", color: "#5F2EB3" });
+
+      server.create("color", {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"});
+      server.create("color", {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"});
+      server.create("color", {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
+      server.create("color", {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
+      
     },
 
-    // ROUTES - Oscar pls ignore the code inside the route, they dont actually reflect what the backend should do
-    // each route has a path as well as a comment describing what it should return, which is what you should use
-    // as an interface to the backend api. 
-    // Some routes will have an example variable showing what fields are requried, for the ones without examples, 
-    // return the entire entity with all of its fields.
-    // None of these routes are actually complete, they all need user authentication which is not yet included.
+    // ROUTES 
+    // - Oscar pls ignore the code inside the route, they dont actually reflect what the backend should do
+    // - each route has a path as well as a comment describing what it should return. you should use
+    //   as an interface to the backend api. 
+    // - Some routes will have an example variable showing what fields are requried, for the ones without examples, 
+    //   return the entire entity with all of its fields.
+    // - None of these routes are actually complete, they all need user authentication which i have not yet included.
     routes() {
       this.namespace = ""; 
 
-      // TOPIC -------------------------------
+      // USER -------------------------------
       // Return all topics for a given user
       this.get("/topic", (schema) => {
         return schema.topics.all();
@@ -43,7 +51,7 @@ export function startServer() {
 
       // look at hardcoded example below
       this.get("/topic/home-page", (schema) => {
-        return ([
+        const example = [
           {
             id: "1", // topic id
             title: "Phys901", // topic title
@@ -52,7 +60,7 @@ export function startServer() {
             numNotes: 3, // count studymaterail of type "Notes" within this topic
             numCards: 5, // count studymaterail of type "Flashcard" within this topic
             numQuizzes: 2, // count studymaterail of type "Quiz" within this topic
-            color: "purple", // topic color
+            color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, // topic color
           },
           {
             id: "2",
@@ -62,7 +70,7 @@ export function startServer() {
             numNotes: 21,
             numCards: 7,
             numQuizzes: 11,
-            color: "pink",
+            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
           },
           {
             id: "3",
@@ -72,7 +80,7 @@ export function startServer() {
             numNotes: 49,
             numCards: 49,
             numQuizzes: 49,
-            color: "blue",
+            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
           },
           {
             id: "4",
@@ -82,6 +90,7 @@ export function startServer() {
             numNotes: 11,
             numCards: 210,
             numQuizzes: 3,
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "5",
@@ -91,6 +100,7 @@ export function startServer() {
             numNotes: 23,
             numCards: 10,
             numQuizzes: 78,
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "6",
@@ -100,6 +110,7 @@ export function startServer() {
             numNotes: 34,
             numCards: 3,
             numQuizzes: 5,
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "7",
@@ -109,8 +120,10 @@ export function startServer() {
             numNotes: 5,
             numCards: 3,
             numQuizzes: 13,
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
-        ]);
+        ];
+        return (example);
       });
 
       // Return topic by id
@@ -126,28 +139,44 @@ export function startServer() {
       });
 
       // Given a topic id, Return all tags associated the topic
-      this.get("topic/:id/tags", (schema, request) => {
+      this.get("/topic/:id/tags", (schema, request) => {
         return schema.tags.all(); // fake data, currently returns all tags, doing this just for simplicity
       });
 
       // Given a topic id, returns its sorted and filtered study material. 
+      // lastOpened field should be a string in the form of "January 01, 2025"
       // Query Params: 
       //    type: string, is either "Notes", "Flashcards", "Quiz", or "None". if not "None", filter by type
-      //    sort: string, is either "true" or "false", If true, sort alphabetically
-      this.get("topic/:id/studymaterial/?type=<type>&sort=<sort>", (schema, request) => {
+      //    sort: string, is either "lastOpened" or "alphabetical", Sort by either last opened date or alphabetically
+      this.get("/topic/:id/studymaterial/", (schema, request) => {
+        const { type, sort } = request.queryParams;
+
         const example = [
-          {
-            title: "Wave Interference", // studymaterial title
-            type: "Notes", // studymaterial type
-            lastOpened: Date() // studymaterial lastOpened: this is a date object
-          }
-        ]
+            {title: "Wave Interference", type: "Notes", lastOpened: "January 69, 2025"},
+            {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: "Febuary 12, 1992"},
+            {title: "Standing Waves", type: "Quiz", lastOpened: "April 2, 2937"},
+            {title: "1", type: "Notes", lastOpened: "January 20, 2006"},
+            {title: "2", type: "Flashcards", lastOpened: "September 28, 1078"},
+            {title: "3", type: "Notes", lastOpened: "Febuary 9, 3057"},
+            {title: "4", type: "Quiz", lastOpened: "December 90, 2004"}
+        ];
+
+        return example;
       });
 
       // given a topic id and studymaterial title, delete the studymaterial
-      this.delete("topic/:id/studymaterial/:title", (schema, request) => {
+      this.delete("/topic/:id/studymaterial/:title", (schema, request) => {
         // blank
       });
+
+      // TAGS ------------------------------------
+      // gets all the tags of all the topics belonging to the current user
+      this.get("/tag", (schema) => {
+        return schema.tags.all();
+      }); 
+
+
+
     },
   });
 }
