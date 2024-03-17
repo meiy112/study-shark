@@ -29,7 +29,7 @@ export function startServer() {
       server.create("color", {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"});
       server.create("color", {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"});
       server.create("color", {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
-      server.create("color", {name: "default", primary: "#5F2EB3", gradient: "#5F2EB3", circle: "#5F2EB3"});
+      server.create("color", {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
       
     },
 
@@ -90,7 +90,7 @@ export function startServer() {
             numNotes: 11,
             numCards: 210,
             numQuizzes: 3,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#5F2EB3", circle: "#5F2EB3"}
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "5",
@@ -100,7 +100,7 @@ export function startServer() {
             numNotes: 23,
             numCards: 10,
             numQuizzes: 78,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#5F2EB3", circle: "#5F2EB3"},
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "6",
@@ -110,7 +110,7 @@ export function startServer() {
             numNotes: 34,
             numCards: 3,
             numQuizzes: 5,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#5F2EB3", circle: "#5F2EB3"},
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
           {
             id: "7",
@@ -120,7 +120,7 @@ export function startServer() {
             numNotes: 5,
             numCards: 3,
             numQuizzes: 13,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#5F2EB3", circle: "#5F2EB3"},
+            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
           },
         ];
         return (example);
