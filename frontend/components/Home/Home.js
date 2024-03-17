@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -19,88 +19,10 @@ import Tag from "../../components/Misc/Tag";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
+import * as SplashScreen from "expo-splash-screen";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
-// ---------------------- DATA ------------------------
-const TopicDATA = [
-  {
-    id: "1",
-    title: "Phys901",
-    isPublic: true,
-    date: "March 19, 2024",
-    numNotes: 3,
-    numCards: 5,
-    numQuizzes: 2,
-    color: "purple",
-  },
-  {
-    id: "2",
-    title: "Chem123",
-    isPublic: false,
-    date: "March 23, 2024",
-    numNotes: 21,
-    numCards: 7,
-    numQuizzes: 11,
-    color: "pink",
-  },
-  {
-    id: "3",
-    title: "Math049",
-    isPublic: false,
-    date: "April 9, 2049",
-    numNotes: 49,
-    numCards: 49,
-    numQuizzes: 49,
-    color: "blue",
-  },
-  {
-    id: "4",
-    title: "Cpsc304",
-    isPublic: true,
-    date: "March 14, 2024",
-    numNotes: 11,
-    numCards: 210,
-    numQuizzes: 3,
-  },
-  {
-    id: "5",
-    title: "Hello World",
-    isPublic: false,
-    date: "January 29, 2025",
-    numNotes: 23,
-    numCards: 10,
-    numQuizzes: 78,
-  },
-  {
-    id: "6",
-    title: "How to swim",
-    isPublic: false,
-    date: "tee hee im not a date",
-    numNotes: 34,
-    numCards: 3,
-    numQuizzes: 5,
-  },
-  {
-    id: "7",
-    title: "Bible Studies",
-    isPublic: true,
-    date: "December 25, 5 BC",
-    numNotes: 5,
-    numCards: 3,
-    numQuizzes: 13,
-  },
-];
-
-const TagDATA = [
-  { title: "Physics", color: "#5F2EB3" },
-  { title: "Chemistry", color: "#FF7A8B" },
-  { title: "Math", color: "#22B0D2" },
-  { title: "Biology", color: "#399CFF" },
-  { title: "Waves", color: "#9D3CA1" },
-  { title: "Showering", color: "#5F2EB3" },
-];
-// -----------------------------------------------------
 
 // Achievement Button beside "My Topics"
 function AchievementButton({ size, navigation }) {
@@ -119,20 +41,53 @@ function AchievementButton({ size, navigation }) {
 
 // THE HOME PAGE
 export default function Home({ navigation }) {
+  const [tags, setTags] = useState([]);
+  const [topics, setTopics] = useState([]);
+
+  // LOAD DATA------------------------------------
+  // fetch tags
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch ("/tag");
+        const tags = await response.json();
+        setTags(tags.tags);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+   }, []);
+
+   // fetch topics
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch ("/topic/home-page");
+        const topics = await response.json();
+        setTopics(topics); 
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+   }, []);
+  // ----------------------------------------------
+
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
-        <Header navigation={navigation}/>
+        <Header navigation={navigation} tags={tags}/>
         <SearchFilter scrollOffsetY={scrollOffsetY} />
-        <TopicList scrollOffsetY={scrollOffsetY} navigation={navigation} />
+        <TopicList scrollOffsetY={scrollOffsetY} navigation={navigation} topics={topics} />
       </View>
     </SafeAreaView>
   );
 }
 
 // Header (everything above the search bar)
-function Header({ navigation }) {
+function Header({ navigation, tags }) {
   return (
     <View style={[styles.header, styles.shadow]}>
       {/* START: My Topics + AchievementButton*/}
@@ -154,8 +109,8 @@ function Header({ navigation }) {
         contentContainerStyle={styles.tagsContainer}
         showsHorizontalScrollIndicator={false}
       >
-        {TagDATA.map((tag, index) => (
-          <Tag key={index} title={tag.title} color={tag.color} />
+        {tags.map((tag, index) => (
+          <Tag key={index} title={tag.name} color={tag.color} />
         ))}
       </ScrollView>
       {/*END: TAGSLIST*/}
@@ -206,12 +161,13 @@ const SearchFilter = ({ scrollOffsetY }) => {
 };
 
 // topics listings underneath the search bar
-const TopicList = ({ scrollOffsetY, navigation }) => {
+const TopicList = ({ scrollOffsetY, navigation, topics}) => {
+
   return (
     <FlatList
       scrollEventThrottle={5}
       showsVerticalScrollIndicator={false}
-      data={TopicDATA}
+      data={topics}
       style={styles.listingContainer}
       numColumns={2}
       renderItem={({ item }) => (

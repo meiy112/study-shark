@@ -10,7 +10,7 @@ const db = createConnection({
   database: process.env.DB,
   multipleStatements: true,
 });
-
+console.log(process.env.DB);
 db.connect((err) => {
   if (err) {
     console.error('Error connecting to database:', err);

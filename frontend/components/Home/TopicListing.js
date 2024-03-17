@@ -9,18 +9,14 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../constants/Colors";
-import ColorStyle from "../Misc/ColorStyle";
 
 const { active, inactive, background, primary, shadow, line } = colors;
-let colorStyle;
 
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicListing = (props) => {
   const { id, title, isPublic, date, numNotes, numCards, numQuizzes, color, navigation } =
     props;
-  // assign color set
-  colorStyle = new ColorStyle(color);
 
   const [scaleValue] = useState(new Animated.Value(1));
 
@@ -41,7 +37,7 @@ const TopicListing = (props) => {
   // ----------------------------------------------------------------
 
   const handleClick = () => {
-    navigation.navigate("Topic", {id: id});
+    navigation.navigate("Topic", {id: id, color: color});
   };
 
   return (
@@ -59,7 +55,7 @@ const TopicListing = (props) => {
     >
       {/*gradient underneath*/}
       <LinearGradient
-        colors={[colorStyle.primary, colorStyle.gradient]}
+        colors={[color.primary, color.gradient]}
         style={[styles.gradient]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
@@ -71,6 +67,7 @@ const TopicListing = (props) => {
         numNotes={numNotes}
         numCards={numCards}
         numQuizzes={numQuizzes}
+        color={color}
       />
     </TouchableOpacity>
   );
@@ -108,23 +105,23 @@ function Header({ title, isPublic, date }) {
 }
 
 // the container showing the # of StudyMaterial
-function StudyData({ numNotes, numCards, numQuizzes }) {
+function StudyData({ numNotes, numCards, numQuizzes, color }) {
   return (
     <View style={styles.studyDataContainer}>
-      <StudyDataEntry number={numNotes} name="Study Notes" />
-      <StudyDataEntry number={numCards} name="Flashcards" />
-      <StudyDataEntry number={numQuizzes} name="Quizzes" />
+      <StudyDataEntry number={numNotes} name="Study Notes" color={color} />
+      <StudyDataEntry number={numCards} name="Flashcards" color={color} />
+      <StudyDataEntry number={numQuizzes} name="Quizzes" color={color} />
     </View>
   );
 }
 
 // {num} + Study Material Name
-function StudyDataEntry({ number, name }) {
+function StudyDataEntry({ number, name, color }) {
   return (
     <View style={styles.studyDataEntryContainer}>
       {/*Number + Circle*/}
       <View
-        style={[styles.numberCircle, { backgroundColor: colorStyle.circle }]}
+        style={[styles.numberCircle, { backgroundColor: color.circle }]}
       >
         <Text style={{ fontFamily: "mon-sb", fontSize: 11, color: primary }}>
           {number}

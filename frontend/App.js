@@ -21,11 +21,13 @@ import AddModal from "./components/Misc/AddModal";
 import colors from "./constants/Colors";
 
 import Screens from "./screens/Screens";
+import { startServer, stopServer } from "./api/MockServer";
 
 const { active, inactive, background, primary, shadow } = colors;
 
-import Topic from "./components/Topic/Topic";
-import MockServer from "./api/MockServer";
+// disconnect server if already running, then create a new instance
+stopServer();
+startServer();
 
 const Tab = createBottomTabNavigator();
 

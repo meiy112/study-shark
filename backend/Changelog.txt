@@ -1,0 +1,16 @@
+CHANGELOG FOR DB:
+
+- replaced CreatesTopic.privacyInfo with CreatesTopic.isPublic, which is a boolean. if true, then the topic is public, else it is private.
+
+- added Color entity that has fields:
+    name: string, the name of the Color
+    primary: string, hex code in the form of "#FFFFFF"
+    gradient: string, hex code
+    circle: string, hex code
+
+- added field FOREIGN KEY color REFERENCES Color(name) to CreatesTable entity
+
+
+
+
+
