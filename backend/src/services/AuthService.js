@@ -20,6 +20,19 @@ class AuthService {
         });
     };
 
+    const checkReputationDoesNotExist = () => {
+        return new Promise((resolve, reject) => {
+            const exists = "SELECT reputation FROM reputation WHERE reputation = ?"; 
+            db.query(exists, ["-10x Engineer"], (err, rows, fields) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(rows.length == 0);
+            });
+        });
+    };
+
     try {
         const { username, password, email } = req.body;
         // Check if user already exists 
@@ -28,6 +41,19 @@ class AuthService {
             const error = new Error('User already exists');
             error.statusCode = 400; 
             throw error; 
+        }
+        // Check if default reputation already exists 
+        if (await checkReputationDoesNotExist()) {
+            await new Promise((resolve, reject) => {
+                const newRep = "INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('-10x Engineer', 'red')";
+                db.query(newRep, (err, rows, fields) => {
+                    if (err) {
+                        reject(err);
+                        return; 
+                    }
+                    resolve();
+                });
+            })
         }
         const hashed_password = await bcrypt.hash(password, 12);
         // Add User 
