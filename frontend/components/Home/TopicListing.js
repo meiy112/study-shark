@@ -9,10 +9,8 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../constants/Colors";
-import ColorStyle from "../Misc/ColorStyle";
 
 const { active, inactive, background, primary, shadow, line } = colors;
-let colorStyle;
 
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
