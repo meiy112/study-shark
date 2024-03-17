@@ -110,7 +110,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Explore"
-            component={Topic}
+            component={Explore}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (
