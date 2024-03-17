@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS QuizQuestionDifficulty;
 DROP TABLE IF EXISTS StudyMaterialType;
 DROP TABLE IF EXISTS School;
 DROP TABLE IF EXISTS Reputation;
+DROP TABLE IF EXISTS Color;
 DROP TABLE IF EXISTS Achievement;
 DROP TABLE IF EXISTS User;
 DROP TABLE IF EXISTS Obtains;
@@ -60,6 +61,13 @@ CREATE TABLE Reputation (
     borderColor VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE Color (
+  name VARCHAR(255) PRIMARY KEY,
+  primaryColor CHAR(7) NOT NULL,
+  gradient CHAR(7) NOT NULL,
+  circle CHAR(7) NOT NULL
+);
+
 CREATE TABLE Achievement (
     title VARCHAR(255) PRIMARY KEY,
     difficulty VARCHAR(255) NOT NULL,
@@ -92,10 +100,12 @@ CREATE TABLE CreatesTopic (
     id VARCHAR(255) PRIMARY KEY,
     username VARCHAR(255),
     title VARCHAR(255) NOT NULL,
-    privacyInfo VARCHAR(255) NOT NULL,
+    isPublic BOOLEAN NOT NULL,
     description VARCHAR(255),
     lastOpened DATE NOT NULL,
-    FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
+    color VARCHAR(255) NOT NULL,
+    FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE,
+    FOREIGN KEY (color) REFERENCES Color(name) ON DELETE NO ACTION
 );
 
 CREATE TABLE Has (
