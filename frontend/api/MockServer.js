@@ -100,7 +100,7 @@ export function startServer() {
             numNotes: 23,
             numCards: 10,
             numQuizzes: 78,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
+            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
           },
           {
             id: "6",
@@ -110,7 +110,7 @@ export function startServer() {
             numNotes: 34,
             numCards: 3,
             numQuizzes: 5,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
+            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
           },
           {
             id: "7",
@@ -120,7 +120,7 @@ export function startServer() {
             numNotes: 5,
             numCards: 3,
             numQuizzes: 13,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
+            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
           },
         ];
         return (example);
@@ -143,22 +143,25 @@ export function startServer() {
         return schema.tags.all(); // fake data, currently returns all tags, doing this just for simplicity
       });
 
-      // Given a topic id, returns its sorted and filtered study material. 
-      // lastOpened field should be a string in the form of "January 01, 2025"
-      // Query Params: 
-      //    type: string, is either "Notes", "Flashcards", "Quiz", or "None". if not "None", filter by type
+      // - Given a topic id, returns its sorted and filtered study material. 
+      // - lastOpened field should be a string in the form of "January 01, 2025"
+      // - numComponents is the number of components inside the study material. Is either number of pages, num of quizzes,
+      //   or num of flashcards depending on type. Num of pages is #words / words_per_page rounded up. Havent yet decided on
+      //   what words per page should be, you can choose some random number since it wont be hard to change.
+      // - Query Params: 
+      //    type: string, is either "Notes", "Flashcards", "Quiz", or "None". if not "None", filter by type, else return all
       //    sort: string, is either "lastOpened" or "alphabetical", Sort by either last opened date or alphabetically
       this.get("/topic/:id/studymaterial/", (schema, request) => {
         const { type, sort } = request.queryParams;
 
         const example = [
-            {title: "Wave Interference", type: "Notes", lastOpened: "January 69, 2025"},
-            {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: "Febuary 12, 1992"},
-            {title: "Standing Waves", type: "Quiz", lastOpened: "April 2, 2937"},
-            {title: "1", type: "Notes", lastOpened: "January 20, 2006"},
-            {title: "2", type: "Flashcards", lastOpened: "September 28, 1078"},
-            {title: "3", type: "Notes", lastOpened: "Febuary 9, 3057"},
-            {title: "4", type: "Quiz", lastOpened: "December 90, 2004"}
+            {title: "Wave Interference", type: "Notes", lastOpened: "January 69, 2025", numComponents: 69},
+            {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: "Febuary 12, 1992", numComponents: 19},
+            {title: "Standing Waves", type: "Quiz", lastOpened: "April 2, 2937", numComponents: 9},
+            {title: "1", type: "Notes", lastOpened: "January 20, 2006", numComponents: 26},
+            {title: "2", type: "Flashcards", lastOpened: "September 28, 1078", numComponents: 20},
+            {title: "3", type: "Notes", lastOpened: "Febuary 9, 3057", numComponents: 7},
+            {title: "4", type: "Quiz", lastOpened: "December 90, 2004", numComponents: 32}
         ];
 
         return example;
