@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid'); // I think this will be useful but u don
 const cors = require('cors');
 require('dotenv/config');
 const express = require('express');
+const { userVerification } = require('./Middlewares/AuthMiddleware')
 //const cookieParser = require("cookie-parser");
 
 const routes = require('./routes');
@@ -9,11 +10,14 @@ const routes = require('./routes');
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(userVerification); 
 
 //app.use(cookieParser());
 
+
 app.use("/achievement-level", routes.achievementLevel);
 app.use("/", routes.authRoute);
+app.use("/tag", routes.tag);
 // add more here, for example:
 // app.use('/users', routes.user);
 
