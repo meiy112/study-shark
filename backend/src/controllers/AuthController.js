@@ -5,11 +5,11 @@ class AuthController {
   authSignUp(req, res) {
     authService.authSignUp(req)
         .then(({rows, token}) => {
-            res.cookie("token", token, {
-                withCredentials: true, 
-                httpOnly: false,
-            });
-            res.status(201).json({ message: "User signed in successfully", success: true, rows });
+            // res.cookie("token", token, {
+            //     withCredentials: true, 
+            //     httpOnly: false,
+            // });
+            res.status(201).json({ message: "User signed in successfully", success: true, rows, token});
         })
         .catch(err => {
             if (err.message == 'User already exists') {
@@ -25,11 +25,11 @@ class AuthController {
   authLogin(req, res) {
     authService.authLogin(req) 
         .then((token) => {
-            res.cookie("token", token, {
-                withCredentials: true, 
-                httpOnly: false,
-            });
-            res.status(202).json({ message: "User logged in successfully", success: true});
+            // res.cookie("token", token, {
+            //     withCredentials: true, 
+            //     httpOnly: false,
+            // });
+            res.status(202).json({ message: "User logged in successfully", success: true, token});
         })
         .catch(err => {
             if (err.message == 'All fields are required') {
