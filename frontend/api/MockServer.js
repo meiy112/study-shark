@@ -126,7 +126,7 @@ export function startServer() {
         return (example);
       });
 
-      // Return topic by id
+      // Return topic by id. Only return data if topic's user is authorized user, or if topic is public
       this.get("/topic/:id/general-info", (schema, request) => {
         const example = {
           id: "1", // topic id

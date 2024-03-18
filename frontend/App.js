@@ -18,9 +18,10 @@ import Groups from "./components/Groups/Groups";
 import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
+import Login from "./components/Login/Login";
 import colors from "./constants/Colors";
 
-import Screens from "./screens/Screens";
+import Screens from "./navigation/Screens";
 import { startServer, stopServer } from "./api/MockServer";
 
 const { active, inactive, background, primary, shadow } = colors;
@@ -161,7 +162,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Profile"
-            component={Profile}
+            component={Login}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ color, size, focused }) => (
