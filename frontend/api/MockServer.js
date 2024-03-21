@@ -41,7 +41,25 @@ export function startServer() {
     //   return the entire entity with all of its fields.
     // - None of these routes are actually complete, they all need user authentication which i have not yet included.
     routes() {
-      this.namespace = ""; 
+      this.urlPrefix = "http://localhost:3000"; 
+
+      // already finished, can ignore this
+      // AUTH -------------------------------
+      this.post("/login", () => {
+        return {
+          "message": "User logged in successfully",
+          "success": true,
+          "token": "test"
+        }
+      });
+
+      this.post("/signup", () => {
+        return {
+          "message": "User signed in successfully",
+          "success": true,
+          "token": "test"
+        }
+      });
 
       // USER -------------------------------
       // Return all topics for a given user
@@ -175,7 +193,7 @@ export function startServer() {
       // TAGS ------------------------------------
       // gets all the tags of all the topics belonging to the current user
       this.get("/tag", (schema) => {
-        return schema.tags.all();
+        return schema.tags.all().models;
       }); 
 
 
