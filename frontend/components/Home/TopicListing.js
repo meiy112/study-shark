@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../constants/Colors";
+import PageContext from "../../context/PageContext";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
@@ -19,6 +20,7 @@ const TopicListing = (props) => {
     props;
 
   const [scaleValue] = useState(new Animated.Value(1));
+  const { setPage, setTopicId } = useContext(PageContext);
 
   // ---------------------- ANIMATION THINGS ------------------------
   const animateButton = () => {
@@ -37,6 +39,8 @@ const TopicListing = (props) => {
   // ----------------------------------------------------------------
 
   const handleClick = () => {
+    setPage("Topic");
+    setTopicId(id);
     navigation.navigate("Topic", {id: id, color: color});
   };
 
