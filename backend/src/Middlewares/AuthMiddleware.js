@@ -17,7 +17,7 @@ module.exports.userVerification = (req, res, next) => {
     };
     const token = req.headers['authorization'];
     if (!token) {
-        return req.username = "no user"; 
+        req.username = "no user"; 
     }
     jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
         if (err) {
