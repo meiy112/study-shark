@@ -15,10 +15,22 @@ module.exports.userVerification = (req, res, next) => {
             });
         });
     };
-    const token = req.headers['authorization'];
-    if (!token) {
+
+    const authHeader = req.headers['authorization'];
+    let token;
+
+    if (!authHeader) {
         req.username = "no user"; 
+        token = "";
+    } else {
+      let tokenParts = authHeader.split(' ');
+      if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+        return res.status(401).json({ message: 'Invalid Authorization header format' });
+      }
+      token = tokenParts[1];
     }
+
+
     jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
         if (err) {
             req.username = "no user";

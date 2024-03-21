@@ -103,7 +103,7 @@ class AuthService {
         const user = await findUser(username); 
         if (user.length == 0) {
             // User doesn't exists, return an error message
-            const error = new Error('Incorrect password or email');
+            const error = new Error('Incorrect password or username');
             error.statusCode = 402; 
             throw error; 
         }
@@ -111,7 +111,7 @@ class AuthService {
         //console.log(auth);
         if (!auth) {
             // Password is wrong, return an error message
-            const error = new Error('Incorrect password or email');
+            const error = new Error('Incorrect password or username');
             error.statusCode = 402; 
             throw error; 
         }

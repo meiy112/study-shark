@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -16,18 +16,16 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import Tag from "../../components/Misc/Tag";
-import { useNavigation } from "@react-navigation/native";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
-import * as SplashScreen from "expo-splash-screen";
+import AuthContext from '../../context/AuthContext';
+import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
 
 // Achievement Button beside "My Topics"
 function AchievementButton({ size, navigation }) {
-  // const navigation = useNavigation(); // I commented this out to set up navigation
-
   const handlePress = () => {
     navigation.navigate("Achievement");
   };
@@ -43,27 +41,35 @@ function AchievementButton({ size, navigation }) {
 export default function Home({ navigation }) {
   const [tags, setTags] = useState([]);
   const [topics, setTopics] = useState([]);
+  const { token } = useContext(AuthContext); // jwt token
 
   // LOAD DATA------------------------------------
   // fetch tags
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch ("/tag");
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        };
+        const response = await fetch('http://localhost:3000/tag', {
+            method: 'GET',
+            headers: headers,
+          });
         const tags = await response.json();
-        setTags(tags.tags);
+        setTags(tags);
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-   }, []);
+   }, [token]);
 
    // fetch topics
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch ("/topic/home-page");
+        const response = await fetch ("http://localhost:3000/topic/home-page");
         const topics = await response.json();
         setTopics(topics); 
       } catch (e) {
@@ -76,6 +82,7 @@ export default function Home({ navigation }) {
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   return (
+    token?
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
         <Header navigation={navigation} tags={tags}/>
@@ -83,6 +90,8 @@ export default function Home({ navigation }) {
         <TopicList scrollOffsetY={scrollOffsetY} navigation={navigation} topics={topics} />
       </View>
     </SafeAreaView>
+    :
+    <UserUnauthenticatedPage action={"create Topics"}/>
   );
 }
 

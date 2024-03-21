@@ -25,7 +25,7 @@ export default function Topic({ route, navigation }) {
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/topic/" + route.params.id + "/general-info");
+        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/general-info");
         const topic = await response.json();
         setTopic(topic.topic);
       } catch (e) {
@@ -39,7 +39,7 @@ export default function Topic({ route, navigation }) {
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/topic/" + route.params.id + "/tags");
+        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/tags");
         const tags = await response.json();
         setTags(tags.tags);
       } catch (e) {
@@ -53,7 +53,7 @@ export default function Topic({ route, navigation }) {
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch ("/topic/" + route.params.id + "/studymaterial/?type=None&sort=alphabetical")
+        const response = await fetch ("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated")
         const studyMaterial = await response.json();
         setStudyMaterial(studyMaterial); 
       } catch (e) {
@@ -64,18 +64,18 @@ export default function Topic({ route, navigation }) {
    }, []);
 
   // fetch color data
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch ("/topic/" + route.params.id + "/studymaterial/?type=None&sort=alphabetical")
-        const studyMaterial = await response.json();
-        setStudyMaterial(studyMaterial); 
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    fetchData();
-    }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await fetch ("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated")
+  //       const studyMaterial = await response.json();
+  //       setStudyMaterial(studyMaterial); 
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   fetchData();
+  //   }, []);
 
 
    if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
