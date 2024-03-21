@@ -4,6 +4,7 @@ import { Text, Appbar, Divider, Chip, Icon, IconButton, Dialog, Portal} from "re
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
+import PageContext from "../../context/PageContext";
 
 
 const ColorContext = createContext();
@@ -63,21 +64,6 @@ export default function Topic({ route, navigation }) {
     fetchData();
    }, []);
 
-  // fetch color data
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await fetch ("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated")
-  //       const studyMaterial = await response.json();
-  //       setStudyMaterial(studyMaterial); 
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-  //   fetchData();
-  //   }, []);
-
-
    if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
     // prevent page from rendering before data is loaded
     return undefined;
@@ -108,7 +94,7 @@ export default function Topic({ route, navigation }) {
   return (
     <ColorContext.Provider value={{color: route.params.color}}>
       <View>
-        <Header topic={topic} color={route.params.color} navigation={navigation} />
+        <Header topic={topic} color={route.params.color} navigation={navigation} route={route} />
         <Divider />
         <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
           <Info topic={topic} tags={tags} />
@@ -120,13 +106,16 @@ export default function Topic({ route, navigation }) {
   );
 }
 
-function Header({ topic, color, navigation }) {
+function Header({ topic, color, navigation, route }) {
+  const { setPage } = useContext(PageContext);
+  console.log(route.params.prevScreen);
+
   return(
     <View>
       <Appbar.Header style={{backgroundColor: color.primary}}>
-        <Appbar.BackAction color="#FFFFFF" onPress={() => navigation.goBack()} />
+        <Appbar.BackAction color="#FFFFFF" onPress={() => {navigation.goBack(); setPage(route.params.prevScreen)}} />
         <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20, fontFamily: 'mon-sb'}}/>
-        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => navigation.navigate("Settings")}></Appbar.Action>
+        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"}); setPage("TopicSettings")}}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
     </View>

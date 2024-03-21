@@ -41,7 +41,7 @@ const TopicListing = (props) => {
   const handleClick = () => {
     setPage("Topic");
     setTopicId(id);
-    navigation.navigate("Topic", {id: id, color: color});
+    navigation.navigate("Topic", {id: id, color: color, prevScreen: "Home"});
   };
 
   return (
