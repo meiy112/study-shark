@@ -200,7 +200,18 @@ INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('defa
 
 INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('-10x Engineer', 'red');
 
+-- password = 123 
 INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test', NULL, '-10x Engineer', '$2a$12$QjD0Tuf61pgaHJsYfgVYYutHmjkqd7LQBtG4UmW0N/fhNvQebZrty', NULL, 0);
+-- password = 1231 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test1', NULL, '-10x Engineer', '$2a$12$X1Q6kRKx2VLZt6/kqD0yzeB.bzfvouO6wrBG7TWFi/rArv3dXgkWa', NULL, 0);
+-- password = 1232 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test2', NULL, '-10x Engineer', '$2a$12$E/GQJdihSF5J5LbPZG3GseottdZwI.bdTiSHApmeWBFXMr.4gSI1.', NULL, 0);
+-- password = 1233 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test3', NULL, '-10x Engineer', '$2a$12$p7JWlhTRCD/uqKQ/69clB.rjocQWFPbvCWZHpYYR4kyxII/Yrlh/K', NULL, 0);
+-- password = 1234 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test4', NULL, '-10x Engineer', '$2a$12$OyKEGFL/o7qDv6sfvECZTOKnQGFcacKKuDsGBLSRwnEe70o1Oj20C', NULL, 0);
+-- password = 1235 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0);
 
 INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, color) VALUES
     ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), 'blue'),
@@ -223,8 +234,47 @@ INSERT INTO Has (tagName, topicId) VALUES
     ('Physics', '1'),
     ('Chemistry', '2'),
     ('Math', '3'),
-    ('Biology', '6'),
+    ('Biology', '2'),
     ('Waves', '1'),
+    ('Chemistry', '6'),
+    ('Chemistry', '5'),
     ('Showering', '7');
 
+INSERT INTO StudyMaterialType (type, icon) VALUES
+    ('Quiz', '1'),
+    ('Notes', '2'),
+    ('Flashcards', '3');
+
+INSERT INTO ContainsStudyMaterial (title, topicId, type, privacyInfo, description, lastOpened, parsedText, highScore) 
+VALUES ('Wave Interference', '1', 'Notes', 'Privacy Info', 'Description', '2025-01-25', NULL, 69),
+       ('Simple Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1992-02-12', NULL, 19),
+       ('Difficult Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1999-02-12', NULL, 99),
+       ('Standing Waves', '1', 'Quiz', 'Privacy Info', 'Description', '2937-04-02', NULL, 9),
+       ('1', '2', 'Notes', 'Privacy Info', 'Description', '2006-01-20', NULL, 26),
+       ('2', '5', 'Flashcards', 'Privacy Info', 'Description', '1078-09-28', NULL, 20),
+       ('3', '6', 'Notes', 'Privacy Info', 'Description', '3057-02-09', NULL, 7),
+       ('4', '7', 'Quiz', 'Privacy Info', 'Description', '2004-12-30', NULL, 32);
+
+INSERT INTO Likes (studyMaterialTitle, topicId, username) 
+VALUES ('Wave Interference', '1', 'test'),
+       ('Simple Harmonic Motion', '2', 'test'),
+       ('Standing Waves', '1', 'test'),
+       ('1', '2', 'test'),
+       ('2', '5', 'test'),
+       ('3', '6', 'test'),
+       ('4', '7', 'test'),
+       ('Wave Interference', '1', 'test2'),
+       ('Simple Harmonic Motion', '2', 'test2'),
+       ('Standing Waves', '1', 'test2'),
+       ('1', '2', 'test2'),
+       ('Simple Harmonic Motion', '2', 'test3'),
+       ('Wave Interference', '1', 'test3'),
+       ('Wave Interference', '1', 'test4'),
+       ('Wave Interference', '1', 'test5'),
+       ('Simple Harmonic Motion', '2', 'test4'),
+       ('Standing Waves', '1', 'test3'),
+       ('1', '2', 'test5'),
+       ('2', '5', 'test4'),
+       ('3', '6', 'test4'),
+       ('4', '7', 'test4');
 
