@@ -1,0 +1,76 @@
+Nested Aggregation:
+
+Find the total likes for each topic
+    SELECT T.topicId, avg(c)
+    FROM (SELECT csm.topicId, COUNT(*) as c
+          FROM Likes l, containsStudyMaterial csm 
+          WHERE l.studyMaterialTitle = csm.title
+          GROUP BY csm.topicId) as T
+    GROUP BY T.topicId
+
+Find the topics that have more likes than average 
+    SELECT topicId, c
+    FROM (SELECT csm.topicId, COUNT(*) as c
+          FROM Likes l, containsStudyMaterial csm 
+          WHERE l.studyMaterialTitle = csm.title
+          GROUP BY csm.topicId) as T1
+    GROUP BY topicId
+    HAVING c > all (SELECT avg(c)
+                    FROM (SELECT csm.topicId, COUNT(*) as c
+                    FROM Likes l, containsStudyMaterial csm 
+                    WHERE l.studyMaterialTitle = csm.title
+                    GROUP BY csm.topicId) as T2)
+
+Find the average likes for topic (total likes / number of study materials)
+    SELECT topicId, avg(c)
+    FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
+          FROM Likes l, containsStudyMaterial csm 
+          WHERE l.studyMaterialTitle = csm.title
+          GROUP BY csm.title, csm.topicId) as T
+    GROUP BY topicId;
+
+DIVISION: 
+Find the topics that have a certain tag
+
+VERSION 1 WITH EXCEPT
+SELECT id 
+FROM createsTopic T
+WHERE NOT EXISTS ((SELECT ta.name
+                  FROM tag ta)
+                  EXCEPT (SELECT tagName
+                          FROM has h
+                          WHERE h.topicId = T.topicId))
+
+VERSION 2 WITHOUT EXCEPT
+SELECT id 
+FROM createsTopic T
+WHERE NOT EXISTS (SELECT ta.name
+                  FROM tag ta
+                  WHERE NOT EXISTS ( SELECT topicId 
+                                     FROM has 
+                                     WHERE 'Chemistry' = has.tagName
+                                     AND has.topicId = T.id))
+
+GET TAGS FROM TOPIC
+SELECT name 
+FROM tag ta 
+WHERE NOT EXISTS (SELECT T.id
+				  FROM createsTopic T 
+                  WHERE NOT EXISTS (SELECT tagName 
+									FROM has 
+                                    WHERE '1' = has.topicId
+                                    AND has.tagName = ta.name));
+
+Monster query for homepage
+SELECT T1.id, T1.title, T1.isPublic, T1.lastOpened, (SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF,
+(SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, 
+(SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, 
+primaryColor, gradient, circle
+FROM createsTopic T1, color c 
+WHERE T1.username = 'test' AND T1.color = c.name; 

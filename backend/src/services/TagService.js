@@ -11,8 +11,8 @@ class TagService {
 
   // gets all the tags of all the topics belonging to the current user
   getAllTagsOfTopicsFromUser(username, callback) {
-    // SELECT DISTINCT name FROM createstopic, has, tag WHERE username = 'test'
-    db.query('SELECT DISTINCT name, tag.color FROM createstopic, has, tag WHERE username = ?', [username], (err, rows, fields) => {
+    // SELECT name FROM createstopic c, has h, tag t WHERE username = 'test' AND c.id = h.topicId AND t.name = h.tagName 
+    db.query('SELECT DISTINCT name FROM createstopic c, has h, tag t WHERE username = ? AND c.id = h.topicId AND t.name = h.tagName ', [username], (err, rows, fields) => {
       callback(err, rows);
     });
   }

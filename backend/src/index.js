@@ -18,6 +18,7 @@ app.use(userVerification);
 app.use("/achievement-level", routes.achievementLevel);
 app.use("/", routes.authRoute);
 app.use("/tag", routes.tag);
+app.use("/topic", routes.topic);
 // add more here, for example:
 // app.use('/users', routes.user);
 
