@@ -19,6 +19,7 @@ import Tag from "../../components/Misc/Tag";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
 import AuthContext from '../../context/AuthContext';
+import PageContext from "../../context/PageContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
@@ -26,8 +27,11 @@ const { active, inactive, background, primary, shadow, line, grey } = colors;
 
 // Achievement Button beside "My Topics"
 function AchievementButton({ size, navigation }) {
+  const { setPage } = useContext(PageContext);
+
   const handlePress = () => {
-    navigation.navigate("Achievement");
+    setPage("Achievement");
+    navigation.navigate("Achievement", {prevScreen: "Home"});
   };
 
   return (
