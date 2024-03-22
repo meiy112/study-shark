@@ -26,7 +26,14 @@ function HomeScreen() {
 }
 
 function ExploreScreen() {
-  // TODO
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Explore" component={Explore} options={{ headerShown: false }} />
+      <Stack.Screen name="Achievement" component={Achievement} options={{ headerShown: false }} />
+      <Stack.Screen name="Topic" component={Topic} options={{ headerShown: false }} />
+      <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
 }
 
 function GroupScreen() {

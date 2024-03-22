@@ -1,5 +1,5 @@
-import React, { useState, useEffect, createContext } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
 import { PaperProvider } from "react-native-paper";
 import {
@@ -13,7 +13,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./components/Home/Home";
-import Explore from "./components/Explore/Explore";
 import Groups from "./components/Groups/Groups";
 import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
@@ -131,8 +130,8 @@ export default function App() {
                 }}
               />
               <Tab.Screen
-                name="Explore"
-                component={Explore}
+                name="ExploreScreen"
+                component={Screens.explore}
                 listeners={({ navigation, route }) => ({
                   tabPress: (event) => {
                     setPage("Explore");

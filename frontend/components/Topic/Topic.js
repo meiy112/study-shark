@@ -6,8 +6,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
 import PageContext from "../../context/PageContext";
 
-
+const imageMapping = {
+  NOTES: require("../../assets/images/notes.png"),
+  FLASHCARDS: require("../../assets/images/flashcards.png"),
+  QUIZ: require("../../assets/images/quiz.png"),
+};
 const ColorContext = createContext();
+
+
 export default function Topic({ route, navigation }) {
   const [topic, setTopic] = useState({topicId: "", title: "", description: ""});
   const [studyMaterial, setStudyMaterial] = useState([]);
@@ -222,6 +228,8 @@ function StudyMaterialCard({ studyMaterial, topicId, handleDelete, isEditing }) 
     "Quiz": "comment-question-outline",
     "Flashcards": "card-multiple-outline"
   }
+
+  const capitalizedStudyMaterialType = studyMaterial.type.toUpperCase();
 
   const studyMaterialTitle = studyMaterial.title.length >= 17? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
 

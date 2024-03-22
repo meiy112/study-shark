@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
-export default function Settings({ topic }) {
+export default function Settings({ topic, navigation }) {
   return(
     <View>
       <Text>Topic Settings - Inside.js</Text>

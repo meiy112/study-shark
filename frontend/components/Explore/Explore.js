@@ -6,17 +6,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TopicExplore from "./ListingComponents/TopicExplore";
 import MaterialExplore from "./ListingComponents/MaterialExplore";
 import { useScrollToTop } from "@react-navigation/native";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useContext, createContext } from "react";
 import SearchScreen from "./Search/SearchScreen";
+import PageContext from "../../context/PageContext";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
+const NavContext = createContext();
 
 // Achievement Button beside Search
-function AchievementButton({ navigation }) {
-  // const navigation = useNavigation(); // I commented this out to set up navigation
-
+function AchievementButton() {
+  const navigation = useContext(NavContext);
+  const { setPage } = useContext(PageContext);
+  
   const handlePress = () => {
-    navigation.navigate("Achievement");
+    setPage("Achievement");
+    navigation.navigate("Achievement", {prevScreen: "Explore"});
   };
 
   return (
@@ -28,8 +32,6 @@ function AchievementButton({ navigation }) {
 
 // Search Button
 function SearchButton({ handleSearchPress }) {
-  // const navigation = useNavigation(); // I commented this out to set up navigation
-
   return (
     <TouchableOpacity onPress={handleSearchPress}>
       <MaterialCommunityIcons name="magnify" color={"#000000"} size={28} />
@@ -38,7 +40,7 @@ function SearchButton({ handleSearchPress }) {
 }
 
 // DEFAULT PAGE
-export default function Explore() {
+export default function Explore({ navigation }) {
   // search screen modal
   const [isSearchVisible, setSearchVisible] = useState(false);
 
@@ -50,19 +52,21 @@ export default function Explore() {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: primary,
-        flex: 1,
-        zIndex: 3,
-      }}
-    >
-      <View style={{ flex: 1, backgroundColor: background }}>
-        <Header handleSearchPress={handleSearchPress} />
-        <ExploreFeed />
-      </View>
-      <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
-    </SafeAreaView>
+    <NavContext.Provider value={navigation}>
+      <SafeAreaView
+        style={{
+          backgroundColor: primary,
+          flex: 1,
+          zIndex: 3,
+        }}
+      >
+        <View style={{ flex: 1, backgroundColor: background }}>
+          <Header handleSearchPress={handleSearchPress} />
+          <ExploreFeed />
+        </View>
+        <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
+      </SafeAreaView>
+    </NavContext.Provider>
   );
 }
 
