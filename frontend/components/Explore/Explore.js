@@ -3,10 +3,11 @@ import colors from "../../constants/Colors";
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopicExplore from "./TopicExplore";
-import MaterialExplore from "./MaterialExplore";
+import TopicExplore from "./ListingComponents/TopicExplore";
+import MaterialExplore from "./ListingComponents/MaterialExplore";
 import { useScrollToTop } from "@react-navigation/native";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import SearchScreen from "./Search/SearchScreen";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
@@ -26,15 +27,11 @@ function AchievementButton({ navigation }) {
 }
 
 // Search Button
-function SearchButton({ navigation }) {
+function SearchButton({ handleSearchPress }) {
   // const navigation = useNavigation(); // I commented this out to set up navigation
 
-  const handlePress = () => {
-    navigation.navigate("Search");
-  };
-
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <TouchableOpacity onPress={handleSearchPress}>
       <MaterialCommunityIcons name="magnify" color={"#000000"} size={28} />
     </TouchableOpacity>
   );
@@ -42,6 +39,16 @@ function SearchButton({ navigation }) {
 
 // DEFAULT PAGE
 export default function Explore() {
+  // search screen modal
+  const [isSearchVisible, setSearchVisible] = useState(false);
+
+  const handleSearchPress = () => {
+    setSearchVisible(true);
+  };
+  const handleCloseSearch = () => {
+    setSearchVisible(false);
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -51,21 +58,24 @@ export default function Explore() {
       }}
     >
       <View style={{ flex: 1, backgroundColor: background }}>
-        <Header />
+        <Header handleSearchPress={handleSearchPress} />
         <ExploreFeed />
       </View>
+      <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
     </SafeAreaView>
   );
 }
 
 // header with search bar and "Explore"
-const Header = () => {
+const Header = ({ handleSearchPress }) => {
   return (
-    <View style={[styles.headerContainer, styles.shadow]}>
-      <Text style={styles.title}>Explore</Text>
-      <View style={styles.buttonContainer}>
-        <SearchButton />
-        <AchievementButton />
+    <View style={styles.shadow}>
+      <View style={[styles.headerContainer]}>
+        <Text style={styles.title}>Explore</Text>
+        <View style={styles.buttonContainer}>
+          <SearchButton handleSearchPress={handleSearchPress} />
+          <AchievementButton />
+        </View>
       </View>
     </View>
   );
@@ -73,7 +83,7 @@ const Header = () => {
 
 // feed under header
 const ExploreFeed = () => {
-  // scroll to top button stuff
+  // scrolls to top when explore button in navbar or scrollToTop button is pressed
   const ref = useRef();
   const scrollToTop = () => {
     ref.current.scrollTo({ y: 0, animated: true });
@@ -82,10 +92,13 @@ const ExploreFeed = () => {
 
   return (
     <ScrollView style={styles.feedContainer} ref={ref}>
+      {/*subjects*/}
       <SubjectList />
+      {/*hot topics*/}
       <HotTopics />
+      {/*featured material*/}
       <FeaturedMaterial />
-      {/*START: Scroll To Top Button*/}
+      {/*----------------------Scroll To Top Button------------------------*/}
       <TouchableOpacity
         onPress={scrollToTop}
         style={{
@@ -103,7 +116,7 @@ const ExploreFeed = () => {
           RETURN TO TOP
         </Text>
       </TouchableOpacity>
-      {/*END: Scroll To Top Button*/}
+      {/*----------------------Scroll To Top Button------------------------*/}
     </ScrollView>
   );
 };
@@ -147,7 +160,7 @@ const SubjectList = () => {
   );
 };
 
-// Subject component in subject list
+// Subject component in subject list (title = first line, secondLine = second line)
 const SubjectItem = ({ title, iconName, secondLine }) => {
   return (
     <TouchableOpacity>
@@ -200,6 +213,7 @@ const HotTopics = () => {
       >
         Hot Topics
       </Text>
+      {/*-----------------------Topics go in here----------------------*/}
       <ScrollView
         horizontal
         contentContainerStyle={styles.scroll}
@@ -231,13 +245,14 @@ const HotTopics = () => {
         />
         <TopicExplore
           title="How to be emo"
-          date="September 10, 2020"
+          date="September 11, 2001"
           numNotes={0}
           numCards={69}
           numQuizzes={69}
           color={purple}
         />
       </ScrollView>
+      {/*--------------------------------------------------------------*/}
     </View>
   );
 };
@@ -284,6 +299,7 @@ const FeaturedMaterial = () => {
       >
         Featured Material
       </Text>
+      {/*-----------------------StudyMats go in here----------------------*/}
       <ScrollView
         horizontal
         contentContainerStyle={styles.scroll}
@@ -314,6 +330,7 @@ const FeaturedMaterial = () => {
           topicTitle="Astrology101"
         />
       </ScrollView>
+      {/*----------------------------------------------------------------*/}
     </View>
   );
 };
@@ -331,16 +348,15 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   headerContainer: {
-    height: 80,
+    height: 75,
     backgroundColor: primary,
     justifyContent: "space-between",
     flexDirection: "row",
     paddingHorizontal: 25,
-    paddingTop: 7,
+    paddingTop: 5,
     alignItems: "center",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    overflow: "hidden",
   },
   title: {
     color: "#171717",

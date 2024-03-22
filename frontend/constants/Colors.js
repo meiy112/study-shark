@@ -7,4 +7,6 @@ export default {
   primary: "#FFFFFF",
   shadow: "#300164",
   grey: "#E4E9F5",
+  title: "#171717",
+  lightIcon: "#333333",
 };

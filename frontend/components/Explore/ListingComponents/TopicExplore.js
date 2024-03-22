@@ -7,7 +7,7 @@ import {
   Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import colors from "../../constants/Colors";
+import colors from "../../../constants/Colors";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     maxWidth: "50%",
     margin: 5,
+    justifyContent: "center",
   },
   gradient: {
     width: 170,
@@ -145,18 +146,20 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   header: {
-    height: 114,
+    minHeight: 114,
     width: 170,
     flex: 1,
     padding: 15,
-    marginTop: 20,
+    paddingTop: 35,
     alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   // container with title + date
   titleDate: {
     alignItems: "center",
     justifyContent: "center",
-    margin: 15,
+    padding: 15,
   },
   studyDataContainer: {
     width: 170,

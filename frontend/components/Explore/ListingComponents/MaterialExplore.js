@@ -8,14 +8,14 @@ import {
   Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import colors from "../../constants/Colors";
+import colors from "../../../constants/Colors";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 // for the image icon
 const imageMapping = {
-  NOTES: require("../../assets/images/notes.png"),
-  FLASHCARDS: require("../../assets/images/flashcards.png"),
-  QUIZ: require("../../assets/images/quiz.png"),
+  NOTES: require("../../../assets/images/notes.png"),
+  FLASHCARDS: require("../../../assets/images/flashcards.png"),
+  QUIZ: require("../../../assets/images/quiz.png"),
 };
 
 // MATERIALEXPLORE
