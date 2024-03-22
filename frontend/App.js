@@ -36,7 +36,7 @@ function CustomTabBarIcon({ name, color, size, focused }) {
         style={{
           position: "absolute",
           top: 0,
-          backgroundColor: "#6138B8",
+          backgroundColor: "#4E42DA",
           width: 32,
           height: focused ? 3 : 0,
         }}
