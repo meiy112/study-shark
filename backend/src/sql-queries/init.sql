@@ -81,7 +81,7 @@ CREATE TABLE User (
     school VARCHAR(255),
     reputation VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE,
     points INT NOT NULL,
     FOREIGN KEY (school) REFERENCES School(name) ON DELETE SET NULL,
     FOREIGN KEY (reputation) REFERENCES Reputation(reputation)
@@ -185,11 +185,96 @@ CREATE TABLE Likes (
 
 -- dummy values for testing, you can keep them or delete them later
 
-INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('medium', '12', 'yellow');
-INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('easy', '5', 'green');
-INSERT INTO `ocean`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('very very hard', '40', 'dark red');
+
+
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('medium', '12', 'yellow');
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('easy', '5', 'green');
+INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`) VALUES ('very very hard', '40', 'dark red');
 
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('pink', '#F5878D', '#B9568C', '#B9568C');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('blue', '#22B0D2', '#1455CE', '#1455CE');
+INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('red', '#5F77B3', '#29784D', '#3D1903');
+INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('green', '#9D2EB3', '#29140D', '#3A1E73');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('purple', '#5F2EB3', '#29144D', '#3D1E73');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('default', '#5F2EB3', '#29144D', '#3D1E73');
+
+INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('-10x Engineer', 'red');
+
+-- password = 123 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test', NULL, '-10x Engineer', '$2a$12$QjD0Tuf61pgaHJsYfgVYYutHmjkqd7LQBtG4UmW0N/fhNvQebZrty', NULL, 0);
+-- password = 1231 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test1', NULL, '-10x Engineer', '$2a$12$X1Q6kRKx2VLZt6/kqD0yzeB.bzfvouO6wrBG7TWFi/rArv3dXgkWa', NULL, 0);
+-- password = 1232 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test2', NULL, '-10x Engineer', '$2a$12$E/GQJdihSF5J5LbPZG3GseottdZwI.bdTiSHApmeWBFXMr.4gSI1.', NULL, 0);
+-- password = 1233 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test3', NULL, '-10x Engineer', '$2a$12$p7JWlhTRCD/uqKQ/69clB.rjocQWFPbvCWZHpYYR4kyxII/Yrlh/K', NULL, 0);
+-- password = 1234 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test4', NULL, '-10x Engineer', '$2a$12$OyKEGFL/o7qDv6sfvECZTOKnQGFcacKKuDsGBLSRwnEe70o1Oj20C', NULL, 0);
+-- password = 1235 
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0);
+
+INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, color) VALUES
+    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), 'blue'),
+    ('2', 'test', 'Chem123', false, 'idk what to write here bro', NOW(), 'green'),
+    ('3', 'test', 'Math049', false, 'Man my neck hurts', NOW(), 'red'),
+    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', NOW(), 'blue'),
+    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', NOW(), 'green'),
+    ('6', 'test', 'How to swim', false, 'description here', NOW(), 'red'),
+    ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), 'blue');
+
+INSERT INTO Tag (name, color) VALUES
+    ('Physics', '#5F2EB3'),
+    ('Chemistry', '#FF7A8B'),
+    ('Math', '#22B0D2'),
+    ('Biology', '#399CFF'),
+    ('Waves', '#9D3CA1'),
+    ('Showering', '#5F2EB3');
+
+INSERT INTO Has (tagName, topicId) VALUES
+    ('Physics', '1'),
+    ('Chemistry', '2'),
+    ('Math', '3'),
+    ('Biology', '2'),
+    ('Waves', '1'),
+    ('Chemistry', '6'),
+    ('Chemistry', '5'),
+    ('Showering', '7');
+
+INSERT INTO StudyMaterialType (type, icon) VALUES
+    ('Quiz', '1'),
+    ('Notes', '2'),
+    ('Flashcards', '3');
+
+INSERT INTO ContainsStudyMaterial (title, topicId, type, privacyInfo, description, lastOpened, parsedText, highScore) 
+VALUES ('Wave Interference', '1', 'Notes', 'Privacy Info', 'Description', '2025-01-25', NULL, 69),
+       ('Simple Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1992-02-12', NULL, 19),
+       ('Difficult Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1999-02-12', NULL, 99),
+       ('Standing Waves', '1', 'Quiz', 'Privacy Info', 'Description', '2937-04-02', NULL, 9),
+       ('1', '2', 'Notes', 'Privacy Info', 'Description', '2006-01-20', NULL, 26),
+       ('2', '5', 'Flashcards', 'Privacy Info', 'Description', '1078-09-28', NULL, 20),
+       ('3', '6', 'Notes', 'Privacy Info', 'Description', '3057-02-09', NULL, 7),
+       ('4', '7', 'Quiz', 'Privacy Info', 'Description', '2004-12-30', NULL, 32);
+
+INSERT INTO Likes (studyMaterialTitle, topicId, username) 
+VALUES ('Wave Interference', '1', 'test'),
+       ('Simple Harmonic Motion', '2', 'test'),
+       ('Standing Waves', '1', 'test'),
+       ('1', '2', 'test'),
+       ('2', '5', 'test'),
+       ('3', '6', 'test'),
+       ('4', '7', 'test'),
+       ('Wave Interference', '1', 'test2'),
+       ('Simple Harmonic Motion', '2', 'test2'),
+       ('Standing Waves', '1', 'test2'),
+       ('1', '2', 'test2'),
+       ('Simple Harmonic Motion', '2', 'test3'),
+       ('Wave Interference', '1', 'test3'),
+       ('Wave Interference', '1', 'test4'),
+       ('Wave Interference', '1', 'test5'),
+       ('Simple Harmonic Motion', '2', 'test4'),
+       ('Standing Waves', '1', 'test3'),
+       ('1', '2', 'test5'),
+       ('2', '5', 'test4'),
+       ('3', '6', 'test4'),
+       ('4', '7', 'test4');
+

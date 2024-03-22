@@ -56,10 +56,11 @@ class AuthService {
             })
         }
         const hashed_password = await bcrypt.hash(password, 12);
+        console.log(hashed_password);
         // Add User 
         const query = "INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES (?, ?, ?, ?, ?, ?)";
         const newUser = await new Promise((resolve, reject) => {
-            db.query(query, [username, 'UBC', '-10x Engineer', hashed_password, email, 0], (err, rows, fields) => {
+            db.query(query, [username, null, '-10x Engineer', hashed_password, null, 0], (err, rows, fields) => {
                 if (err) {
                     reject(err);
                     return; 
@@ -102,14 +103,15 @@ class AuthService {
         const user = await findUser(username); 
         if (user.length == 0) {
             // User doesn't exists, return an error message
-            const error = new Error('Incorrect password or email');
+            const error = new Error('Incorrect password or username');
             error.statusCode = 402; 
             throw error; 
         }
         const auth = await bcrypt.compare(password,user[0].password)
+        //console.log(auth);
         if (!auth) {
             // Password is wrong, return an error message
-            const error = new Error('Incorrect password or email');
+            const error = new Error('Incorrect password or username');
             error.statusCode = 402; 
             throw error; 
         }

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TouchableOpacity, View, StyleSheet, Text, Modal } from "react-native";
 import colors from "../../constants/Colors";
+import PageContext from "../../context/PageContext"
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
 const AddModal = (props) => {
   const [isVisible, setIsVisible] = useState(true);
+  const { page, topicId } = useContext(PageContext);
 
   const hideModal = () => {
     // for fade out animation (cuz it doesn't work automatically????)
@@ -28,6 +30,10 @@ const AddModal = (props) => {
             H-hi would you like to add something? Um, but only if you want to,
             I-I'm not forcing you or anything...
           </Text>
+          <Text>
+            Current page: {page}
+          </Text>
+          {page==="Topic" ? <Text>{topicId}</Text> : null}
           {/*the triangle under the rectangle part of the modal*/}
           <View style={styles.triangle}></View>
         </View>
