@@ -10,20 +10,17 @@ import {
   Animated,
 } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Tag from "../../components/Misc/Tag";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
+import * as SplashScreen from "expo-splash-screen";
+import { useScrollToTop } from "@react-navigation/native";
 import AuthContext from '../../context/AuthContext';
 import PageContext from "../../context/PageContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
-
 
 // Achievement Button beside "My Topics"
 function AchievementButton({ size, navigation }) {
@@ -36,7 +33,7 @@ function AchievementButton({ size, navigation }) {
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <MaterialCommunityIcons name="medal-outline" color={active} size={28} />
+      <Ionicons name="planet-outline" color={active} size={28} />
     </TouchableOpacity>
   );
 }
@@ -69,19 +66,19 @@ export default function Home({ navigation }) {
     fetchData();
    }, [token]);
 
-   // fetch topics
+  // fetch topics
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch ("http://localhost:3000/topic/home-page");
         const topics = await response.json();
-        setTopics(topics); 
+        setTopics(topics);
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-   }, []);
+  }, []);
   // ----------------------------------------------
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
@@ -89,9 +86,13 @@ export default function Home({ navigation }) {
     token?
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
-        <Header navigation={navigation} tags={tags}/>
+        <Header navigation={navigation} tags={tags} />
         <SearchFilter scrollOffsetY={scrollOffsetY} />
-        <TopicList scrollOffsetY={scrollOffsetY} navigation={navigation} topics={topics} />
+        <TopicList
+          scrollOffsetY={scrollOffsetY}
+          navigation={navigation}
+          topics={topics}
+        />
       </View>
     </SafeAreaView>
     :
@@ -152,7 +153,8 @@ const SearchFilter = ({ scrollOffsetY }) => {
         { height: animatedSearchHeight, overflow: "hidden" },
       ]}
     >
-      <View style={styles.searchBar}>
+      {/*fake searchbar*/}
+      <View style={[styles.searchBar, styles.shadow]}>
         <Searchbar
           placeholder="Search"
           onChangeText={setSearchQuery}
@@ -166,6 +168,7 @@ const SearchFilter = ({ scrollOffsetY }) => {
           }}
         />
       </View>
+      {/*real searchbar*/}
       <TouchableHighlight style={[styles.filterButton]}>
         <MaterialCommunityIcons name="tune" size={24} color={inactive} />
       </TouchableHighlight>
@@ -174,10 +177,12 @@ const SearchFilter = ({ scrollOffsetY }) => {
 };
 
 // topics listings underneath the search bar
-const TopicList = ({ scrollOffsetY, navigation, topics}) => {
-
+const TopicList = ({ scrollOffsetY, navigation, topics }) => {
+  const ref = useRef();
+  useScrollToTop(ref);
   return (
     <FlatList
+      ref={ref}
       scrollEventThrottle={5}
       showsVerticalScrollIndicator={false}
       data={topics}
@@ -255,9 +260,9 @@ const styles = StyleSheet.create({
   searchBar: {
     width: "84%",
     height: 49,
-    backgroundColor: grey,
+    backgroundColor: primary,
     justifyContent: "center",
-    borderRadius: 5,
+    borderRadius: 20,
   },
   // the real searchbar component
   paperBar: {
@@ -278,7 +283,6 @@ const styles = StyleSheet.create({
   },
   listingContainer: {
     flex: 1,
-    margin: 6,
-    marginTop: 0,
+    marginHorizontal: 6,
   },
 });
