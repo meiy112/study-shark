@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from '../components/Home/Home';
 import Topic from "../components/Topic/Topic";
-import Settings from '../components/Topic/Settings';
+import Settings from '../components/Topic/TopicSettings';
 import Achievement from '../components/Achievements/Achievements';
 
 import Explore from "../components/Explore/Explore";

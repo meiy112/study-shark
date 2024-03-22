@@ -94,7 +94,7 @@ export default function Topic({ route, navigation }) {
   return (
     <ColorContext.Provider value={{color: route.params.color}}>
       <View>
-        <Header topic={topic} color={route.params.color} navigation={navigation} route={route} />
+        <Header topic={topic} setTopic={setTopic} color={route.params.color} navigation={navigation} route={route} />
         <Divider />
         <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
           <Info topic={topic} tags={tags} />
@@ -106,16 +106,15 @@ export default function Topic({ route, navigation }) {
   );
 }
 
-function Header({ topic, color, navigation, route }) {
+function Header({ topic, setTopic, color, navigation, route }) {
   const { setPage } = useContext(PageContext);
-  console.log(route.params.prevScreen);
 
   return(
     <View>
       <Appbar.Header style={{backgroundColor: color.primary}}>
         <Appbar.BackAction color="#FFFFFF" onPress={() => {navigation.goBack(); setPage(route.params.prevScreen)}} />
         <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20, fontFamily: 'mon-sb'}}/>
-        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"}); setPage("TopicSettings")}}></Appbar.Action>
+        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"})}}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
     </View>
