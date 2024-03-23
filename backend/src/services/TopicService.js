@@ -14,7 +14,7 @@ class TopicService {
       } 
       // else return all topics belonging to the user
       return new Promise ((resolve, reject) => {
-        db.query('SELECT * FROM createstopic WHERE username = ?', [username], (err, rows, fields) => {
+        db.query("SELECT id, username, title, isPublic, description, DATE_FORMAT(T.lastOpened, '%M %d, %Y') AS lastOpened, color FROM createstopic T WHERE username = ?", [username], (err, rows, fields) => {
           if (err) {
               reject(err);
               return;
@@ -37,7 +37,7 @@ class TopicService {
       }
       // else return all topics belonging to user in homepage format
       return new Promise ((resolve, reject) => {
-        db.query("SELECT T1.id, T1.title, T1.isPublic, T1.lastOpened, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c WHERE T1.username = ? AND T1.color = c.name", 
+        db.query("SELECT T1.id, T1.title, T1.isPublic, DATE_FORMAT(T1.lastOpened, '%M %d, %Y') AS lastOpened, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c WHERE T1.username = ? AND T1.color = c.name", 
           [username], (err, rows, fields) => {
             if (err) {
                 reject(err);

@@ -31,7 +31,7 @@ class StudyMaterialService {
       // we do this because the placeholder ? has issues with single quotes
       if (sort == 'lastOpened') {
         return new Promise ((resolve, reject) => {
-          db.query('SELECT * FROM ContainsStudyMaterial WHERE topicId = ? AND type = ? ORDER BY lastOpened ASC', [topicId, type], (err, rows, fields) => {
+          db.query("SELECT title, topicId, type, privacyInfo, description, DATE_FORMAT(lastOpened, '%M %d, %Y') AS lastOpened, parsedText, highScore FROM ContainsStudyMaterial csm WHERE topicId = ? AND type = ? ORDER BY lastOpened ASC", [topicId, type], (err, rows, fields) => {
             if (err) {
                 reject(err);
                 return;
@@ -43,7 +43,7 @@ class StudyMaterialService {
         // If sort option is alphebetical, execute the query with ORDER BY title ASC
         // we do this because the placeholder ? has issues with single quotes
         return new Promise ((resolve, reject) => {
-          db.query('SELECT * FROM ContainsStudyMaterial WHERE topicId = ? AND type = ? ORDER BY title ASC', [topicId, type], (err, rows, fields) => {
+          db.query("SELECT title, topicId, type, privacyInfo, description, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, parsedText, highScore FROM ContainsStudyMaterial csm WHERE topicId = ? AND type = ? ORDER BY title ASC", [topicId, type], (err, rows, fields) => {
             if (err) {
                 reject(err);
                 return;

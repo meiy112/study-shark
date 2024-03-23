@@ -16,7 +16,6 @@ class AuthController {
                 res.json({ message: "User already exists" });
                 return;
             }
-            console.error('Error executing query:', err);
             res.status(500).send({message: 'Internal Server Error'});
             return;
         });
@@ -39,7 +38,6 @@ class AuthController {
                 res.json({ message: "Incorrect password or username" });
                 return; 
             }
-            console.error('Error executing query:', err);
             res.status(500).send({message: 'Internal Server Error'});
             return;
         });
