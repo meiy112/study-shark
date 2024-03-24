@@ -20,7 +20,7 @@ const colors = {
   },
 };
 
-const results = [
+const resultsData = [
   {
     title: "Phys901",
     date: "March 19,, 2024",
@@ -63,4 +63,4 @@ const results = [
   },
 ];
 
-export default results;
+export default resultsData;

@@ -1,13 +1,12 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import colors from "../../../constants/Colors";
-import results from "./data/results";
 import TopicExplore from "../ListingComponents/TopicExplore";
 import MaterialExplore from "../ListingComponents/MaterialExplore";
 
 const { active, inactive, background, primary, shadow, line, title } = colors;
 
-// the search results suggestions
-const ResultsContainer = ({ searchInput }) => {
+// the search results (pass in results)
+const ResultsContainer = ({ searchInput, results }) => {
   return (
     <View style={{ marginHorizontal: 6, flex: 1 }}>
       <FlatList
