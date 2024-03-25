@@ -58,9 +58,16 @@ class AuthService {
         const hashed_password = await bcrypt.hash(password, 12);
         console.log(hashed_password);
         // Add User 
-        const query = "INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES (?, ?, ?, ?, ?, ?)";
+        // Get current date and time in PST
+        const currentDate = new Date();
+        const pstOffset = -8 * 60; // Pacific Standard Time (PST) is UTC-8
+        const pstDate = new Date(currentDate.getTime() + pstOffset * 60000);
+
+        // Format date in MySQL date format (YYYY-MM-DD HH:MM:SS)
+        const formattedDate = pstDate.toISOString().slice(0, 19).replace('T', ' ');
+        const query = "INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const newUser = await new Promise((resolve, reject) => {
-            db.query(query, [username, null, '-10x Engineer', hashed_password, null, 0], (err, rows, fields) => {
+            db.query(query, [username, null, '-10x Engineer', hashed_password, null, 0, formattedDate], (err, rows, fields) => {
                 if (err) {
                     reject(err);
                     return; 
