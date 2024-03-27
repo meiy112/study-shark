@@ -50,7 +50,7 @@ const updateEmail = ({ email }) => {
   // TODO: update user's email with email arg
 };
 
-// update school in databse
+// update school in database
 const updateSchool = ({ school }) => {
   // TODO: yk
 };
@@ -68,12 +68,18 @@ const LogoutButton = ({ handlePress }) => {
 };
 
 // PROFILE PAGE
-export default function Profile(navigation) {
+export default function Profile() {
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
 
+  // log out
   const handleLogoutButton = () => {
     userLogout();
     console.log("logging out");
+  };
+
+  // navigate to achievements
+  const handleSeeAllButtonClick = () => {
+    // TODO: set navigation to achievements
   };
 
   return token ? ( // conditionally renders pages based on if user is logged in
@@ -88,7 +94,9 @@ export default function Profile(navigation) {
         {/*Numerical Data*/}
         <NumericalData />
         {/*Achievements*/}
-        <AchievementsContainer navigation={navigation} />
+        <AchievementsContainer
+          handleSeeAllButtonClick={handleSeeAllButtonClick}
+        />
       </SafeAreaView>
     </ScrollView>
   ) : (
@@ -217,6 +225,55 @@ const EmailSchoolContainer = () => {
 
   return (
     <View style={[styles.shadow, styles.emailSchoolContainer, { zIndex: 2 }]}>
+      {/*Really demented way of making the email be below the school in terms of z-index*/}
+      {/*START: Email*/}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          zIndex: 0,
+          position: "absolute",
+          left: 40,
+          bottom: 20,
+        }}
+      >
+        {/*Email Icon*/}
+        <Ionicons
+          name="mail-outline"
+          size={25}
+          style={{ opacity: 0.6, marginLeft: -6, zIndex: 0 }}
+        />
+        {/*Email*/}
+        <View
+          style={{
+            borderBottomColor: "rgba(0, 0, 0, 0.2)",
+            borderBottomWidth: 1,
+            width: 237,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            zIndex: 0,
+            marginLeft: 11,
+          }}
+        >
+          <TextInput
+            ref={textInputRef}
+            style={[styles.emailInput, { pointerEvents: "none" }]}
+            value={email}
+            onChangeText={handleEmailChange}
+            onBlur={handleBlur}
+          />
+          {/*Open Select Button*/}
+          <TouchableOpacity onPress={handleEditButtonPress}>
+            <MaterialCommunityIcons
+              name="pencil"
+              size={15}
+              style={{ opacity: 0.5, marginRight: 5 }}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/*END: Email*/}
       {/*START: University*/}
       <View
         style={{
@@ -262,50 +319,6 @@ const EmailSchoolContainer = () => {
         </View>
       </View>
       {/*END: University*/}
-      {/*START: Email*/}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          zIndex: 0,
-        }}
-      >
-        {/*Email Icon*/}
-        <Ionicons
-          name="mail-outline"
-          size={25}
-          style={{ opacity: 0.6, marginLeft: 2, zIndex: 0 }}
-        />
-        {/*Email*/}
-        <View
-          style={{
-            borderBottomColor: "rgba(0, 0, 0, 0.2)",
-            borderBottomWidth: 1,
-            width: 237,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            zIndex: 0,
-          }}
-        >
-          <TextInput
-            ref={textInputRef}
-            style={[styles.emailInput, { pointerEvents: "none" }]}
-            value={email}
-            onChangeText={handleEmailChange}
-            onBlur={handleBlur}
-          />
-          {/*Open Select Button*/}
-          <TouchableOpacity onPress={handleEditButtonPress}>
-            <MaterialCommunityIcons
-              name="pencil"
-              size={15}
-              style={{ opacity: 0.5, marginRight: 5 }}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      {/*END: Email*/}
     </View>
   );
 };
@@ -370,13 +383,7 @@ const SingleData = ({ icon, data, type, dataStyle }) => {
 };
 
 // Achievements
-const AchievementsContainer = (navigation) => {
-  const { setPage } = useContext(PageContext);
-
-  // navigate to achievements
-  const handleSeeAllButtonClick = () => {
-    // TODO: set navigation to achievements
-  };
+const AchievementsContainer = (handleSeeAllButtonClick) => {
   return (
     <View style={[styles.achievementsContainer, styles.shadow]}>
       {/*------------------- START: My Achievements title and See all Button -------------------*/}
