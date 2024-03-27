@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -6,19 +6,24 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
+  FlatList,
+  Image,
+  Text,
 } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { SelectList } from "react-native-dropdown-select-list";
 import AuthContext from "../../context/AuthContext";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import PageContext from "../../context/PageContext";
 import colors from "../../constants/Colors";
-
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
+import schoolData from "./data/schoolData";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
 // fake user data
 const user = {
   username: "Expo Marker",
+  pfp: require("../../assets/images/misc/freud.jpg"),
   joined: "May 2024",
   exp: 1200,
   title: "BEGINNER",
@@ -28,7 +33,26 @@ const user = {
   totalMat: 21,
   totalTopics: 12,
   totalGroups: 11,
-  totalAchievements: 1,
+  totalAchievements: 5,
+};
+
+// fake achievements
+const achievements = [
+  require("../../assets/images/achievements/croissant_achievement.png"),
+  require("../../assets/images/achievements/croissant_achievement.png"),
+  require("../../assets/images/achievements/croissant_achievement.png"),
+  require("../../assets/images/achievements/croissant_achievement.png"),
+  require("../../assets/images/achievements/croissant_achievement.png"),
+];
+
+// update email in database
+const updateEmail = ({ email }) => {
+  // TODO: update user's email with email arg
+};
+
+// update school in databse
+const updateSchool = ({ school }) => {
+  // TODO: yk
 };
 
 // Logout Button
@@ -44,7 +68,7 @@ const LogoutButton = ({ handlePress }) => {
 };
 
 // PROFILE PAGE
-export default function Profile() {
+export default function Profile(navigation) {
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
 
   const handleLogoutButton = () => {
@@ -64,7 +88,7 @@ export default function Profile() {
         {/*Numerical Data*/}
         <NumericalData />
         {/*Achievements*/}
-        <AchievementsContainer />
+        <AchievementsContainer navigation={navigation} />
       </SafeAreaView>
     </ScrollView>
   ) : (
@@ -153,14 +177,14 @@ const ProfileIcon = () => {
   return (
     <View style={{ width: 100, marginLeft: 28 }}>
       {/*The picture*/}
-      <View
+      <Image
+        source={user.pfp}
         style={{
           width: 100,
           height: 100,
-          backgroundColor: "grey",
           borderRadius: 100,
         }}
-      ></View>
+      ></Image>
       {/*Edit Button*/}
       <TouchableOpacity style={styles.editButtonPfp}>
         <MaterialCommunityIcons name="pencil" color={primary} size={16} />
@@ -171,8 +195,28 @@ const ProfileIcon = () => {
 
 // Email and School Info
 const EmailSchoolContainer = () => {
+  const [email, setEmail] = useState(user.email);
+  const [school, setSchool] = useState(user.school);
+  const textInputRef = useRef(null);
+
+  // when editing email
+  const handleEditButtonPress = () => {
+    setTimeout(() => {
+      textInputRef.current.focus();
+    }, 0);
+  };
+
+  // when not editing email
+  const handleBlur = () => {
+    updateEmail(email);
+  };
+
+  const handleEmailChange = (text) => {
+    setEmail(text);
+  };
+
   return (
-    <View style={[styles.shadow, styles.emailSchoolContainer]}>
+    <View style={[styles.shadow, styles.emailSchoolContainer, { zIndex: 2 }]}>
       {/*START: University*/}
       <View
         style={{
@@ -187,25 +231,35 @@ const EmailSchoolContainer = () => {
           size={25}
           style={{ opacity: 0.6, marginLeft: 2 }}
         />
-        {/*School Name*/}
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "mon-sb",
-            opacity: 0.8,
-            width: 189,
-          }}
-        >
-          {user.school}
-        </Text>
-        {/*Open Select Button*/}
-        <TouchableOpacity>
-          <Ionicons
-            name="chevron-down"
-            size={15}
-            style={{ opacity: 0.8, marginRight: 5 }}
+        {/*Select and Display School*/}
+        <View style={{ position: "absolute", zIndex: 3, top: -7, left: 25 }}>
+          <SelectList
+            setSelected={(val) => setSchool(val)}
+            onSelect={() => updateSchool(school)}
+            data={schoolData}
+            placeholder={school}
+            arrowicon={
+              <Ionicons
+                name="chevron-down"
+                size={15}
+                style={{ opacity: 0.8, marginRight: 5 }}
+              />
+            }
+            boxStyles={{ width: 270, borderWidth: 0 }}
+            dropdownTextStyles={{
+              fontFamily: "mon",
+              fontSize: 12,
+              opacity: 0.8,
+            }}
+            inputStyles={{ fontSize: 12, fontFamily: "mon-sb", opacity: 0.8 }}
+            dropdownStyles={[
+              { borderWidth: 0, backgroundColor: primary },
+              styles.shadow,
+            ]}
+            searchicon={<View />}
+            searchPlaceholder="Search School"
           />
-        </TouchableOpacity>
+        </View>
       </View>
       {/*END: University*/}
       {/*START: Email*/}
@@ -214,15 +268,16 @@ const EmailSchoolContainer = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          zIndex: 0,
         }}
       >
-        {/*School Icon*/}
+        {/*Email Icon*/}
         <Ionicons
           name="mail-outline"
           size={25}
-          style={{ opacity: 0.6, marginLeft: 2 }}
+          style={{ opacity: 0.6, marginLeft: 2, zIndex: 0 }}
         />
-        {/*School Name*/}
+        {/*Email*/}
         <View
           style={{
             borderBottomColor: "rgba(0, 0, 0, 0.2)",
@@ -230,11 +285,18 @@ const EmailSchoolContainer = () => {
             width: 237,
             flexDirection: "row",
             justifyContent: "space-between",
+            zIndex: 0,
           }}
         >
-          <TextInput style={styles.emailInput} value={user.email} />
+          <TextInput
+            ref={textInputRef}
+            style={[styles.emailInput, { pointerEvents: "none" }]}
+            value={email}
+            onChangeText={handleEmailChange}
+            onBlur={handleBlur}
+          />
           {/*Open Select Button*/}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleEditButtonPress}>
             <MaterialCommunityIcons
               name="pencil"
               size={15}
@@ -248,6 +310,7 @@ const EmailSchoolContainer = () => {
   );
 };
 
+// Display number of Study Material, Topics, Groups
 const NumericalData = () => {
   return (
     <View
@@ -306,10 +369,17 @@ const SingleData = ({ icon, data, type, dataStyle }) => {
   );
 };
 
-const AchievementsContainer = () => {
+// Achievements
+const AchievementsContainer = (navigation) => {
+  const { setPage } = useContext(PageContext);
+
+  // navigate to achievements
+  const handleSeeAllButtonClick = () => {
+    // TODO: set navigation to achievements
+  };
   return (
     <View style={[styles.achievementsContainer, styles.shadow]}>
-      {/*My Achievements title and See all Button*/}
+      {/*------------------- START: My Achievements title and See all Button -------------------*/}
       <View
       //style={{ borderBottomWidth: 1, borderBottomColor: grey, height: 45 }}
       >
@@ -330,6 +400,7 @@ const AchievementsContainer = () => {
               flexDirection: "row",
               alignItems: "center",
             }}
+            onClick={handleSeeAllButtonClick}
           >
             {/*See all Button*/}
             <Text
@@ -350,10 +421,27 @@ const AchievementsContainer = () => {
         </View>
         {/*Total Achievements Data*/}
         <Text style={{ fontFamily: "mon-m", fontSize: 11, opacity: 0.4 }}>
-          Total: 1
+          Total: {user.totalAchievements}
         </Text>
       </View>
+      {/*--------------------------------------------------------------------------------------*/}
+      {/*List of user's Achievements*/}
+      <AchievementsList />
     </View>
+  );
+};
+
+const AchievementsList = () => {
+  return (
+    <ScrollView contentContainerStyle={styles.achievementsScrollView}>
+      {achievements.map((achievement, index) => (
+        <Image
+          key={index}
+          source={achievement}
+          style={styles.achievementImage}
+        />
+      ))}
+    </ScrollView>
   );
 };
 
@@ -420,5 +508,13 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingVertical: 25,
     paddingHorizontal: 30,
+  },
+  achievementsScrollView: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  achievementImage: {
+    marginVertical: 5,
   },
 });
