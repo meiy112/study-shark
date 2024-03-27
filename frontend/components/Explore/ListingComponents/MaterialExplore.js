@@ -13,9 +13,9 @@ import colors from "../../../constants/Colors";
 const { active, inactive, background, primary, shadow, line } = colors;
 // for the image icon
 const imageMapping = {
-  NOTES: require("../../../assets/images/notes.png"),
-  FLASHCARDS: require("../../../assets/images/flashcards.png"),
-  QUIZ: require("../../../assets/images/quiz.png"),
+  NOTES: require("../../../assets/images/mat_icons/notes.png"),
+  FLASHCARDS: require("../../../assets/images/mat_icons/flashcards.png"),
+  QUIZ: require("../../../assets/images/mat_icons/quiz.png"),
 };
 
 // MATERIALEXPLORE
