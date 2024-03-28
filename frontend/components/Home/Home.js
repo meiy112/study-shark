@@ -47,6 +47,7 @@ export default function Home({ navigation }) {
   // LOAD DATA------------------------------------
   // fetch tags
   useEffect(() => {
+    // let fetchedTags;
     async function fetchData() {
       try {
         const headers = {
@@ -57,8 +58,13 @@ export default function Home({ navigation }) {
             method: 'GET',
             headers: headers,
           });
-        const tags = await response.json();
-        setTags(tags);
+        const fetchedTags = await response.json();
+        if (response.ok) {
+          setTags(fetchedTags);
+          console.log(fetchedTags);
+        } else {
+          console.log(fetchedTags.message)
+        }
       } catch (e) {
         console.log(e);
       }
@@ -70,15 +76,27 @@ export default function Home({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch ("http://localhost:3000/topic/home-page");
-        const topics = await response.json();
-        setTopics(topics);
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        };
+
+        const response = await fetch('http://localhost:3000/topic/home-page', {
+            method: 'GET',
+            headers: headers,
+          });
+
+        const fetchedTopics = await response.json();
+        if (response.ok) {
+          setTopics(fetchedTopics);
+        } else {
+          console.log(fetchedTopics.message + " " + fetchedTopics.details + " home-page");
+        }
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-  }, []);
+  }, [token]);
   // ----------------------------------------------
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
@@ -123,7 +141,7 @@ function Header({ navigation, tags }) {
         contentContainerStyle={styles.tagsContainer}
         showsHorizontalScrollIndicator={false}
       >
-        {tags.map((tag, index) => (
+      {tags !== undefined && tags.map((tag, index) => (
           <Tag key={index} title={tag.name} color={tag.color} />
         ))}
       </ScrollView>

@@ -5,12 +5,13 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
 import PageContext from "../../context/PageContext";
-
+import AuthContext from "../../context/AuthContext";
 const imageMapping = {
   NOTES: require("../../assets/images/notes.png"),
   FLASHCARDS: require("../../assets/images/flashcards.png"),
   QUIZ: require("../../assets/images/quiz.png"),
 };
+
 const ColorContext = createContext();
 
 
@@ -19,6 +20,8 @@ export default function Topic({ route, navigation }) {
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [tags, setTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+
+  const { token } = useContext(AuthContext);
 
   // LOAD DATA------------------------------------
   // Splashscreen
@@ -32,43 +35,76 @@ export default function Topic({ route, navigation }) {
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/general-info");
-        const topic = await response.json();
-        setTopic(topic.topic);
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/general-info", {
+            method: 'GET',
+            headers: headers,
+          });
+        const fetchedTopic = await response.json();
+
+        if (response.ok) {
+          setTopic(fetchedTopic);
+        } else {
+          console.log(fetchedTopic.message + ": " + fetchedTopic.description + " general info");
+        }
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-   }, []);
+   }, [token]);
 
    // fetch tags data
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/tags");
-        const tags = await response.json();
-        setTags(tags.tags);
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/tags", {
+            method: 'GET',
+            headers: headers,
+          });
+        const fetchedTags = await response.json();
+
+        if (response.ok) {
+          setTags(fetchedTags);
+        } else {
+          console.log(fetchedTags.message + ": " + fetchedTags.description + " /tags");
+        }
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-   }, []);
+   }, [token]);
 
    // fetch studymaterial data
    useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch ("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated")
-        const studyMaterial = await response.json();
-        setStudyMaterial(studyMaterial); 
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated", {
+            method: 'GET',
+            headers: headers,
+          });
+        const fetchedStudyMat = await response.json();
+
+        if (response.ok) {
+          setStudyMaterial(fetchedStudyMat);
+        } else {
+          console.log(fetchedStudyMat.message + ": " + fetchedStudyMat.description + " sort + create study mat");
+        }
       } catch (e) {
         console.log(e);
       }
     }
     fetchData();
-   }, []);
+   }, [token]);
 
    if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
     // prevent page from rendering before data is loaded
