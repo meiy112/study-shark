@@ -19,7 +19,7 @@ router.get('/:id/tags', topicController.getUserTopicsTags);
 // returns a list of filtered and sorted study material from the given topicId
 router.get('/:id/studymaterial', studyMaterialController.getFilteredSortedStudyMaterial);
 
-// returns a given topic's general info
+// deletes a given study material from the given topic
 router.delete('/:id/studymaterial/:title', studyMaterialController.deleteStudyMaterial);
 
 module.exports = router;

@@ -33,14 +33,23 @@ module.exports.userVerification = (req, res, next) => {
 
     jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
         if (err) {
+            if (err.message == 'jwt expired') {
+                req.expired = "true";
+            } else {
+                req.expired = "false";
+            }
             req.username = "no user";
             next(); 
         } else {
             const user = await findUser(data.id)
             if (user) {
                 req.username = user.username;
+                req.expired = "false";
             } 
-            else req.username = "no user"; 
+            else {
+                req.username = "no user"; 
+                req.expired = "false";
+            }
             //if (user) return res.json({ status: true, user: user.username })
             //else return res.json({ status: false })
             next(); 

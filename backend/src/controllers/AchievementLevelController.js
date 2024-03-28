@@ -6,8 +6,8 @@ class AchievementLevelController {
   getAllAchievementLevels(req, res) {
     achievementLevelService.getAllAchievementLevels((err, rows) => {
       if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: getAllAchievementLevels'});
         return;
       }
       res.send(rows);
@@ -17,15 +17,13 @@ class AchievementLevelController {
   postAchievementLevel(req, res) {
     achievementLevelService.postAchievementLevel(req, (err, rows) => {
       if (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: postAchievementLevel'});
         return;
       }
       res.send(rows);
     });
   }
-
-  //more methods here
 }
 
 module.exports = new AchievementLevelController();

@@ -53,10 +53,10 @@ export default function App() {
     "mon-l": require("../frontend/assets/fonts/Montserrat-Light.ttf"),
   });
   const [showModal, setShowModal] = useState(false);
-  const [page, setPage] = useState("Home"); 
+  const [page, setPage] = useState("Home");
   const [topicId, setTopicId] = useState(null); // set to curr topic id when inside of Topic.js
 
-  const pageContextValue = {page, setPage, topicId, setTopicId}
+  const pageContextValue = { page, setPage, topicId, setTopicId };
 
   useEffect(() => {
     // initial screen that displays while the application is loading
@@ -70,7 +70,7 @@ export default function App() {
     // startServer();
     return () => { // cleanup, shuts down server
       stopServer();
-    }
+    };
   }, []);
 
   if (!fontsLoaded) {
@@ -113,7 +113,7 @@ export default function App() {
                     setPage("Home");
                     // Navigate to the stack's first screen
                     navigation.navigate(route.name, {
-                      screen: 'Home', 
+                      screen: "Home",
                     });
                   },
                 })}
@@ -137,7 +137,7 @@ export default function App() {
                     setPage("Explore");
                     // Navigate to the stack's first screen
                     navigation.navigate(route.name, {
-                      screen: 'Explore', 
+                      screen: "Explore",
                     });
                   },
                 })}
@@ -179,7 +179,7 @@ export default function App() {
                     setPage("Group");
                     // Navigate to the stack's first screen
                     navigation.navigate(route.name, {
-                      screen: 'Group', 
+                      screen: "Group",
                     });
                   },
                 })}
@@ -204,7 +204,7 @@ export default function App() {
                     setPage("Profile");
                     // Navigate to the stack's first screen
                     navigation.navigate(route.name, {
-                      screen: 'Profile', 
+                      screen: "Profile",
                     });
                   },
                 })}
@@ -222,7 +222,9 @@ export default function App() {
               />
             </Tab.Navigator>
           </NavigationContainer>
-          {showModal ? <AddModal hideModal={() => setShowModal(false)} /> : null}
+          {showModal ? (
+            <AddModal hideModal={() => setShowModal(false)} />
+          ) : null}
         </PageContext.Provider>
       </AuthProvider>
     </PaperProvider>
