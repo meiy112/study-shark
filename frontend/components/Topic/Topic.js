@@ -6,11 +6,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
-const imageMapping = {
-  NOTES: require("../../assets/images/notes.png"),
-  FLASHCARDS: require("../../assets/images/flashcards.png"),
-  QUIZ: require("../../assets/images/quiz.png"),
-};
 
 const ColorContext = createContext();
 
