@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Icon, IconButton, Dialog, Portal} from "react-native-paper"
 import colors from "../../constants/Colors";
-import { ColorContext } from "./Topic";
+import ColorContext from "../../context/TopicColorContext";
 
 // for the image icon
 const imageMapping = {
