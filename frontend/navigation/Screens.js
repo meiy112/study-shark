@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from '../components/Home/Home';
 import Topic from "../components/Topic/Topic";
-import Settings from '../components/Topic/Settings';
+import Settings from '../components/Topic/TopicSettings';
 import Achievement from '../components/Achievements/Achievements';
 
 import Explore from "../components/Explore/Explore";
@@ -26,7 +26,14 @@ function HomeScreen() {
 }
 
 function ExploreScreen() {
-  // TODO
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Explore" component={Explore} options={{ headerShown: false }} />
+      <Stack.Screen name="Achievement" component={Achievement} options={{ headerShown: false }} />
+      <Stack.Screen name="Topic" component={Topic} options={{ headerShown: false }} />
+      <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
 }
 
 function GroupScreen() {
@@ -34,7 +41,12 @@ function GroupScreen() {
 }
 
 function ProfileScreen() {
-  // TODO
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="Achievement" component={Achievement} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
 }
 
 export default {

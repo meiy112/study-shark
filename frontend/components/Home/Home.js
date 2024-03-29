@@ -14,11 +14,13 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Tag from "../../components/Misc/Tag";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
-import * as SplashScreen from "expo-splash-screen";
 import { useScrollToTop } from "@react-navigation/native";
 import AuthContext from '../../context/AuthContext';
 import PageContext from "../../context/PageContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
+
+import { tagApi } from "../../api/TagApi";
+import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
@@ -47,38 +49,29 @@ export default function Home({ navigation }) {
   // LOAD DATA------------------------------------
   // fetch tags
   useEffect(() => {
-    async function fetchData() {
+    async function fetchTags() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        };
-        const response = await fetch('http://localhost:3000/tag', {
-            method: 'GET',
-            headers: headers,
-          });
-        const tags = await response.json();
-        setTags(tags);
+        const data = await tagApi.getTags(token);
+        setTags(data);
       } catch (e) {
-        console.log(e);
+        console.log("Home page: " + e.message);
       }
     }
-    fetchData();
-   }, [token]);
+    fetchTags();
+  }, [token]);
 
   // fetch topics
   useEffect(() => {
-    async function fetchData() {
+    async function fetchTopic() {
       try {
-        const response = await fetch ("http://localhost:3000/topic/home-page");
-        const topics = await response.json();
-        setTopics(topics);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    fetchData();
-  }, []);
+          const data = await topicApi.getHomePageTopics(token);
+          setTopics(data);
+        } catch (e) {
+          console.log("Home page: " + e.message);
+        }
+      } 
+    fetchTopic();
+  }, [token]);
   // ----------------------------------------------
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
@@ -123,7 +116,7 @@ function Header({ navigation, tags }) {
         contentContainerStyle={styles.tagsContainer}
         showsHorizontalScrollIndicator={false}
       >
-        {tags.map((tag, index) => (
+      {tags !== undefined && tags.map((tag, index) => (
           <Tag key={index} title={tag.name} color={tag.color} />
         ))}
       </ScrollView>

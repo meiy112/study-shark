@@ -10,8 +10,9 @@ export function startServer() {
       color: Model,
     },
 
+    // Seed data
     seeds(server) {
-      server.create("topic", { id: "1", title: "Phys901", isPublic: true, lastOpened: new Date(), description: "Random fake description very fake pretend this is a description" }); // Seed data
+      server.create("topic", { id: "1", title: "Phys901", isPublic: true, lastOpened: new Date(), description: "Random fake description very fake pretend this is a description" }); 
       server.create("topic", { id: "2", title: "Chem123", isPublic: false, lastOpened: new Date(), description: "idk what to write here bro" }); 
       server.create("topic", { id: "3", title: "Math049", isPublic: false, lastOpened: new Date(), description: "Man my neck hurts" }); 
       server.create("topic", { id: "4", title: "Cpsc304", isPublic: true, lastOpened: new Date(), description: "blah blah blah blah blah blah blah ahhhhhhhhhhhh" }); 
@@ -153,12 +154,12 @@ export function startServer() {
         }
 
         const { id } = request.params;
-        return schema.topics.find(id); 
+        return schema.topics.find(id).attrs;
       });
 
       // Given a topic id, Return all tags associated the topic
       this.get("/topic/:id/tags", (schema, request) => {
-        return schema.tags.all(); // fake data, currently returns all tags, doing this just for simplicity
+        return schema.tags.all().models; // fake data, currently returns all tags, doing this just for simplicity
       });
 
       // - Given a topic id, returns its sorted and filtered study material. 
@@ -196,6 +197,12 @@ export function startServer() {
         return schema.tags.all().models;
       }); 
 
+
+
+
+
+
+      // IGNORE EVERYTHING BELOW HERE
 
 
     },
