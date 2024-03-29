@@ -1,21 +1,32 @@
 import suggestions from "./data/suggestions";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import colors from "../../../constants/Colors";
 
 const { lightIcon } = colors;
 
 // the search results suggestions
-const SuggestionContainer = ({ searchText }) => {
+const SuggestionContainer = ({ searchText, setSearchResults }) => {
   const filteredSuggestions = suggestions.filter((suggestion) =>
     suggestion.toLowerCase().includes(searchText.toLowerCase())
   );
+
   return (
     <FlatList
       contentContainerStyle={{ marginHorizontal: 26, marginVertical: 15 }}
       data={filteredSuggestions}
       renderItem={({ item }) => (
-        <SuggestionString suggestion={item} searchText={searchText} />
+        <SuggestionString
+          suggestion={item}
+          searchText={searchText}
+          setSearchResults={setSearchResults}
+        />
       )}
       ListHeaderComponent={() => (
         <Text
@@ -23,7 +34,7 @@ const SuggestionContainer = ({ searchText }) => {
             opacity: 0.6,
             fontFamily: "mon-m",
             fontSize: 12,
-            marginBottom: 7,
+            marginBottom: 15,
           }}
         >
           Suggested Searches
@@ -35,15 +46,22 @@ const SuggestionContainer = ({ searchText }) => {
 };
 
 // suggestions in Suggested Searches
-const SuggestionString = ({ suggestion, searchText }) => {
+const SuggestionString = ({ suggestion, searchText, setSearchResults }) => {
   // split text for the highlight
   const index = suggestion.toLowerCase().indexOf(searchText.toLowerCase());
   const beforeText = suggestion.slice(0, index);
   const afterText = suggestion.slice(index + searchText.length);
   const inputtedText = suggestion.slice(index, index + searchText.length);
 
+  const handleSuggestionStringPress = () => {
+    setSearchResults(suggestion);
+  };
+
   return (
-    <View style={{ flexDirection: "row", marginTop: 15 }}>
+    <TouchableOpacity
+      onPress={handleSuggestionStringPress}
+      style={{ flexDirection: "row", paddingVertical: 7.5 }}
+    >
       <MaterialCommunityIcons name="magnify" color={lightIcon} size={14} />
       <Text
         style={[{ fontFamily: "mon", marginLeft: 7 }, styles.suggestionFont]}
@@ -56,7 +74,7 @@ const SuggestionString = ({ suggestion, searchText }) => {
       <Text style={[{ fontFamily: "mon" }, styles.suggestionFont]}>
         {afterText}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -18,6 +18,9 @@ import UntouchableTag from "../../Misc/UntouchableTag";
 import SuggestionContainer from "./SuggestionContainer";
 import ResultsContainer from "./ResultsContainer";
 
+// FAKE RESULTS, REMOVE THIS WHEN WE GET REAL ONES
+import resultsData from "./data/results";
+
 const { active, inactive, background, primary, shadow, line, lightIcon } =
   colors;
 
@@ -34,19 +37,44 @@ if (Platform.OS === "android") {
 }
 
 // the screen that pops up with search suggestions when you click on search icon in explore
-const SearchScreen = ({ isVisible, onClose }) => {
+const SearchScreen = ({ isVisible, onClose, onSearch }) => {
   const searchInputRef = useRef(null);
   const [searchText, setSearchText] = useState("");
+  const [screen, switchScreen] = useState(true);
+  const [results, setResults] = useState({});
 
   useEffect(() => {
-    // Focus on the text input when the screen loads
+    // Things to do when screen loads
     if (isVisible && searchInputRef.current) {
-      searchInputRef.current.focus();
+      searchInputRef.current.focus(); // 1. focus on searchbar
+      setSuggestionScreen(); // 2. switch to suggestions
+      setSearchText(""); // 3. clear searchbar
     }
   }, [isVisible]);
 
+  // change text
   const handleSearchInputChange = (text) => {
     setSearchText(text);
+  };
+
+  // switch to suggestion screen
+  const setSuggestionScreen = () => {
+    switchScreen(true);
+  };
+
+  // switch to results screen
+  const setResultScreen = () => {
+    // get new data to display on results screen when this is called?
+    // TODO:
+    // const resultsData = ???
+    setResults(resultsData);
+    switchScreen(false);
+  };
+
+  // changes search text to specified text and brings up results screen
+  const setSearchResults = (text) => {
+    setSearchText(text);
+    setResultScreen();
   };
 
   return (
@@ -71,8 +99,12 @@ const SearchScreen = ({ isVisible, onClose }) => {
                 alignSelf: "center",
                 marginLeft: 15,
                 marginRight: 25,
+                width: "85%",
               }}
               onChangeText={handleSearchInputChange}
+              onPressIn={setSuggestionScreen}
+              value={searchText}
+              onSubmitEditing={setResultScreen}
             />
           </View>
           {/*END: search bar and back button*/}
@@ -81,8 +113,18 @@ const SearchScreen = ({ isVisible, onClose }) => {
         </View>
         {/*-------------------------END: header-------------------------*/}
         {/*The stuff under the header*/}
-        <SuggestionContainer searchText={searchText} />
-        {/*<ResultsContainer searchInput={"Bubble Sort"} />*/}
+        {screen ? (
+          <SuggestionContainer
+            searchText={searchText}
+            setSearchResults={setSearchResults}
+          />
+        ) : (
+          <ResultsContainer
+            searchInput={searchText}
+            results={results}
+            key={JSON.stringify(results)}
+          />
+        )}
       </View>
     </Modal>
   );
