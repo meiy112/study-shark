@@ -14,11 +14,13 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Tag from "../../components/Misc/Tag";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
-import * as SplashScreen from "expo-splash-screen";
 import { useScrollToTop } from "@react-navigation/native";
 import AuthContext from '../../context/AuthContext';
 import PageContext from "../../context/PageContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
+
+import { tagApi } from "../../api/TagApi";
+import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
@@ -47,55 +49,28 @@ export default function Home({ navigation }) {
   // LOAD DATA------------------------------------
   // fetch tags
   useEffect(() => {
-    // let fetchedTags;
-    async function fetchData() {
+    async function fetchTags() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        };
-        const response = await fetch('http://localhost:3000/tag', {
-            method: 'GET',
-            headers: headers,
-          });
-        const fetchedTags = await response.json();
-        if (response.ok) {
-          setTags(fetchedTags);
-          console.log(fetchedTags);
-        } else {
-          console.log(fetchedTags.message)
-        }
+        const data = await tagApi.getTags(token);
+        setTags(data);
       } catch (e) {
-        console.log(e);
+        console.log("Home page: " + e.message);
       }
     }
-    fetchData();
-   }, [token]);
+    fetchTags();
+  }, [token]);
 
   // fetch topics
   useEffect(() => {
-    async function fetchData() {
+    async function fetchTopic() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-        };
-
-        const response = await fetch('http://localhost:3000/topic/home-page', {
-            method: 'GET',
-            headers: headers,
-          });
-
-        const fetchedTopics = await response.json();
-        if (response.ok) {
-          setTopics(fetchedTopics);
-        } else {
-          console.log(fetchedTopics.message + " " + fetchedTopics.details + " home-page");
+          const data = await topicApi.getHomePageTopics(token);
+          setTopics(data);
+        } catch (e) {
+          console.log("Home page: " + e.message);
         }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    fetchData();
+      } 
+    fetchTopic();
   }, [token]);
   // ----------------------------------------------
 

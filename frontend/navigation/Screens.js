@@ -41,7 +41,12 @@ function GroupScreen() {
 }
 
 function ProfileScreen() {
-  // TODO
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="Achievement" component={Achievement} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
 }
 
 export default {

@@ -14,7 +14,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./components/Home/Home";
 import Groups from "./components/Groups/Groups";
-import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 import colors from "./constants/Colors";
@@ -67,7 +66,7 @@ export default function App() {
 
     // starts mirage server
     // comment out this line to switch to real server
-    // startServer();
+    startServer();
     return () => { // cleanup, shuts down server
       stopServer();
     };
@@ -197,8 +196,8 @@ export default function App() {
                 }}
               />
               <Tab.Screen
-                name="Profile"
-                component={Profile}
+                name="ProfileScreen"
+                component={Screens.profile}
                 listeners={({ navigation, route }) => ({
                   tabPress: (event) => {
                     setPage("Profile");

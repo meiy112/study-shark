@@ -3,9 +3,9 @@ import { View, FlatList, ScrollView, TouchableOpacity} from "react-native";
 import { Text, Appbar, Divider, Chip, Icon, IconButton, Dialog, Portal} from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
-import * as SplashScreen from "expo-splash-screen";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
+import { topicApi } from "../../api/TopicApi";
 
 const ColorContext = createContext();
 
@@ -19,94 +19,47 @@ export default function Topic({ route, navigation }) {
   const { token } = useContext(AuthContext);
 
   // LOAD DATA------------------------------------
-  // Splashscreen
-  async function load() {
-    await SplashScreen.preventAutoHideAsync();
-  }
-  load();
-
   // useEffects are sperate so they can run in parallel - api calls r rly slow
   // fetch topic data
    useEffect(() => {
-    async function fetchData() {
+    async function fetchTopic() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-        };
-        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/general-info", {
-            method: 'GET',
-            headers: headers,
-          });
-        const fetchedTopic = await response.json();
-
-        if (response.ok) {
-          setTopic(fetchedTopic);
-        } else {
-          console.log(fetchedTopic.message + ": " + fetchedTopic.description + " general info");
-        }
+        const data = await topicApi.getGeneralInfo(token, route.params.id);
+        setTopic(data);
       } catch (e) {
-        console.log(e);
+        console.log("Topic: " + e.message);
       }
     }
-    fetchData();
+    fetchTopic();
    }, [token]);
 
    // fetch tags data
    useEffect(() => {
-    async function fetchData() {
+    async function fetchTags() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-        };
-        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/tags", {
-            method: 'GET',
-            headers: headers,
-          });
-        const fetchedTags = await response.json();
-
-        if (response.ok) {
-          setTags(fetchedTags);
-        } else {
-          console.log(fetchedTags.message + ": " + fetchedTags.description + " /tags");
-        }
+        const data = await topicApi.getTags(token, route.params.id);
+        setTags(data);
       } catch (e) {
-        console.log(e);
+        console.log("Topic: " + e.message);
       }
     }
-    fetchData();
+    fetchTags();
    }, [token]);
 
    // fetch studymaterial data
    useEffect(() => {
-    async function fetchData() {
+    async function fetchStudyMat() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-        };
-        const response = await fetch("http://localhost:3000/topic/" + route.params.id + "/studymaterial/?type=None&sort=dateCreated", {
-            method: 'GET',
-            headers: headers,
-          });
-        const fetchedStudyMat = await response.json();
-
-        if (response.ok) {
-          setStudyMaterial(fetchedStudyMat);
-        } else {
-          console.log(fetchedStudyMat.message + ": " + fetchedStudyMat.description + " sort + create study mat");
-        }
+        // TODO, make type and sortby dynamic
+        const data = await topicApi.getFilteredSortedStudymaterial(token, route.params.id, "None", "lastOpened");
+        setStudyMaterial(data);
       } catch (e) {
-        console.log(e);
+        console.log("Topic: " + e.message);
       }
     }
-    fetchData();
+    fetchStudyMat();
    }, [token]);
 
-   if (!topic.id || studyMaterial.length === 0 || tags.length === 0) {
-    // prevent page from rendering before data is loaded
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
-  }
     // ----------------------------------------------
 
    function handleSort() {
@@ -183,7 +136,6 @@ function Tags({ tags }) {
       return (
         <View style={{marginBottom: 10}}>
           <Chip
-            key={tag.name}
             style={{
               backgroundColor: tag.color,
               marginRight: 10,

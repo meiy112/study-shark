@@ -68,7 +68,7 @@ const LogoutButton = ({ handlePress }) => {
 };
 
 // PROFILE PAGE
-export default function Profile() {
+export default function Profile({ navigation }) {
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
 
   // log out
@@ -79,7 +79,9 @@ export default function Profile() {
 
   // navigate to achievements
   const handleSeeAllButtonClick = () => {
-    // TODO: set navigation to achievements
+    setPage("Achievement");
+    console.log("navigation to achievement")
+    navigation.navigate("Achievement", {prevScreen: "Explore"});
   };
 
   return token ? ( // conditionally renders pages based on if user is logged in
@@ -101,22 +103,6 @@ export default function Profile() {
     </ScrollView>
   ) : (
     <UserUnauthenticatedPage action={"get started!"} />
-  );
-
-  return token ? ( // conditionally renders pages based on if user is logged in
-    // Hi! put all your code for Groups inside this view!
-    <View
-      style={{
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Groups - Outside.js</Text>
-    </View>
-  ) : (
-    <UserUnauthenticatedPage action={"join Groups"} />
   );
 }
 
