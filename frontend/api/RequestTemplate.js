@@ -24,14 +24,14 @@ async function getRequest(token, url) {
     });
     data = await response.json();
   } catch (e) {
-    throw new Error(e + " for " + url)
+    throw new Error(e + " for GET " + url)
   }
   
-  // if data is not messed up, return data
+  // if nothing went wrong, return data
   if (response.ok) {
     return data;
   } else {
-    throw new Error(data.message + ": " + data.detail + " at " + url);
+    throw new Error(data.message + ": " + data.detail + " at GET " + url);
   }
 }
 
@@ -47,6 +47,27 @@ async function putRequest(token, url) {
 
 // performs a delete request to the given url with the given jwt token. Throws an error on faliure
 async function deleteRequest(token, url) {
-  // TODO
+  // req headers
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+  };
+  let response;
+
+  // try to call backend
+  try {
+    response = await fetch(BASE_URL + url, {
+      method: 'DELETE',
+      headers: headers,
+    });
+  } catch (e) {
+    throw new Error(e + " for DELETE " + url)
+  }
+  
+  // if nothing went wrong, return
+  if (response.ok) {
+    return;
+  } else {
+    throw new Error(data.message + ": " + data.detail + " at DELETE " + url);
+  }
 }
 

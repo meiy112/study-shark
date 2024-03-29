@@ -1,13 +1,17 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import { View, FlatList, ScrollView, TouchableOpacity} from "react-native";
-import { Text, Appbar, Divider, Chip, Icon, IconButton, Dialog, Portal} from "react-native-paper"
+import { View, FlatList, ScrollView, StyleSheet } from "react-native";
+import { Text, Appbar, Divider, Chip, IconButton } from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
+import StudyMaterialCard from "./StudyMatCard";
+import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
 import { topicApi } from "../../api/TopicApi";
 
-const ColorContext = createContext();
+const { active, inactive, background, primary, shadow, line, grey } = colors;
+const NavigationContext = createContext();
+export const ColorContext = createContext();
 
 
 export default function Topic({ route, navigation }) {
@@ -15,6 +19,8 @@ export default function Topic({ route, navigation }) {
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [tags, setTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [sortBy, setSortBy] = useState("lastOpened"); // for sorting studymaterial, either lastOpened or alphabetical
+  const [filter, setFilter] = useState("none"); // for filtering studymaterial by type
 
   const { token } = useContext(AuthContext);
 
@@ -51,78 +57,114 @@ export default function Topic({ route, navigation }) {
     async function fetchStudyMat() {
       try {
         // TODO, make type and sortby dynamic
-        const data = await topicApi.getFilteredSortedStudymaterial(token, route.params.id, "None", "lastOpened");
+        const data = await topicApi.getFilteredSortedStudymaterial(token, route.params.id, filter, sortBy);
         setStudyMaterial(data);
       } catch (e) {
         console.log("Topic: " + e.message);
       }
     }
     fetchStudyMat();
-   }, [token]);
+   }, [token, filter, sortBy]);
 
-    // ----------------------------------------------
+    // END LOAD DATA ----------------------------------------------
 
+    // HANDLERS ------------------------------
    function handleSort() {
-    // TODO
-    console.log("called handleSort");
+    if (sortBy === "lastOpened") {
+      setSortBy("alphabetical");
+    } else {
+      setSortBy("lastOpened");
+    }
    }
 
    function handleFilter(selected) {
-    // TODO
-    console.log("called handleFilter: " + selected);
+    setFilter(selected);
    }
 
    function handleDelete(studyMaterial) {
-    // TODO
     console.log("deleting " + studyMaterial.title);
+
+    async function deleteStudyMaterial() {
+      try {
+        await topicApi.deleteStudyMaterial(token, route.params.id, studyMaterial.title);
+        setStudyMaterial(studyMaterials => studyMaterials.filter(item => item.title !== studyMaterial.title));
+        console.log("deleted " + studyMaterial.title);
+      } catch (e) {
+        console.log("Topic: " + e.message);
+      }
+    }
+    deleteStudyMaterial();
    }
 
    function toggleEdit() {
     setIsEditing(!isEditing);
    }
 
+   // END HANDLERS -----------------------
+
   return (
     <ColorContext.Provider value={{color: route.params.color}}>
-      <View>
-        <Header topic={topic} setTopic={setTopic} color={route.params.color} navigation={navigation} route={route} />
-        <Divider />
-        <ScrollView style={{backgroundColor: '#F8FAFF'}} stickyHeaderIndices={[1]}>
-          <Info topic={topic} tags={tags} />
-          <SortAndEdit handleSort={handleSort} handleFilter={handleFilter} toggleEdit={toggleEdit}/>
-          <StudyMaterial studyMaterial={studyMaterial} topicId={topic.id} handleDelete={handleDelete} isEditing={isEditing} />
-        </ScrollView>
-      </View>
+      <NavigationContext.Provider value = {{route: route, navigation: navigation}}>
+        <View>
+          {/* Header */}
+          <Header topic={topic} setTopic={setTopic} />
+          <Divider />
+
+          <ScrollView style={{backgroundColor: background}} stickyHeaderIndices={[1]}>
+            {/* Description + tags */}
+            <Info topic={topic} tags={tags} />
+
+            {/* Sort, search, delete */}
+            <SortAndEdit handleSort={handleSort} handleFilter={handleFilter} toggleEdit={toggleEdit}/>
+
+            {/* Body */}
+            <StudyMaterialList studyMaterial={studyMaterial} topicId={topic.id} handleDelete={handleDelete} isEditing={isEditing} />
+          </ScrollView>
+        </View>
+      </NavigationContext.Provider>
     </ColorContext.Provider>
   );
 }
 
-function Header({ topic, setTopic, color, navigation, route }) {
+// HEADER: everything above description
+function Header({ topic }) {
   const { setPage } = useContext(PageContext);
+  const { navigation, route } = useContext(NavigationContext);
+  const color = route.params.color; // topic colours
+
+  function handleBackButtonPress() {
+    navigation.goBack(); 
+    setPage(route.params.prevScreen)
+  }
 
   return(
     <View>
       <Appbar.Header style={{backgroundColor: color.primary}}>
-        <Appbar.BackAction color="#FFFFFF" onPress={() => {navigation.goBack(); setPage(route.params.prevScreen)}} />
-        <Appbar.Content title={topic.title} color="#FFFFFF" titleStyle={{fontWeight: '600', fontSize: 20, fontFamily: 'mon-sb'}}/>
-        <Appbar.Action icon="cog-outline" color="#FFFFFF" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"})}}></Appbar.Action>
+        <Appbar.BackAction color="white" onPress={handleBackButtonPress} />
+        <Appbar.Content title={topic.title} color="white" titleStyle={styles.topicTitle}/>
+        <Appbar.Action icon="cog-outline" color="white" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"})}}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
     </View>
   );
 }
 
+// DESCRIPTION + TAGS
 function Info({ topic, tags }) {
   const { color } = useContext(ColorContext);
   return (
     <LinearGradient
-    colors={[color.primary, color.gradient]} // TODO: HARDCODED VALUE
+    colors={[color.primary, color.gradient]} 
     start={{ x: 0.5, y: 0 }}
     end={{ x: 0.5, y: 1 }}
-    style={{borderBottomRightRadius: 20, borderBottomLeftRadius: 20}}
+    style={styles.descriptionContainer}
   >
-      <View style={{padding: 15, borderBottomEndRadius: 20, borderBottomLeftRadius: 20}}>
-        <Text style={{color: 'white', fontFamily: 'mon-sb'}} variant="titleSmall">Description</Text>
-        <Text style={{padding:10, marginBottom:15, color: 'white', fontFamily: 'mon-m'}} variant="bodySmall">{topic.description}</Text>
+      <View style={{...styles.descriptionContainer, padding: 15 }}>
+        {/* START: Description */}
+        <Text style={styles.descriptionTitle} variant="titleSmall">Description</Text>
+        <Text style={styles.descriptionText} variant="bodySmall">{topic.description}</Text>
+        {/* END: Description */}
+        {/* START: Tags */}
         <Tags tags={tags}/>
       </View>
   </LinearGradient>
@@ -130,8 +172,8 @@ function Info({ topic, tags }) {
   )
 }
 
+// TAGS
 function Tags({ tags }) {
-
   const renderTag = (tag) => {
       return (
         <View style={{marginBottom: 10}}>
@@ -140,7 +182,7 @@ function Tags({ tags }) {
               backgroundColor: tag.color,
               marginRight: 10,
             }}
-            textStyle={{color: "#FFFFFF", fontFamily: 'mon-m'}}
+            textStyle={{color: "white", fontFamily: 'mon-m'}}
           >
             {tag.name}
           </Chip>
@@ -162,7 +204,7 @@ function Tags({ tags }) {
 }
 
 function SortAndEdit({ handleSort, handleFilter, toggleEdit }) {
-  const [selected, setSelected] = useState("None");
+  const [selected, setSelected] = useState("None"); // dropdown list selection
 
   const dropdownData = [
     {key: 'Misc', value: 'Misc (3)'},
@@ -172,121 +214,93 @@ function SortAndEdit({ handleSort, handleFilter, toggleEdit }) {
   ];
 
   return (
-    <View style={{flexDirection: 'row', padding: 5, justifyContent: "flex-end", zIndex: 2, position: "sticky", top: 0, backgroundColor: '#F8FAFF'}}>
-      <View style={{position: 'absolute', top: 10, left: 13 }}>
+    <View style={styles.sortAndEditContainer}>
+      {/* START: Dropdown */}
+      <View style={styles.selectList}>
         <SelectList
           setSelected={setSelected}
           onSelect={() => handleFilter(selected)}
           data={dropdownData}
           placeholder="Misc (3)"
           search={false}
-          boxStyles={{borderWidth: 0, paddingRight: 50, backgroundColor: "#E4E9F5", borderRadius: 15}}
-          dropdownStyles={{borderWidth: 0, backgroundColor: "#E4E9F5"}}
+          boxStyles={styles.selectListBox}
+          dropdownStyles={styles.dropdownStyles}
         />
       </View>
+      {/* END: Dropdown */}
+      {/* START: sort + edit */}
       <View style={{flexDirection: 'row'}}>
-        <IconButton style={{borderRadius: 5, marginRight: 8}} containerColor="#E4E9F5" mode="contained" icon="sort" color="000" size={25} onPress={handleSort} />
-        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor="#E4E9F5" mode="contained" icon="pencil" color="000" size={25} onPress={toggleEdit} />
+        <IconButton style={{borderRadius: 5, marginRight: 8}} containerColor={colors.grey} mode="contained" icon="sort" color="000" size={25} onPress={handleSort} />
+        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor={colors.grey} mode="contained" icon="pencil" color="000" size={25} onPress={toggleEdit} />
       </View>
+      {/* END: sort + edit */}
     </View>
     
   );
 }
 
-function StudyMaterial({ studyMaterial, topicId, handleDelete, isEditing }) {
+// STUDY MATERIAL CONTAINTER
+function StudyMaterialList({ studyMaterial, topicId, handleDelete, isEditing }) {
   const studyMaterialComponents = studyMaterial.map((item) => {
     return <StudyMaterialCard studyMaterial={item} topicId={topicId} handleDelete={handleDelete} isEditing={isEditing} key={item.title} />
   });
 
     return (
-      <View style={{flexDirection: 'row', flexWrap: "wrap", marginBottom: 90, padding: 8}}> 
+      <View style={styles.studyMatContainer}> 
         {studyMaterialComponents}
       </View>
     )
 }
 
-function StudyMaterialCard({ studyMaterial, topicId, handleDelete, isEditing }) {
-  const iconMap = {
-    "Notes": "note-text-outline",
-    "Quiz": "comment-question-outline",
-    "Flashcards": "card-multiple-outline"
-  }
-
-  const capitalizedStudyMaterialType = studyMaterial.type.toUpperCase();
-
-  const studyMaterialTitle = studyMaterial.title.length >= 17? studyMaterial.title.substring(0, 14) + "...": studyMaterial.title;
-
-  function onPress() {
-    // TODO: navigate to this studynote
-    console.log(`navigating to ${studyMaterial.title} of ${topicId}`);
-  }
-
-  return (
-    <View style={{width: "45%", padding:15, paddingTop: 0, margin: 8, backgroundColor: '#FFFFFF', borderRadius: 20, shadowColor: 'black', shadowOpacity: 0.1, shadowRadius: 5}}>
-      <TouchableOpacity onPress={onPress} disabled={isEditing}>
-        <CardHeader studyMaterial={studyMaterial} handleDelete={handleDelete} isEditing={isEditing}/>
-        <View style={{alignItems: 'center'}}>
-          <Icon source={iconMap[studyMaterial.type]} size={60}/>
-        </View>
-        <View style={{marginTop: 15, marginBottom: 5}}>
-          <Text style={{fontSize: 14, fontFamily: 'mon-m'}}>{studyMaterialTitle}</Text>
-          <View style={{marginTop: 6}}>
-            <Text style={{fontSize: 10, color: '#414141', fontFamily: 'mon-l'}}>{studyMaterial.lastOpened}</Text>
-          </View>
-        </View>
-        <CardFooter studyNoteType={studyMaterial.type} numItems={studyMaterial.numComponents} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function CardHeader({ studyMaterial, handleDelete, isEditing }) {
-  const [isVisible, setIsVisible] = useState(false);
-  
-  const showDialog = () => setIsVisible(true);
-  const hideDialog = () => setIsVisible(false);
-
-  const { color } = useContext(ColorContext);
-
-  return (
-    <View style={{display:"flex", flexDirection: "row", alignItems: 'center', justifyContent: 'space-between'}}>
-      <View style={{marginTop: 13, marginBottom: 13}}>
-        <View style={{backgroundColor: color.primary, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 10}}>
-          <Text style={{color: '#FFFFFF', fontSize: 10, fontFamily: 'mon-m'}}>{studyMaterial.type.toUpperCase()}</Text>
-        </View>
-      </View>
-      {isEditing && <IconButton style={{marginRight: -8}} icon="close" color="000" size={18} onPress={showDialog}/>}
-      <Portal>
-        <Dialog visible={isVisible} onDismiss={hideDialog}>
-          <Dialog.Content>
-            <Text style={{fontFamily: "mon-m"}} variant="bodyMedium">Are you sure you want to delete "{studyMaterial.title}" ?</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <TouchableOpacity onPress={hideDialog} style={{marginRight: 30}}>
-              <Text>No</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {handleDelete(studyMaterial); hideDialog()}}>
-              <Text>Yes</Text>
-            </TouchableOpacity>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </View>
-  )
-}
-
-function CardFooter({ studyNoteType, numItems }) {
-  const { color } = useContext(ColorContext);
-  const footerText = {
-    "Notes": "Pages",
-    "Quiz": "Questions",
-    "Flashcards": "Cards"
-  }
-    
-  return (
-    <View style={{flexDirection: "row", marginTop: 5, alignItems: "center"}}>
-      <Text style={{height: 28, width: 28, padding: 5, borderColor: color.circle, borderWidth: 1.5, borderRadius: 14, marginRight: 10, textAlign: "center", lineHeight: 15.5, fontFamily: 'mon-m'}}>{numItems}</Text>
-      <Text style={{fontFamily: 'mon-m', fontSize:13}}>{footerText[studyNoteType]}</Text>
-    </View>
-  )
-}
+// CSS
+const styles = StyleSheet.create({
+  topicTitle: {
+    fontWeight: '600',
+    fontSize: 20,
+    fontFamily: 'mon-sb'
+  },
+  descriptionTitle: {
+    color: 'white', 
+    fontFamily: 'mon-sb',
+  },
+  descriptionContainer: {
+    borderBottomRightRadius: 20, 
+    borderBottomLeftRadius: 20,
+  },
+  descriptionText: {
+    padding:10, 
+    marginBottom:15, 
+    color: 'white', 
+    fontFamily: 'mon-m',
+  },
+  sortAndEditContainer: {
+    flexDirection: 'row', 
+    padding: 5, 
+    justifyContent: "flex-end", 
+    zIndex: 2, 
+    position: "sticky", 
+    top: 0, 
+    backgroundColor: '#F8FAFF'
+  },
+  selectList : {
+    position: 'absolute', 
+    top: 10, 
+    left: 13,
+  },
+  selectListBox: {
+    borderWidth: 0, 
+    paddingRight: 50, 
+    backgroundColor: colors.grey, 
+    borderRadius: 15,
+  },
+  dropdownStyles: {
+    borderWidth: 0, 
+    backgroundColor: colors.grey,
+  },
+  studyMatContainer: {
+    flexDirection: 'row', 
+    flexWrap: "wrap", 
+    marginBottom: 90, 
+    padding: 8,
+  },
+});

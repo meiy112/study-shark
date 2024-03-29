@@ -5,6 +5,7 @@ export const topicApi = {
   getGeneralInfo,
   getTags,
   getFilteredSortedStudymaterial,
+  deleteStudyMaterial,
 }
 
 async function getHomePageTopics(token) {
@@ -25,4 +26,8 @@ async function getTags(token, topicId) {
 async function getFilteredSortedStudymaterial(token, topicId, type, sortBy) {
   const data = await requests.getRequest(token, `/topic/${topicId}/studymaterial/?type=${type}&sort=${sortBy}`);
   return data;
+}
+
+async function deleteStudyMaterial(token, topicId, title) {
+  const response = await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
 }
