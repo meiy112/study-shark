@@ -38,7 +38,8 @@ CREATE TABLE `Group` (
 
 CREATE TABLE Tag (
     name VARCHAR(255) PRIMARY KEY,
-    color VARCHAR(255) NOT NULL
+    color VARCHAR(255) NOT NULL,
+    subject VARCHAR(255)
 );
 
 CREATE TABLE QuizQuestionDifficulty (
@@ -77,12 +78,13 @@ CREATE TABLE Achievement (
 
 
 CREATE TABLE User (
-    username VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(20) PRIMARY KEY,
     school VARCHAR(255),
     reputation VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE,
     points INT NOT NULL,
+    dateJoined DATE NOT NULL,  
     FOREIGN KEY (school) REFERENCES School(name) ON DELETE SET NULL,
     FOREIGN KEY (reputation) REFERENCES Reputation(reputation)
 );
@@ -201,17 +203,17 @@ INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('defa
 INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('-10x Engineer', 'red');
 
 -- password = 123 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test', NULL, '-10x Engineer', '$2a$12$QjD0Tuf61pgaHJsYfgVYYutHmjkqd7LQBtG4UmW0N/fhNvQebZrty', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test', NULL, '-10x Engineer', '$2a$12$QjD0Tuf61pgaHJsYfgVYYutHmjkqd7LQBtG4UmW0N/fhNvQebZrty', NULL, 0, NOW());
 -- password = 1231 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test1', NULL, '-10x Engineer', '$2a$12$X1Q6kRKx2VLZt6/kqD0yzeB.bzfvouO6wrBG7TWFi/rArv3dXgkWa', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test1', NULL, '-10x Engineer', '$2a$12$X1Q6kRKx2VLZt6/kqD0yzeB.bzfvouO6wrBG7TWFi/rArv3dXgkWa', NULL, 0, NOW());
 -- password = 1232 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test2', NULL, '-10x Engineer', '$2a$12$E/GQJdihSF5J5LbPZG3GseottdZwI.bdTiSHApmeWBFXMr.4gSI1.', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test2', NULL, '-10x Engineer', '$2a$12$E/GQJdihSF5J5LbPZG3GseottdZwI.bdTiSHApmeWBFXMr.4gSI1.', NULL, 0, NOW());
 -- password = 1233 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test3', NULL, '-10x Engineer', '$2a$12$p7JWlhTRCD/uqKQ/69clB.rjocQWFPbvCWZHpYYR4kyxII/Yrlh/K', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test3', NULL, '-10x Engineer', '$2a$12$p7JWlhTRCD/uqKQ/69clB.rjocQWFPbvCWZHpYYR4kyxII/Yrlh/K', NULL, 0, NOW());
 -- password = 1234 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test4', NULL, '-10x Engineer', '$2a$12$OyKEGFL/o7qDv6sfvECZTOKnQGFcacKKuDsGBLSRwnEe70o1Oj20C', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test4', NULL, '-10x Engineer', '$2a$12$OyKEGFL/o7qDv6sfvECZTOKnQGFcacKKuDsGBLSRwnEe70o1Oj20C', NULL, 0, NOW());
 -- password = 1235 
-INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0);
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0, NOW());
 
 INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, color) VALUES
     ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), 'blue'),
@@ -222,13 +224,13 @@ INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened
     ('6', 'test', 'How to swim', false, 'description here', NOW(), 'red'),
     ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), 'blue');
 
-INSERT INTO Tag (name, color) VALUES
-    ('Physics', '#5F2EB3'),
-    ('Chemistry', '#FF7A8B'),
-    ('Math', '#22B0D2'),
-    ('Biology', '#399CFF'),
-    ('Waves', '#9D3CA1'),
-    ('Showering', '#5F2EB3');
+INSERT INTO Tag (name, color, subject) VALUES
+    ('Physics', '#5F2EB3', 'Science'),
+    ('Chemistry', '#FF7A8B', 'Science'),
+    ('Math', '#22B0D2', 'Science'),
+    ('Biology', '#399CFF', 'Science'),
+    ('Waves', '#9D3CA1', 'Science'),
+    ('Showering', '#5F2EB3', 'Public Safety');
 
 INSERT INTO Has (tagName, topicId) VALUES
     ('Physics', '1'),

@@ -12,7 +12,7 @@ class TagService {
       callback(err, {});
     } else {
       // else return all tags from topics belonging to the current user
-      db.query('SELECT DISTINCT t.name, t.color FROM createstopic c, has h, tag t WHERE username = ? AND c.id = h.topicId AND t.name = h.tagName ', [username], (err, rows, fields) => {
+      db.query('SELECT DISTINCT t.name, t.color, t.subject FROM createstopic c, has h, tag t WHERE username = ? AND c.id = h.topicId AND t.name = h.tagName ', [username], (err, rows, fields) => {
         callback(err, rows);
       });
     }
