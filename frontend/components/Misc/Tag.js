@@ -7,14 +7,15 @@ import {
   Animated,
 } from "react-native";
 
-// TAG: pls pass in the title and color for each instance
+// TAG: pls pass in the title color, and callback fn for each instance
 const Tag = (props) => {
-  const { title, color } = props;
+  const { title, color, callback } = props;
   const [isSelected, setIsSelected] = useState(false);
   const animationValue = useRef(new Animated.Value(0)).current;
 
   // ---------------------- ANIMATION THINGS ------------------------
   const switchTagHandler = () => {
+    callback({name: title, color: color}, !isSelected);
     setIsSelected(!isSelected);
     Animated.timing(animationValue, {
       toValue: isSelected ? 0 : 1,

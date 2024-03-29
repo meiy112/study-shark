@@ -8,6 +8,7 @@ export const topicApi = {
   deleteStudyMaterial,
 }
 
+// TODO: add this functionality if we still have time at the end
 async function getHomePageTopics(token) {
   const data = await requests.getRequest(token, "/topic/home-page");
   return data;
