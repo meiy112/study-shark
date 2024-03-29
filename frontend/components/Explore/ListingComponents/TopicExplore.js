@@ -14,7 +14,7 @@ const { active, inactive, background, primary, shadow, line } = colors;
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicExplore = (props) => {
-  const { title, date, numNotes, numCards, numQuizzes, color } = props;
+  const { id, title, date, ispublic, numNotes, numCards, numQuizzes, color } = props;
 
   const [scaleValue] = useState(new Animated.Value(1));
 

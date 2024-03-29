@@ -191,18 +191,63 @@ export function startServer() {
         // blank
       });
 
+      // get all the public topics in the database, sorted by most recently created first, filtered by subject
+      // - all fields are same as /topic/home-page except lastOpened is replaced with dateCreated and there is no isPublic
+      // QueryParams:
+      //    - subject: string - return only topics that contains at least one tag with the given subject.
+      //                        If subject is an empty string, return all public topics.
+      this.get("/topic/featured", (schema, request) => {
+        const example = [
+          {
+            id: "1", // topic id
+            title: "Phys901", // topic title
+            date: "March 19, 2024", // creation date
+            numNotes: 3, // count studymaterial of type "Notes" within this topic
+            numCards: 5, // count studymaterial of type "Flashcard" within this topic
+            numQuizzes: 2, // count studymaterial of type "Quiz" within this topic
+            color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, // topic color
+          },
+          {
+            id: "4",
+            title: "Beep Boop",
+            date: "March 14, 2024",
+            numNotes: 11,
+            numCards: 210,
+            numQuizzes: 3,
+            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+          },
+          {
+            id: "7",
+            title: "How to be emo",
+            date: "December 25, 5 BC",
+            numNotes: 5,
+            numCards: 3,
+            numQuizzes: 13,
+            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+          },
+        ];
+
+        return example;
+      });
+
+      // - get all the public studymaterial in the database, sorted by most recently created first
+      // - numComponents same as /topic/:id/studymaterial/
+      // - date is date created
+      this.get("/topic/studymaterial/featured", (schema, request) => {
+        const example = [
+          {title: "Standing Waves", type: "Quiz", date: "April 69, 6969", numComponents: 9, color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, topicTitle: "PHYS901"},
+          {title: "Stereochemistry", type: "Notes", date: "November 69, 2000", numComponents: 69, color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"}, topicTitle:"CHEM123"},
+          {title: "Space Meditation", type: "Flashcards", date: "April 1 1992", numComponents: 19, color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"}, topicTitle: "ASTR101"},
+        ];
+
+        return example;
+      });
+
       // TAGS ------------------------------------
       // gets all the tags of all the topics belonging to the current user
       this.get("/tag", (schema) => {
         return schema.tags.all().models;
       }); 
-
-
-
-
-
-
-      // IGNORE EVERYTHING BELOW HERE
 
 
     },

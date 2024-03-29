@@ -6,8 +6,11 @@ export const topicApi = {
   getTags,
   getFilteredSortedStudymaterial,
   deleteStudyMaterial,
+  getFeaturedTopics,
+  getFeaturedStudyMaterial,
 }
 
+// TODO: add this functionality if we still have time at the end
 async function getHomePageTopics(token) {
   const data = await requests.getRequest(token, "/topic/home-page");
   return data;
@@ -25,6 +28,16 @@ async function getTags(token, topicId) {
 
 async function getFilteredSortedStudymaterial(token, topicId, type, sortBy) {
   const data = await requests.getRequest(token, `/topic/${topicId}/studymaterial/?type=${type}&sort=${sortBy}`);
+  return data;
+}
+
+async function getFeaturedTopics(token, subject) {
+  const data = await requests.getRequest(token, `/topic/featured/?subject=${subject}`);
+  return data;
+}
+
+async function getFeaturedStudyMaterial(token, subject) {
+  const data = await requests.getRequest(token, `/topic/studymaterial/featured`);
   return data;
 }
 
