@@ -88,7 +88,7 @@ class TopicService {
                 reject(err);
                 return;
             }
-          resolve(rows);
+          resolve(rows[0]);
           });
       })
     } catch (error) {

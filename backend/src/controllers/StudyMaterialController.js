@@ -4,7 +4,7 @@ const studyMaterialService = require('../services/StudyMaterialService');
 class StudyMaterialController {
   // gets all filtered and sorted study materials from a given topic 
   getFilteredSortedStudyMaterial(req, res) {
-    studyMaterialService.getFilteredSortedStudyMaterial(req.params.id, req.body.type, req.body.sort)
+    studyMaterialService.getFilteredSortedStudyMaterial(req.params.id, req.query.type, req.query.sort)
     .then(rows => {
       res.send(rows);
     })
