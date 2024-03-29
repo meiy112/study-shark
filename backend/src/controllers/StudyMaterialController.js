@@ -4,8 +4,17 @@ const studyMaterialService = require('../services/StudyMaterialService');
 class StudyMaterialController {
   // gets all filtered and sorted study materials from a given topic 
   getFilteredSortedStudyMaterial(req, res) {
+    const words_per_page = 2;
     studyMaterialService.getFilteredSortedStudyMaterial(req.params.id, req.query.type, req.query.sort)
     .then(rows => {
+      for (var obj of rows) {
+        if (obj.type === 'Notes') {
+          const spaces = obj.parsedText.match(/ /g) || [];
+          const num_words = spaces.length + 1; 
+          obj.numComponents = Math.ceil(num_words / words_per_page); 
+        }
+        delete obj.parsedText;
+      }
       res.send(rows);
     })
     .catch(err => {

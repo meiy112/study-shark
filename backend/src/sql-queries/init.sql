@@ -124,10 +124,10 @@ CREATE TABLE ContainsStudyMaterial (
     title VARCHAR(255),
     topicId VARCHAR(255),
     type VARCHAR(255) NOT NULL,
-    privacyInfo VARCHAR(255) NOT NULL,
+    isPublic BOOLEAN NOT NULL,
     description VARCHAR(255) NOT NULL,
-    lastOpened DATE,
-    parsedText TEXT,
+    lastOpened DATE NOT NULL,
+    parsedText TEXT NOT NULL,
     highScore INT,
     PRIMARY KEY (title, topicId),
     FOREIGN KEY (topicId) REFERENCES CreatesTopic(id) ON DELETE CASCADE,
@@ -247,15 +247,15 @@ INSERT INTO StudyMaterialType (type, icon) VALUES
     ('Notes', '2'),
     ('Flashcards', '3');
 
-INSERT INTO ContainsStudyMaterial (title, topicId, type, privacyInfo, description, lastOpened, parsedText, highScore) 
-VALUES ('Wave Interference', '1', 'Notes', 'Privacy Info', 'Description', '2025-01-25', NULL, 69),
-       ('Simple Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1992-02-12', NULL, 19),
-       ('Difficult Harmonic Motion', '2', 'Flashcards', 'Privacy Info', 'Description', '1999-02-12', NULL, 99),
-       ('Standing Waves', '1', 'Quiz', 'Privacy Info', 'Description', '2937-04-02', NULL, 9),
-       ('1', '2', 'Notes', 'Privacy Info', 'Description', '2006-01-20', NULL, 26),
-       ('2', '5', 'Flashcards', 'Privacy Info', 'Description', '1078-09-28', NULL, 20),
-       ('3', '6', 'Notes', 'Privacy Info', 'Description', '3057-02-09', NULL, 7),
-       ('4', '7', 'Quiz', 'Privacy Info', 'Description', '2004-12-30', NULL, 32);
+INSERT INTO ContainsStudyMaterial (title, topicId, type, isPublic, description, lastOpened, parsedText, highScore) 
+VALUES ('Wave Interference', '1', 'Notes', TRUE, 'Description', '2025-01-25', 'a wqr 512qwa es qwT', 69),
+       ('Simple Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1992-02-12', 'b aw wq wfqf qwqw  ', 19),
+       ('Difficult Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1999-02-12', 'c D E f g h i k', 99),
+       ('Standing Waves', '1', 'Quiz', TRUE, 'Description', '2937-04-02', 'do not stand, sit', 9),
+       ('1', '2', 'Notes', FALSE, 'Description', '2006-01-20', 'what am I doing', 26),
+       ('2', '5', 'Flashcards', FALSE, 'Description', '1078-09-28', 'spacessss     spacessss     ', 20),
+       ('3', '6', 'Notes', FALSE, 'Description', '3057-02-09', 'lots of words here word word word word word', 7),
+       ('4', '7', 'Quiz', FALSE, 'Description', '2004-12-30', 'dummy dumbo', 32);
 
 INSERT INTO Likes (studyMaterialTitle, topicId, username) 
 VALUES ('Wave Interference', '1', 'test'),
@@ -280,3 +280,32 @@ VALUES ('Wave Interference', '1', 'test'),
        ('3', '6', 'test4'),
        ('4', '7', 'test4');
 
+INSERT INTO QuizQuestionDifficulty (type, icon) VALUES
+    ('MCQ', '1'),
+    ('Short Answer', '2');
+
+INSERT INTO OwnsQuizQuestion (id, studyMatTitle, topicId, type, question, answer, points) 
+VALUES ('1', 'Standing Waves', '1', 'MCQ', 'What is a standing wave?', 'a wave that stands', 10),
+       ('2', 'Standing Waves', '1', 'Short Answer', 'What is the period of the wave?', '4pi', 10),
+       ('3', 'Standing Waves', '1', 'MCQ', 'What is the tension on the string?', '17N', 20),
+       ('4', '4', '7', 'Short Answer', 'What the type of Klinklang?', 'Steel', 200),
+       ('5', '4', '7', 'Short Answer', 'What is the signature move of Klinklang?', 'Flash Cannon', 500),
+       ('6', '4', '7', 'Short Answer', 'What gen was Toxapex introduced?', 'Gen VII', 300),
+       ('7', '4', '7', 'MCQ', 'What is the first evolution of Toxapex?', 'Mareanie', 2000),
+       ('8', 'Standing Waves', '1', 'Short Answer', 'Calculate the frequency of the two waves?', '100GHz', 30),
+       ('9', 'Standing Waves', '1', 'Short Answer', 'Is this constructive or destructive interference?', 'constructive', 10),
+       ('10', 'Standing Waves', '1', 'MCQ', 'Which string has a shorter frequency?', 'string 1', 20),
+       ('11', '4', '7', 'MCQ', 'What is the signature move of Toxapex?', 'Baneful Bunker', 1000);
+
+INSERT INTO OwnsCard (id, studyMatTitle, topicId, question, answer, image) 
+VALUES ('1', 'Simple Harmonic Motion', '2', 'What is a standing wave?', 'a wave that stands', 'image1'),
+       ('2', 'Difficult Harmonic Motion', '2', 'What is the period of the wave?', '4pi', 'image2'),
+       ('3', 'Difficult Harmonic Motion', '2', 'What is the tension on the string?', '17N', 'image3'),
+       ('4', '2', '5', 'What the type of Klinklang?', 'Steel', 'image4'),
+       ('5', '2', '5', 'What is the signature move of Klinklang?', 'Flash Cannon', 'image5'),
+       ('6', '2', '5', 'What gen was Toxapex introduced?', 'Gen VII', 'image6'),
+       ('7', '2', '5', 'What is the first evolution of Toxapex?', 'Mareanie', 'image7'),
+       ('8', 'Simple Harmonic Motion', '2', 'Calculate the frequency of the two waves?', '100GHz', 'image8'),
+       ('9', 'Difficult Harmonic Motion', '2', 'Is this constructive or destructive interference?', 'constructive', 'image9'),
+       ('10', 'Simple Harmonic Motion', '2', 'Which string has a shorter frequency?', 'string 1', 'image10'),
+       ('11', '2', '5', 'What is the signature move of Toxapex?', 'Baneful Bunker', 'image11');

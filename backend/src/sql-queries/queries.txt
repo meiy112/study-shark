@@ -74,3 +74,26 @@ WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN
 primaryColor, gradient, circle
 FROM createsTopic T1, color c 
 WHERE T1.username = 'test' AND T1.color = c.name; 
+
+Insane query for sorted/filtered StudyMaterial 
+SELECT csm1.title, csm1.type,
+		DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, 
+		COUNT(*) as numComponents 
+FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
+WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
+GROUP BY csm1.title, csm1.type, lastOpened
+UNION
+SELECT csm2.title, csm2.type, 
+		DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
+        COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm2, OwnsCard oc 
+WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
+GROUP BY csm2.title, csm2.type, lastOpened
+UNION 
+SELECT csm3.title, csm3.type, 
+		DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
+        COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm3
+WHERE  csm3.type = 'Notes'
+GROUP BY csm3.title, csm3.type, lastOpened
+ORDER BY title ASC;
