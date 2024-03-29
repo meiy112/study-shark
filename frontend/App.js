@@ -1,5 +1,5 @@
-import React, { useState, useEffect, createContext } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
 import { PaperProvider } from "react-native-paper";
 import {
@@ -13,9 +13,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./components/Home/Home";
-import Explore from "./components/Explore/Explore";
 import Groups from "./components/Groups/Groups";
-import Profile from "./components/Profile/Profile";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 import colors from "./constants/Colors";
@@ -69,8 +67,7 @@ export default function App() {
     // starts mirage server
     // comment out this line to switch to real server
     startServer();
-    return () => {
-      // cleanup, shuts down server
+    return () => { // cleanup, shuts down server
       stopServer();
     };
   }, []);
@@ -132,8 +129,8 @@ export default function App() {
                 }}
               />
               <Tab.Screen
-                name="Explore"
-                component={Explore}
+                name="ExploreScreen"
+                component={Screens.explore}
                 listeners={({ navigation, route }) => ({
                   tabPress: (event) => {
                     setPage("Explore");
@@ -199,8 +196,8 @@ export default function App() {
                 }}
               />
               <Tab.Screen
-                name="Profile"
-                component={Profile}
+                name="ProfileScreen"
+                component={Screens.profile}
                 listeners={({ navigation, route }) => ({
                   tabPress: (event) => {
                     setPage("Profile");
