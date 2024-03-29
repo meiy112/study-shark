@@ -7,11 +7,12 @@ import StudyMaterialCard from "./StudyMatCard";
 import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
+import ColorContext from "../../context/TopicColorContext";
 import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 const NavigationContext = createContext();
-export const ColorContext = createContext();
+
 
 
 export default function Topic({ route, navigation }) {
