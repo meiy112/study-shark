@@ -12,13 +12,36 @@ export function startServer() {
 
     // Seed data
     seeds(server) {
-      server.create("topic", { id: "1", title: "Phys901", isPublic: true, lastOpened: new Date(), description: "Random fake description very fake pretend this is a description" }); 
-      server.create("topic", { id: "2", title: "Chem123", isPublic: false, lastOpened: new Date(), description: "idk what to write here bro" }); 
-      server.create("topic", { id: "3", title: "Math049", isPublic: false, lastOpened: new Date(), description: "Man my neck hurts" }); 
-      server.create("topic", { id: "4", title: "Cpsc304", isPublic: true, lastOpened: new Date(), description: "blah blah blah blah blah blah blah ahhhhhhhhhhhh" }); 
-      server.create("topic", { id: "5", title: "Hello World", isPublic: false, lastOpened: new Date(), description: "someone save me im not creative enough to come up with these" }); 
-      server.create("topic", { id: "6", title: "How to swim", isPublic: false, lastOpened: new Date(), description: "description here" }); 
-      server.create("topic", { id: "7", title: "Bible studies", isPublic: true, lastOpened: new Date(), description: "description here 2" }); 
+      server.create("topic", { id: "1", title: "Phys901", isPublic: true, lastOpened: new Date(), description: "Random fake description very fake pretend this is a description", isOwner: true }); 
+      server.create("topic", { id: "2", title: "Chem123", isPublic: false, lastOpened: new Date(), description: "idk what to write here bro", isOwner: true }); 
+      server.create("topic", { id: "3", title: "Math049", isPublic: false, lastOpened: new Date(), description: "Man my neck hurts", isOwner: true }); 
+      server.create("topic", { id: "4", title: "Cpsc304", isPublic: true, lastOpened: new Date(), description: "blah blah blah blah blah blah blah ahhhhhhhhhhhh", isOwner: true }); 
+      server.create("topic", { id: "5", title: "Hello World", isPublic: false, lastOpened: new Date(), description: "someone save me im not creative enough to come up with these", isOwner: true }); 
+      server.create("topic", { id: "6", title: "How to swim", isPublic: false, lastOpened: new Date(), description: "description here", isOwner: true }); 
+      server.create("topic", { id: "7", title: "Bible studies", isPublic: true, lastOpened: new Date(), description: "description here 2", isOwner: true }); 
+      // mocked public topics below
+      server.create("topic", {
+        id: "10",
+        title: "Beep Boop",
+        date: "March 14, 2024",
+        numNotes: 11,
+        numCards: 210,
+        numQuizzes: 3,
+        description: "lmao",
+        isOwner: false,
+        color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+      });
+      server.create("topic", {
+        id: "11",
+        title: "How to be emo",
+        date: "December 25, 5 BC",
+        numNotes: 5,
+        numCards: 3,
+        numQuizzes: 13,
+        description: "sldkjflsdjflksjdflksdjlkfjsfd",
+        isOwner: false,
+        color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+      });
 
       server.create("tag", { name: "Physics", color: "#5F2EB3" });
       server.create("tag", { name: "Chemistry", color: "#FF7A8B" });
@@ -68,8 +91,16 @@ export function startServer() {
         return schema.topics.all();
       });
 
-      // look at hardcoded example below
-      this.get("/topic/home-page", (schema) => {
+      // returns sorted, filtered topics for home page. Note that this is a post, with a post body.
+      // Query Params:
+      //    - sort: string - sort by either lastOpened or alphabetical
+      //    - searchQuery: string - if string is empty, return all, else return only topic titles that contain this string 
+      // Body: JSON obj in the form of:
+      //       {
+      //         "filterList" : <filters>
+      //       }
+      // where filters is an array of strings representing tag names. Return only topics that contain every tag in the filterList.
+      this.post("/topic/home-page", (schema) => {
         const example = [
           {
             id: "1", // topic id
@@ -151,6 +182,7 @@ export function startServer() {
           id: "1", // topic id
           title: "Phys901", // topic title
           description: "description here", // topic description
+          isOwner: true, // true if current user is the owner of the topic
         }
 
         const { id } = request.params;
@@ -208,7 +240,7 @@ export function startServer() {
             color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, // topic color
           },
           {
-            id: "4",
+            id: "10",
             title: "Beep Boop",
             date: "March 14, 2024",
             numNotes: 11,
@@ -217,7 +249,7 @@ export function startServer() {
             color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
           },
           {
-            id: "7",
+            id: "11",
             title: "How to be emo",
             date: "December 25, 5 BC",
             numNotes: 5,
@@ -233,6 +265,9 @@ export function startServer() {
       // - get all the public studymaterial in the database, sorted by most recently created first
       // - numComponents same as /topic/:id/studymaterial/
       // - date is date created
+      // QueryParams:
+      //    - subject: string - return only study material that are inside of a topic which contains at least one tag with the given subject.
+      //                        If subject is an empty string, return all public study material.
       this.get("/topic/studymaterial/featured", (schema, request) => {
         const example = [
           {title: "Standing Waves", type: "Quiz", date: "April 69, 6969", numComponents: 9, color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, topicTitle: "PHYS901"},

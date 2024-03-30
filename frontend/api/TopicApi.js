@@ -11,8 +11,11 @@ export const topicApi = {
 }
 
 // TODO: add this functionality if we still have time at the end
-async function getHomePageTopics(token) {
-  const data = await requests.getRequest(token, "/topic/home-page");
+async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
+  const data = await requests.postRequest(
+    token,
+     `/topic/home-page/?sort=${sortBy}&searchQuery=${searchQuery}`,
+     {"filterList": filterList});
   return data;
 }
 
@@ -37,7 +40,7 @@ async function getFeaturedTopics(token, subject) {
 }
 
 async function getFeaturedStudyMaterial(token, subject) {
-  const data = await requests.getRequest(token, `/topic/studymaterial/featured`);
+  const data = await requests.getRequest(token, `/topic/studymaterial/featured/?subject=${subject}`);
   return data;
 }
 
