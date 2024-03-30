@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
   useEffect(() => {
     async function fetchTopic() {
       try {
-          const data = await topicApi.getHomePageTopics(token);
+          const data = await topicApi.getHomePageTopics(token, filterList, sortBy, searchQuery);
           setTopics(data);
         } catch (e) {
           console.log("Home page: " + e.message);
