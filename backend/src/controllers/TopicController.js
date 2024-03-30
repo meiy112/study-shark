@@ -124,6 +124,37 @@ class TopicController {
       return;
     });
   }
+
+  getFeaturedTopics(req, res) {
+    topicService.getFeaturedTopics(req.query.subject) 
+    .then (rows => {
+      // process color object 
+      const newRows = rows.map(obj => {
+        return {
+          id: obj.id,
+          title: obj.title,
+          date: obj.date,
+          numNotes: obj.numN,
+          numCards: obj.numF, 
+          numQuizzes: obj.numQ,
+          color: {name: obj.color, primary: obj.primaryColor, gradient: obj.gradient, circle: obj.circle},
+        }
+      });
+      res.send(newRows);
+    })
+    .catch (err => {
+      if (err.message == 'This subject does not have a public topic') {
+        // return "Bad Request" if this subject does not have a public topic
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error this subject does not have a public topic: getFeaturedTopics'});
+      } else {
+        // return 'Internal Service Error' if anything strange happens in the query 
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: getFeaturedTopics'});
+      }
+      return;
+    });
+  }
 }
 
 module.exports = new TopicController();

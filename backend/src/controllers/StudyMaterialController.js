@@ -69,6 +69,40 @@ class StudyMaterialController {
       return;
     })
   }
+
+  // gets all featured study material
+  getFeaturedStudyMaterial(req, res) {
+    const words_per_page = 2;
+    studyMaterialService.getFeaturedStudyMaterial()
+    .then(rows => {
+      for (var obj of rows) {
+        if (obj.type === 'Notes') {
+          const spaces = obj.parsedText.match(/ /g) || [];
+          const num_words = spaces.length + 1; 
+          obj.numComponents = Math.ceil(num_words / words_per_page); 
+        }
+        delete obj.parsedText;
+      }
+      // process color object 
+      const newRows = rows.map(obj => {
+        return {
+          title: obj.title,
+          type: obj.type,
+          date: obj.date,
+          numComponents: obj.numComponents,
+          color: {name: obj.color, primary: obj.primaryColor, gradient: obj.gradient, circle: obj.circle},
+          topicTitle: obj.topicTitle,
+        }
+      });
+      res.send(newRows);
+    })
+    .catch(err => {
+      // return 'Internal Service Error' if anything strange happens in the query 
+      res.status(500).send({message: 'Internal Service Error', 
+                            details: 'Error executing query: getFeaturedStudyMaterial'});
+      return;
+    });
+  }
 }
 
 module.exports = new StudyMaterialController();

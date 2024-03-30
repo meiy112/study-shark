@@ -143,6 +143,45 @@ class TopicService {
       throw error; 
     } 
   }
+
+  // gets all topics belonging to the user in homepage format
+  async getFeaturedTopics(subject) {
+    try {
+      if (subject == "") {
+        // return all topics belonging to user in homepage format
+        return new Promise ((resolve, reject) => {
+          db.query("SELECT DISTINCT T1.id, T1.title, DATE_FORMAT(T1.dateCreated, '%M %d, %Y') AS date, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c WHERE T1.color = c.name AND T1.isPublic = TRUE ORDER BY date DESC",
+            (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+            resolve(rows);
+            });
+        })
+      } else { 
+        // return all topics belonging to user in homepage format
+        return new Promise ((resolve, reject) => {
+          db.query("SELECT DISTINCT T1.id, T1.title, DATE_FORMAT(T1.dateCreated, '%M %d, %Y') AS date, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, (SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c, Has h, Tag t WHERE T1.color = c.name AND t1.id = h.topicId AND h.tagName = t.name AND t.subject = ? AND T1.isPublic = TRUE ORDER BY date DESC",
+            [subject], (err, rows, fields) => {
+              if (rows.length == 0) {
+                // if query returns an empty array, return error "This subject does not have a public topic"
+                const error = new Error("This subject does not have a public topic");
+                reject(error);
+                return; 
+              }
+              if (err) {
+                  reject(err);
+                  return;
+              }
+            resolve(rows);
+            });
+        })
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new TopicService();

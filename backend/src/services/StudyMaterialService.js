@@ -186,6 +186,28 @@ class StudyMaterialService {
       throw error; 
     } 
   }
+
+  // gets all featured study material
+  async getFeaturedStudyMaterial() {
+    try {
+      // gets all featured study material
+      return new Promise ((resolve, reject) => {
+        const numQ = "(SELECT csm1.title, csm1.type, csm1.topicId, csm1.dateCreated AS idate, csm1.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId AND csm1.isPublic = TRUE GROUP BY csm1.title, csm1.type, csm1.topicId, idate, csm1.parsedText HAVING COUNT(*) <> 0 UNION "; 
+        const numN = "SELECT csm3.title, csm3.type, csm3.topicId, csm3.dateCreated AS idate, csm3.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm3 WHERE  csm3.type = 'Notes' AND csm3.isPublic = TRUE GROUP BY csm3.title, csm3.type, csm3.topicId, idate, csm3.parsedText HAVING COUNT(*) <> 0) s "; 
+        const numF = "SELECT csm2.title, csm2.type, csm2.topicId, csm2.dateCreated AS idate, csm2.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm2, OwnsCard oc WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId AND csm2.isPublic = TRUE GROUP BY csm2.title, csm2.type, csm2.topicId, idate, csm2.parsedText HAVING COUNT(*) <> 0 UNION "; 
+        const query = "SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle FROM createsTopic t, color c, " + numQ + numF + numN + "WHERE s.topicId = t.id AND t.color = c.name ORDER BY STR_TO_DATE(date, '%M %d, %Y') DESC";
+        db.query(query, (err, rows, fields) => {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(rows);
+        });
+      })
+    } catch (error) {
+      throw error; 
+    } 
+  }
 }
 
 module.exports = new StudyMaterialService();
