@@ -290,6 +290,7 @@ export function startServer() {
       this.get("/user", (schema) => {
         const example = {
           username: "Expo Marker",
+          // username: "admin",
           joined: "May 2024", // date joined
           exp: 1200, // points
           title: "BEGINNER", // reputation
@@ -301,6 +302,23 @@ export function startServer() {
           totalGroups: 11, 
           totalAchievements: 5, 
         };
+
+        // Maggie u can return this instead of example to see the admin page
+        // you have to log out first though and then relogin
+        const admin = {
+          username: "admin",
+          joined: "May 2024", 
+          exp: 1200,
+          title: "BEGINNER", 
+          color: "#22B0D2", 
+          school: "University of British Columbia",
+          email: "Expomarkerexpogo@gmail.com",
+          totalMat: 21, 
+          totalTopics: 12, 
+          totalGroups: 11, 
+          totalAchievements: 5, 
+        };
+
         return example;
       });
 
@@ -353,6 +371,23 @@ export function startServer() {
           totalGroups: 11, 
           totalAchievements: 5, 
         };
+        return example;
+      });
+
+      // ADMIN PAGE-------------------------------
+
+      // - return all topics in database with the custom WHERE clause.
+      // - if the query is invalid, return an error message (just say smth like "invalid query string" or whatever)
+      // - Query Params:
+      //   - query: string - this is supposed go into the WHERE clause.
+      //                   - if the query is invalid, return an error message (just say smth like "invalid query string" or whatever)
+      //                   - if the query is an empty string, return everything
+      this.get("/admin/topic/", (schema) => {
+        const example = [
+          {id: 1, name: "name1", title: "hi"},
+          {id: 2, name: "name2", title: "hi"},
+        ]
+
         return example;
       });
 
