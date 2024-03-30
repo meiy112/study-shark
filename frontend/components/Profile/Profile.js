@@ -18,6 +18,7 @@ import colors from "../../constants/Colors";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import schoolData from "./data/schoolData";
 import { userApi } from "../../api/UserApi";
+import Admin from "../../Admin/Admin";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
@@ -29,11 +30,6 @@ const achievements = [
   require("../../assets/images/achievements/croissant_achievement.png"),
   require("../../assets/images/achievements/croissant_achievement.png"),
 ];
-
-// update email in database
-const updateEmail = ({ email }) => {
-};
-
 
 const UserContext = createContext();
 
@@ -74,6 +70,7 @@ export default function Profile({ navigation }) {
     async function fetchUser() {
       try {
         const data = await userApi.getUser(token);
+        console.log(data.username)
         setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
       } catch (e) {
         console.log("Profile: " + e.message);
@@ -132,7 +129,8 @@ export default function Profile({ navigation }) {
 
 
   return token ? ( // conditionally renders pages based on if user is logged in
-    <UserContext.Provider value={user}>
+    user.username === 'admin' ? (<Admin />) : // conditionally render admin page
+    (<UserContext.Provider value={user}>
       <ScrollView style={{ backgroundColor: primary }}>
         <SafeAreaView style={{ flex: 1 }}>
           {/*Logout Button*/}
@@ -150,7 +148,7 @@ export default function Profile({ navigation }) {
         </SafeAreaView>
       </ScrollView>
     </UserContext.Provider>
-  ) : (
+  )) : (
     <UserUnauthenticatedPage action={"get started!"} />
   );
 }
