@@ -35,9 +35,35 @@ async function getRequest(token, url) {
   }
 }
 
-// performs a post request to the given url with the given jwt token. Throws an error on faliure
-async function postRequest(token, url) {
-  // TODO
+// performs a post request to the given url with the given jwt token and body. Throws an error on faliure
+// body must be a json object
+async function postRequest(token, url, body) {
+  // req headers
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type' : 'application/json'
+  };
+  let response;
+  let data;
+
+  // try to call backend
+  try {
+    response = await fetch(BASE_URL + url, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(body),
+    });
+    data = await response.json();
+  } catch (e) {
+    throw new Error(e + " for POST " + url)
+  }
+  
+  // if nothing went wrong, return data
+  if (response.ok) {
+    return data;
+  } else {
+    throw new Error(data.message + ": " + data.detail + " at POST " + url);
+  }
 }
 
 // performs a put request to the given url with the given jwt token. Throws an error on faliure

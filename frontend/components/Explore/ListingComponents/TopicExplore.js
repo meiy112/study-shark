@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -8,15 +8,17 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../../constants/Colors";
+import PageContext from "../../../context/PageContext";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicExplore = (props) => {
-  const { id, title, date, ispublic, numNotes, numCards, numQuizzes, color } = props;
+  const { id, title, date, numNotes, numCards, numQuizzes, color, navigation } = props;
 
   const [scaleValue] = useState(new Animated.Value(1));
+  const { setPage, setTopicId } = useContext(PageContext);
 
   // ---------------------- ANIMATION THINGS ------------------------
   const animateButton = () => {
@@ -35,7 +37,9 @@ const TopicExplore = (props) => {
   // ----------------------------------------------------------------
 
   const handleClick = () => {
-    // TODO
+    setPage("Topic");
+    setTopicId(id);
+    navigation.navigate("Topic", {id: id, color: color, prevScreen: "Explore"});
   };
 
   return (

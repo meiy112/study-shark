@@ -16,7 +16,7 @@ const NavigationContext = createContext();
 
 
 export default function Topic({ route, navigation }) {
-  const [topic, setTopic] = useState({topicId: "", title: "", description: ""});
+  const [topic, setTopic] = useState({topicId: "", title: "", description: "", isOwner: false});
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [tags, setTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +57,6 @@ export default function Topic({ route, navigation }) {
    useEffect(() => {
     async function fetchStudyMat() {
       try {
-        // TODO, make type and sortby dynamic
         const data = await topicApi.getFilteredSortedStudymaterial(token, route.params.id, filter, sortBy);
         setStudyMaterial(data);
       } catch (e) {
@@ -116,7 +115,7 @@ export default function Topic({ route, navigation }) {
             <Info topic={topic} tags={tags} />
 
             {/* Sort, search, delete */}
-            <SortAndEdit handleSort={handleSort} handleFilter={handleFilter} toggleEdit={toggleEdit}/>
+            <SortAndEdit handleSort={handleSort} handleFilter={handleFilter} toggleEdit={toggleEdit} isOwner={topic.isOwner}/>
 
             {/* Body */}
             <StudyMaterialList studyMaterial={studyMaterial} topicId={topic.id} handleDelete={handleDelete} isEditing={isEditing} />
@@ -138,12 +137,16 @@ function Header({ topic }) {
     setPage(route.params.prevScreen)
   }
 
+  function handleSettinsPress() {
+    navigation.navigate("Settings", {prevScreen: "Topic"});
+  }
+
   return(
     <View>
       <Appbar.Header style={{backgroundColor: color.primary}}>
         <Appbar.BackAction color="white" onPress={handleBackButtonPress} />
         <Appbar.Content title={topic.title} color="white" titleStyle={styles.topicTitle}/>
-        <Appbar.Action icon="cog-outline" color="white" onPress={() => {navigation.navigate("Settings", {prevScreen: "Topic"})}}></Appbar.Action>
+        <Appbar.Action icon="cog-outline" color="white" onPress={handleSettinsPress}></Appbar.Action>
       </Appbar.Header>
       <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
     </View>
@@ -204,7 +207,7 @@ function Tags({ tags }) {
   );
 }
 
-function SortAndEdit({ handleSort, handleFilter, toggleEdit }) {
+function SortAndEdit({ handleSort, handleFilter, toggleEdit, isOwner }) {
   const [selected, setSelected] = useState("None"); // dropdown list selection
 
   const dropdownData = [
@@ -231,8 +234,26 @@ function SortAndEdit({ handleSort, handleFilter, toggleEdit }) {
       {/* END: Dropdown */}
       {/* START: sort + edit */}
       <View style={{flexDirection: 'row'}}>
-        <IconButton style={{borderRadius: 5, marginRight: 8}} containerColor={colors.grey} mode="contained" icon="sort" color="000" size={25} onPress={handleSort} />
-        <IconButton style={{borderRadius: 5, marginRight: 15}} containerColor={colors.grey} mode="contained" icon="pencil" color="000" size={25} onPress={toggleEdit} />
+        <IconButton 
+          style={{borderRadius: 5, marginRight: isOwner? 8 : 15}} 
+          containerColor={colors.grey} 
+          mode="contained" 
+          icon="sort" 
+          color="000" 
+          size={25} 
+          onPress={handleSort} 
+        />
+        {isOwner && // hides edit button if not owner
+        <IconButton 
+          style={{borderRadius: 5, marginRight: 15}}
+          containerColor={colors.grey} 
+          mode="contained" 
+          icon="pencil" 
+          color="000" 
+          size={25} 
+          onPress={toggleEdit} 
+        />
+        }
       </View>
       {/* END: sort + edit */}
     </View>

@@ -75,7 +75,7 @@ export default function Explore({ navigation }) {
         }
       } 
       fetchStudyMaterial();
-  }, [token]); 
+  }, [token, subject]); 
   // END LOAD DATA ----------------------------------------------
 
   // HANDLERS ------------------------
@@ -106,7 +106,7 @@ export default function Explore({ navigation }) {
       >
         <View style={{ flex: 1, backgroundColor: background }}>
           <Header handleSearchPress={handleSearchPress} />
-          <ExploreFeed handleSubjectPress={handleSubjectPress} topics={topics} studyMaterial={studyMaterial} />
+          <ExploreFeed handleSubjectPress={handleSubjectPress} topics={topics} studyMaterial={studyMaterial} navigation={navigation} />
         </View>
         <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
       </SafeAreaView>
@@ -130,7 +130,7 @@ const Header = ({ handleSearchPress }) => {
 };
 
 // feed under header
-const ExploreFeed = ({ handleSubjectPress, topics, studyMaterial }) => {
+const ExploreFeed = ({ handleSubjectPress, topics, studyMaterial, navigation }) => {
   // scrolls to top when explore button in navbar or scrollToTop button is pressed
   const ref = useRef();
   const scrollToTop = () => {
@@ -143,9 +143,9 @@ const ExploreFeed = ({ handleSubjectPress, topics, studyMaterial }) => {
       {/*subjects*/}
       <SubjectList handleSubjectPress={handleSubjectPress} />
       {/*hot topics*/}
-      <HotTopics topics={topics} />
+      <HotTopics topics={topics} navigation={navigation} />
       {/*featured material*/}
-      <FeaturedMaterial studyMaterial={studyMaterial} />
+      <FeaturedMaterial studyMaterial={studyMaterial} navigation={navigation} />
       {/*----------------------Scroll To Top Button------------------------*/}
       <TouchableOpacity
         onPress={scrollToTop}
@@ -234,18 +234,20 @@ const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
 };
 
 // Hot Topics
-const HotTopics = ({ topics }) => {
+const HotTopics = ({ topics, navigation }) => {
   let listData = [];
   let index = 0;
   topics.forEach((item) => {
     listData.push( <TopicExplore 
         key={index} 
+        id={item.id}
         title={item.title}
         date={item.date}
         numNotes={item.numNotes}
         numCards={item.numCards}
         numQuizzes={item.numQuizzes}
         color={item.color}
+        navigation={navigation}
      />);
      index += 1;
   });
@@ -276,7 +278,7 @@ const HotTopics = ({ topics }) => {
 };
 
 // Featured Material
-const FeaturedMaterial = ({ studyMaterial }) => {
+const FeaturedMaterial = ({ studyMaterial, navigation }) => {
   let listData = [];
   let index = 0;
   studyMaterial.forEach((item) => {
@@ -288,6 +290,7 @@ const FeaturedMaterial = ({ studyMaterial }) => {
         color={item.color}
         count={item.numComponents}
         topicTitle={item.topicTitle}
+        navigation={navigation}
      />);
      index += 1;
   });
