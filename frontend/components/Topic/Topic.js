@@ -21,7 +21,7 @@ export default function Topic({ route, navigation }) {
   const [tags, setTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState("lastOpened"); // for sorting studymaterial, either lastOpened or alphabetical
-  const [filter, setFilter] = useState("none"); // for filtering studymaterial by type
+  const [filter, setFilter] = useState("None"); // for filtering studymaterial by type
 
   const { token } = useContext(AuthContext);
 
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   studyMatContainer: {
     flexDirection: 'row', 
     flexWrap: "wrap", 
-    marginBottom: 90, 
+    marginBottom: 200, 
     padding: 8,
   },
 });
