@@ -142,7 +142,25 @@ DROP TABLE Temp;
 DELETE FROM containsstudymaterial WHERE topicId = '2' AND title = '1';
 
 
+                                <<<<<<<<< gets the given user's info >>>>>>>>>
+                                        <<<<<<<<< get - user >>>>>>>>>
 
+
+SELECT username, dateJoined AS joined, points AS exp, u.reputation AS title, r.borderColor, school, email, 
+		(SELECT COUNT(*) 
+         FROM createsTopic T, containsstudymaterial csm 
+         WHERE T.username = u.username AND T.id = csm.topicId) AS totalMat, 
+		(SELECT COUNT(*) 
+         FROM createsTopic T 
+         WHERE T.username = u.username) AS totalTopics, 
+         (SELECT COUNT(*) 
+         FROM joins j 
+         WHERE j.username = u.username) AS totalGroups, 
+		(SELECT COUNT(*) 
+         FROM obtains o
+         WHERE u.username = o.username) AS totalAchievements
+FROM user u, reputation r 
+WHERE u.reputation = r.reputation AND u.username = 'test'; 
 
 
 =====================================================================================================================
