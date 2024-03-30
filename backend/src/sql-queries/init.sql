@@ -105,6 +105,7 @@ CREATE TABLE CreatesTopic (
     isPublic BOOLEAN NOT NULL,
     description VARCHAR(255),
     lastOpened DATE NOT NULL,
+    dateCreated DATE NOT NULL,
     color VARCHAR(255) NOT NULL,
     FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE,
     FOREIGN KEY (color) REFERENCES Color(name) ON DELETE NO ACTION
@@ -127,6 +128,7 @@ CREATE TABLE ContainsStudyMaterial (
     isPublic BOOLEAN NOT NULL,
     description VARCHAR(255) NOT NULL,
     lastOpened DATE NOT NULL,
+    dateCreated DATE NOT NULL,
     parsedText TEXT NOT NULL,
     highScore INT,
     PRIMARY KEY (title, topicId),
@@ -215,14 +217,14 @@ INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `po
 -- password = 1235 
 INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0, NOW());
 
-INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, color) VALUES
-    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), 'blue'),
-    ('2', 'test', 'Chem123', false, 'idk what to write here bro', NOW(), 'green'),
-    ('3', 'test', 'Math049', false, 'Man my neck hurts', NOW(), 'red'),
-    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', NOW(), 'blue'),
-    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', NOW(), 'green'),
-    ('6', 'test', 'How to swim', false, 'description here', NOW(), 'red'),
-    ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), 'blue');
+INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color) VALUES
+    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue'),
+    ('2', 'test', 'Chem123', false, 'idk what to write here bro', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'green'),
+    ('3', 'test', 'Math049', false, 'Man my neck hurts', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'red'),
+    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', NOW(), NOW(), 'blue'),
+    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'green'),
+    ('6', 'test', 'How to swim', false, 'description here', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'red'),
+    ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue');
 
 INSERT INTO Tag (name, color, subject) VALUES
     ('Physics', '#5F2EB3', 'Science'),
@@ -247,15 +249,15 @@ INSERT INTO StudyMaterialType (type, icon) VALUES
     ('Notes', '2'),
     ('Flashcards', '3');
 
-INSERT INTO ContainsStudyMaterial (title, topicId, type, isPublic, description, lastOpened, parsedText, highScore) 
-VALUES ('Wave Interference', '1', 'Notes', TRUE, 'Description', '2025-01-25', 'a wqr 512qwa es qwT', 69),
-       ('Simple Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1992-02-12', 'b aw wq wfqf qwqw  ', 19),
-       ('Difficult Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1999-02-12', 'c D E f g h i k', 99),
-       ('Standing Waves', '1', 'Quiz', TRUE, 'Description', '2937-04-02', 'do not stand, sit', 9),
-       ('1', '2', 'Notes', FALSE, 'Description', '2006-01-20', 'what am I doing', 26),
-       ('2', '5', 'Flashcards', FALSE, 'Description', '1078-09-28', 'spacessss     spacessss     ', 20),
-       ('3', '6', 'Notes', FALSE, 'Description', '3057-02-09', 'lots of words here word word word word word', 7),
-       ('4', '7', 'Quiz', FALSE, 'Description', '2004-12-30', 'dummy dumbo', 32);
+INSERT INTO ContainsStudyMaterial (title, topicId, type, isPublic, description, lastOpened, dateCreated, parsedText, highScore) 
+VALUES ('Wave Interference', '1', 'Notes', TRUE, 'Description', '2025-01-25', '1999-12-31', 'a wqr 512qwa es qwT', 69),
+       ('Simple Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1992-02-12', '1999-12-31', 'b aw wq wfqf qwqw  ', 19),
+       ('Difficult Harmonic Motion', '2', 'Flashcards', TRUE, 'Description', '1999-02-12', '1945-08-27', 'c D E f g h i k', 99),
+       ('Standing Waves', '1', 'Quiz', TRUE, 'Description', '2937-04-02', '1912-10-07', 'do not stand, sit', 9),
+       ('1', '2', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('2', '5', 'Flashcards', FALSE, 'Description', '1078-09-28', '998-06-13', 'spacessss     spacessss     ', 20),
+       ('3', '6', 'Notes', FALSE, 'Description', '3057-02-09', '0000-12-25', 'lots of words here word word word word word', 7),
+       ('4', '7', 'Quiz', FALSE, 'Description', '2004-12-30', '1969-04-20', 'dummy dumbo', 32);
 
 INSERT INTO Likes (studyMaterialTitle, topicId, username) 
 VALUES ('Wave Interference', '1', 'test'),
@@ -309,3 +311,11 @@ VALUES ('1', 'Simple Harmonic Motion', '2', 'What is a standing wave?', 'a wave 
        ('9', 'Difficult Harmonic Motion', '2', 'Is this constructive or destructive interference?', 'constructive', 'image9'),
        ('10', 'Simple Harmonic Motion', '2', 'Which string has a shorter frequency?', 'string 1', 'image10'),
        ('11', '2', '5', 'What is the signature move of Toxapex?', 'Baneful Bunker', 'image11');
+
+INSERT INTO School (name, schoolLogo) VALUES
+    ('UBC', '1'),
+    ('SFU', '2'), 
+    ('Hogwarts', '3'),
+    ('MIT', '4'), 
+    ('Euphoria High', '5'), 
+    ('Uva Academy', '6'); 

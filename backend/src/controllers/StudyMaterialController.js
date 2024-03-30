@@ -69,6 +69,46 @@ class StudyMaterialController {
       return;
     })
   }
+
+  // gets all featured study material
+  getFeaturedStudyMaterial(req, res) {
+    const words_per_page = 2;
+    studyMaterialService.getFeaturedStudyMaterial(req.query.subject)
+    .then(rows => {
+      for (var obj of rows) {
+        if (obj.type === 'Notes') {
+          const spaces = obj.parsedText.match(/ /g) || [];
+          const num_words = spaces.length + 1; 
+          obj.numComponents = Math.ceil(num_words / words_per_page); 
+        }
+        delete obj.parsedText;
+      }
+      // process color object 
+      const newRows = rows.map(obj => {
+        return {
+          title: obj.title,
+          type: obj.type,
+          date: obj.date,
+          numComponents: obj.numComponents,
+          color: {name: obj.color, primary: obj.primaryColor, gradient: obj.gradient, circle: obj.circle},
+          topicTitle: obj.topicTitle,
+        }
+      });
+      res.send(newRows);
+    })
+    .catch(err => {
+      if (err.message == 'This subject does not have a public study material') {
+        // return "Bad Request" if this subject does not have a public study material
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error this subject does not have a public study material: getFeaturedStudyMaterial'});
+      } else {
+        // return 'Internal Service Error' if anything strange happens in the query 
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: getFeaturedStudyMaterial'});
+      }
+      return;
+    });
+  }
 }
 
 module.exports = new StudyMaterialController();
