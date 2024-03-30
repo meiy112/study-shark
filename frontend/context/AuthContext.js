@@ -29,20 +29,6 @@ function AuthProvider({ children }) {
     }
   }
 
-  // check if user is authenticated (if token exists in asyncStorage)
-  const isAuthenticated = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem('token');
-      if (!storedToken) {
-        return false;
-      }
-      return true;
-    } catch (e) {
-      console.error('Error getting token:', e);
-      return false;
-    }
-  }
-
   // sets token to async storage and state
   const userLogin = async (token) => {
     await AsyncStorage.setItem('token', token);
@@ -58,7 +44,6 @@ function AuthProvider({ children }) {
   const contextValue = {
     token,
     getToken,
-    isAuthenticated,
     userLogin,
     userLogout,
   }

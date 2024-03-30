@@ -17,6 +17,7 @@ import TopicListing from "./TopicListing";
 import { useScrollToTop } from "@react-navigation/native";
 import AuthContext from '../../context/AuthContext';
 import PageContext from "../../context/PageContext";
+import NotifyContext from "../../context/NotifyContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 
 import { tagApi } from "../../api/TagApi";
@@ -48,6 +49,7 @@ export default function Home({ navigation }) {
   const [sortBy, setSortBy] = useState("lastOpened");
   const [searchQuery, setSearchQuery] = useState("");
   const { token } = useContext(AuthContext); // jwt token
+  const { lastUpdateTime } = useContext(NotifyContext); // to force a refresh when topics are changed from other pages
 
   // LOAD DATA------------------------------------
   // fetch tags
@@ -74,7 +76,7 @@ export default function Home({ navigation }) {
         }
       } 
     fetchTopic();
-  }, [token, filterList, sortBy, searchQuery]); // TODO: implement filter, search, sort
+  }, [token, filterList, sortBy, searchQuery, lastUpdateTime]); 
   // END LOAD DATA ----------------------------------------------
 
   // SEARCH / FILTER / SORT HANDLERS -----------------------------------

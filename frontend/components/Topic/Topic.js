@@ -8,6 +8,7 @@ import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
 import ColorContext from "../../context/TopicColorContext";
+import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
@@ -24,6 +25,7 @@ export default function Topic({ route, navigation }) {
   const [filter, setFilter] = useState("None"); // for filtering studymaterial by type
 
   const { token } = useContext(AuthContext);
+  const { lastUpdateTime, triggerRerender } = useContext(NotifyContext); // used to force other pages to refresh on delete
 
   // LOAD DATA------------------------------------
   // fetch topic data
@@ -88,6 +90,7 @@ export default function Topic({ route, navigation }) {
         await topicApi.deleteStudyMaterial(token, route.params.id, studyMaterial.title);
         setStudyMaterial(studyMaterials => studyMaterials.filter(item => item.title !== studyMaterial.title));
         console.log("deleted " + studyMaterial.title);
+        triggerRerender();
       } catch (e) {
         console.log("Topic: " + e.message);
       }
