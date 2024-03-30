@@ -203,6 +203,13 @@ INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('purp
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('default', '#5F2EB3', '#29144D', '#3D1E73');
 
 INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('-10x Engineer', 'red');
+INSERT INTO `Reputation` (`reputation`, `borderColor`) VALUES ('Administrator', 'black');
+
+INSERT INTO School (name, schoolLogo) VALUES
+    ('Hogwarts', '1'),
+    ('MIT', '2'), 
+    ('Euphoria High', '3'), 
+    ('Uva Academy', '4'); 
 
 -- password = 123 
 INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test', NULL, '-10x Engineer', '$2a$12$QjD0Tuf61pgaHJsYfgVYYutHmjkqd7LQBtG4UmW0N/fhNvQebZrty', NULL, 0, NOW());
@@ -216,6 +223,9 @@ INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `po
 INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test4', NULL, '-10x Engineer', '$2a$12$OyKEGFL/o7qDv6sfvECZTOKnQGFcacKKuDsGBLSRwnEe70o1Oj20C', NULL, 0, NOW());
 -- password = 1235 
 INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('test5', NULL, '-10x Engineer', '$2a$12$Rb/z345ws1faXhFAuI8LUOWLSyPr96lKmM8VeyYr2IAbssURmtLdu', NULL, 0, NOW());
+-- password = admin
+INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES ('admin', 'Hogwarts', 'Administrator', '$2a$12$8j5TfAu9qYXeZHnC4i4W4OwGeHTT4uHkyWSNiqJULFkB9OdDhQHSG', 'admin@fbi.gov', 2147483647, '0000-01-01');
+
 
 INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color) VALUES
     ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue'),
@@ -311,12 +321,6 @@ VALUES ('1', 'Simple Harmonic Motion', '2', 'What is a standing wave?', 'a wave 
        ('9', 'Difficult Harmonic Motion', '2', 'Is this constructive or destructive interference?', 'constructive', 'image9'),
        ('10', 'Simple Harmonic Motion', '2', 'Which string has a shorter frequency?', 'string 1', 'image10'),
        ('11', '2', '5', 'What is the signature move of Toxapex?', 'Baneful Bunker', 'image11');
-
-INSERT INTO School (name, schoolLogo) VALUES
-    ('Hogwarts', '1'),
-    ('MIT', '2'), 
-    ('Euphoria High', '3'), 
-    ('Uva Academy', '4'); 
 
 INSERT INTO School (name, schoolLogo) VALUES 
 ('University of Toronto', '5'),

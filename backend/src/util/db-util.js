@@ -22,7 +22,7 @@ async function createTables() {
           console.log("I inserted 3 Achievement levels, you will need to insert everything else")
         }
       });
-      console.log('Executed SQL statement:', sqlStatement);
+      //console.log('Executed SQL statement:', sqlStatement);
   };
 
   module.exports.initDB = initDB;
