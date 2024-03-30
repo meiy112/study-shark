@@ -73,7 +73,8 @@ class StudyMaterialController {
   // gets all featured study material
   getFeaturedStudyMaterial(req, res) {
     const words_per_page = 2;
-    studyMaterialService.getFeaturedStudyMaterial(req.query.subject)
+    let newStr = req.query.subject.slice(1, -1);
+    studyMaterialService.getFeaturedStudyMaterial(newStr)
     .then(rows => {
       for (var obj of rows) {
         if (obj.type === 'Notes') {

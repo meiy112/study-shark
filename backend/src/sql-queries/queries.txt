@@ -212,6 +212,13 @@ FROM user u, reputation r
 WHERE u.reputation = r.reputation AND u.username = 'test';                             
 
 
+                                <<<<<<<<< gets user specified topics >>>>>>>>>
+                                   <<<<<<<<< get - admin/topic >>>>>>>>>   
+
+
+SELECT id, username AS name, title FROM createsTopic WHERE .....
+
+
 =====================================================================================================================
 
 

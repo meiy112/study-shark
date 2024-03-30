@@ -3,13 +3,7 @@ const adminController = require('../controllers/AdminController');
 
 const router = Router();
 
-// // returns all the user's topics 
-// router.get('/', topicController.getUserTopics);
-
-// // posts all the user's topics in homepage format 
-// router.post('/home-page', topicController.postUserTopicsHomepage);
-
-// // deletes a given study material from the given topic
-// router.delete('/:id/studymaterial/:title', studyMaterialController.deleteStudyMaterial);
+// returns all the topics with user specified WHERE clause
+router.get('/topic', adminController.getAdminTopics);
 
 module.exports = router;
