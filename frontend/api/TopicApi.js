@@ -10,7 +10,6 @@ export const topicApi = {
   getFeaturedStudyMaterial,
 }
 
-// TODO: add this functionality if we still have time at the end
 async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
   const data = await requests.postRequest(
     token,

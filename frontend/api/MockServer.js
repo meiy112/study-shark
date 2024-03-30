@@ -85,7 +85,7 @@ export function startServer() {
         }
       });
 
-      // USER -------------------------------
+      // TOPIC -------------------------------
       // Return all topics for a given user
       this.get("/topic", (schema) => {
         return schema.topics.all();
@@ -284,6 +284,77 @@ export function startServer() {
         return schema.tags.all().models;
       }); 
 
+
+      // USER ----------------------------------------
+      // get the current user
+      this.get("/user", (schema) => {
+        const example = {
+          username: "Expo Marker",
+          joined: "May 2024", // date joined
+          exp: 1200, // points
+          title: "BEGINNER", // reputation
+          color: "#22B0D2", // this is border color
+          school: "University of British Columbia",
+          email: "Expomarkerexpogo@gmail.com",
+          totalMat: 21, 
+          totalTopics: 12, 
+          totalGroups: 11, 
+          totalAchievements: 5, 
+        };
+        return example;
+      });
+
+      // - update current user's email and return the user with newly updated email, in the same
+      //   format as GET /user
+      // - if the email is already used by another user (not unique), throw an error with an error message
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "email": email
+      //       }
+      //   where email is a string
+      this.put("/user/email", (schema) => {
+        // same as above
+        const example = {
+          username: "Expo Marker",
+          joined: "May 2024", // date joined
+          exp: 1200, // points
+          title: "BEGINNER", // reputation
+          color: "#22B0D2", // this is border color
+          school: "University of British Columbia",
+          email: "Expomarkerexpogo@gmail.com",
+          totalMat: 21, 
+          totalTopics: 12, 
+          totalGroups: 11, 
+          totalAchievements: 5, 
+        };
+        return example;
+      });
+
+      // - update current user's school and return the user with newly updated school, in the same
+      //   format as GET /user
+      // - theres a list of school names that i put in the google doc, use those in the db
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "school": school
+      //       }
+      //   where school is a string
+      this.put("/user/school", (schema) => {
+        // same as above
+        const example = {
+          username: "Expo Marker",
+          joined: "May 2024", // date joined
+          exp: 1200, // points
+          title: "BEGINNER", // reputation
+          color: "#22B0D2", // this is border color
+          school: "University of British Columbia",
+          email: "Expomarkerexpogo@gmail.com",
+          totalMat: 21, 
+          totalTopics: 12, 
+          totalGroups: 11, 
+          totalAchievements: 5, 
+        };
+        return example;
+      });
 
     },
   });

@@ -26,7 +26,6 @@ export default function Topic({ route, navigation }) {
   const { token } = useContext(AuthContext);
 
   // LOAD DATA------------------------------------
-  // useEffects are sperate so they can run in parallel - api calls r rly slow
   // fetch topic data
    useEffect(() => {
     async function fetchTopic() {

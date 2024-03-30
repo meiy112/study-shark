@@ -16,6 +16,13 @@ export default function Login( {setModalVisible} ) {
   // login
   async function handleLogin() {
     try {
+      checkValidInputs();
+    } catch (e) {
+      setErrorMessage(e.message);
+    }
+
+    try {
+      checkValidInputs();
       const response = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
@@ -38,14 +45,20 @@ export default function Login( {setModalVisible} ) {
       console.log("Logged in successfully");
       setErrorMessage("")
     } catch (error) {
-      console.error("Error logging in:", error);
-      setErrorMessage("Error: " + data.message)
+      setErrorMessage("Error: " + error.message);
     }
   }
 
   // signup
   async function handleSignUp() {
     try {
+      checkValidInputs();
+    } catch (e) {
+      setErrorMessage(e.message);
+    }
+
+    try {
+      checkValidInputs();
       const response = await fetch('http://localhost:3000/signup', {
         method: 'POST',
         headers: {
@@ -68,9 +81,26 @@ export default function Login( {setModalVisible} ) {
       console.log("Signed up successfully");
       setErrorMessage("")
     } catch (error) {
-      console.error("Error Signing up:", error);
+      setErrorMessage("Error: " + error.message);
     }
   }
+
+  // check valid inputs
+  function checkValidInputs() {
+    const regex = /^[0-9a-zA-Z]*$/;
+    if (!regex.test(username) || !regex.test(password) || !regex.test(school)) {
+      throw new Error("Only 0-9 and alphabetical characters are allowed");
+    }
+
+    if (username.length === 0 || password.length === 0) {
+      throw new Error("Username and password cannot be empty");
+    }
+
+    if (username.length > 20) {
+      throw new Error("Username cannot be longer than 20 characters")
+    }
+  }
+
 
 
   return(
