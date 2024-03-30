@@ -1,3 +1,157 @@
+
+
+                    <<<<<<<<<<<<<<<< List of currently active queries >>>>>>>>>>>>>>>>
+                                    (have only documented topic queries so far)
+
+                            <<<<<<<<< returns all the user's topics >>>>>>>>>
+                                    <<<<<<<<< get - topic/ >>>>>>>>>
+
+SELECT id, username, title, isPublic, description, DATE_FORMAT(T.lastOpened, '%M %d, %Y') AS lastOpened, color 
+FROM createstopic T 
+WHERE username = 'test';
+
+                    <<<<<<<<< returns all featured topics with a given subject >>>>>>>>>
+                                <<<<<<<<< get - topic/featured >>>>>>>>>
+
+
+SELECT DISTINCT T1.id, T1.title, DATE_FORMAT(T1.dateCreated, '%M %d, %Y') AS date, 
+		(SELECT COUNT(*) 
+         FROM createsTopic T, containsstudymaterial csm 
+         WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, 
+		(SELECT COUNT(*) 
+         FROM createsTopic T, containsstudymaterial csm 
+         WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, 
+        (SELECT COUNT(*) 
+         FROM createsTopic T, containsstudymaterial csm 
+         WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, 
+         T1.color, primaryColor, gradient, circle 
+        FROM createsTopic T1, color c, Has h, Tag t 
+WHERE T1.color = c.name AND t1.id = h.topicId AND h.tagName = t.name AND t.subject = 'Science' AND T1.isPublic = TRUE
+ORDER BY date DESC;
+
+
+                             <<<<<<<<< returns a given topic's general info >>>>>>>>>
+                                <<<<<<<<< get - topic/:id/general-info >>>>>>>>>
+
+SELECT id, title, description, username FROM createstopic WHERE id = '1';
+
+                        <<<<<<<<< returns all tags associated with a topic >>>>>>>>>
+                                <<<<<<<<< get - topic/:id/tags >>>>>>>>>
+
+
+SELECT name 
+FROM tag ta 
+WHERE NOT EXISTS (SELECT T.id
+				  FROM createsTopic T 
+                  WHERE NOT EXISTS (SELECT tagName 
+									FROM has 
+                                    WHERE '1' = has.topicId
+                                    AND has.tagName = ta.name));
+
+
+            <<<<<<<<< returns all public study material sorted by most recent creation date >>>>>>>>>
+                            <<<<<<<<< get - topic/studymaterial/featured >>>>>>>>>
+
+
+SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle
+FROM createsTopic t, color c, has h, tag ta, 
+(SELECT csm1.title, csm1.type, csm1.topicId,
+		csm1.dateCreated AS idate, csm1.parsedText, COUNT(*) as numComponents 
+FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
+WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
+GROUP BY csm1.title, csm1.type, csm1.topicId, idate, csm1.parsedText
+HAVING COUNT(*) <> 0 
+UNION
+SELECT csm2.title, csm2.type, csm2.topicId,
+	   csm2.dateCreated AS idate, csm2.parsedText, COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm2, OwnsCard oc 
+WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
+GROUP BY csm2.title, csm2.type, csm2.topicId, idate, csm2.parsedText
+HAVING COUNT(*) <> 0 
+UNION 
+SELECT csm3.title, csm3.type, csm3.topicId,
+	   csm3.dateCreated AS idate, csm3.parsedText, COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm3
+WHERE  csm3.type = 'Notes'
+GROUP BY csm3.title, csm3.type, csm3.topicId, idate, csm3.parsedText
+HAVING COUNT(*) <> 0) s 
+WHERE s.topicId = t.id AND t.color = c.name AND t.id = h.topicId AND h.tagName = ta.name AND ta.subject = 'Public Safety'
+ORDER BY STR_TO_DATE(date, '%M %d, %Y') DESC;
+
+
+            <<<<<<<<< returns a list of filtered and sorted study material from the given topicId >>>>>>>>>
+                                <<<<<<<<< get - topic/:id/studymaterial >>>>>>>>>
+
+
+SELECT csm1.title, csm1.type,
+		DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, 
+		COUNT(*) as numComponents 
+FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
+WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
+GROUP BY csm1.title, csm1.type, lastOpened
+UNION
+SELECT csm2.title, csm2.type, 
+		DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
+        COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm2, OwnsCard oc 
+WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
+GROUP BY csm2.title, csm2.type, lastOpened
+UNION 
+SELECT csm3.title, csm3.type, 
+		DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
+        COUNT(*) as numComponents
+FROM ContainsStudyMaterial csm3
+WHERE  csm3.type = 'Notes'
+GROUP BY csm3.title, csm3.type, lastOpened
+ORDER BY title ASC;
+
+
+                        <<<<<<<<< posts all the user's topics in homepage format >>>>>>>>>
+                                <<<<<<<<< post - topic/home-page >>>>>>>>>
+
+
+CREATE TABLE Temp (tag VARCHAR(255));
+INSERT INTO Temp (tag) VALUES ('Chemistry');
+-- INSERT INTO Temp (tag) VALUES ('Waves');
+
+SELECT DISTINCT T1.id, T1.title, T1.isPublic, T1.lastOpened, (SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF,
+(SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, 
+(SELECT COUNT(*) 
+FROM createsTopic T, containsstudymaterial csm 
+WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, 
+primaryColor, gradient, circle
+FROM createsTopic T1, color c
+WHERE T1.username = 'test' AND T1.color = c.name AND T1.title LIKE '% t%' AND
+	   NOT EXISTS (SELECT Temp.tag
+				   FROM Temp 
+                   WHERE NOT EXISTS (SELECT h1.topicId
+									 FROM Has h1 
+                                     WHERE h1.tagName = Temp.tag AND h1.topicId = T1.id))
+ORDER BY T1.title ASC;
+DROP TABLE Temp; 
+
+
+                    <<<<<<<<< deletes a given study material from the given topic >>>>>>>>>
+                            <<<<<<<<< delete - topic/:id/studymaterial/:title >>>>>>>>>
+
+
+DELETE FROM containsstudymaterial WHERE topicId = '2' AND title = '1';
+
+
+
+
+
+=====================================================================================================================
+
+
+
+
+<<<<<<<<<<<<<<<< List of inactive queries >>>>>>>>>>>>>>>>
+
 Nested Aggregation:
 
 Find the total likes for each topic
@@ -50,94 +204,3 @@ WHERE NOT EXISTS (SELECT ta.name
                                      FROM has 
                                      WHERE 'Chemistry' = has.tagName
                                      AND has.topicId = T.id))
-
-GET TAGS FROM TOPIC
-SELECT name 
-FROM tag ta 
-WHERE NOT EXISTS (SELECT T.id
-				  FROM createsTopic T 
-                  WHERE NOT EXISTS (SELECT tagName 
-									FROM has 
-                                    WHERE '1' = has.topicId
-                                    AND has.tagName = ta.name));
-
-Monster query for homepage
-SELECT T1.id, T1.title, T1.isPublic, T1.lastOpened, (SELECT COUNT(*) 
-FROM createsTopic T, containsstudymaterial csm 
-WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF,
-(SELECT COUNT(*) 
-FROM createsTopic T, containsstudymaterial csm 
-WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, 
-(SELECT COUNT(*) 
-FROM createsTopic T, containsstudymaterial csm 
-WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, T1.color, 
-primaryColor, gradient, circle
-FROM createsTopic T1, color c 
-WHERE T1.username = 'test' AND T1.color = c.name; 
-
-Insane query for sorted/filtered StudyMaterial 
-SELECT csm1.title, csm1.type,
-		DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, 
-		COUNT(*) as numComponents 
-FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
-WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
-GROUP BY csm1.title, csm1.type, lastOpened
-UNION
-SELECT csm2.title, csm2.type, 
-		DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
-        COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm2, OwnsCard oc 
-WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
-GROUP BY csm2.title, csm2.type, lastOpened
-UNION 
-SELECT csm3.title, csm3.type, 
-		DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
-        COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm3
-WHERE  csm3.type = 'Notes'
-GROUP BY csm3.title, csm3.type, lastOpened
-ORDER BY title ASC;
-
-
-featured topic 
-SELECT DISTINCT T1.id, T1.title, DATE_FORMAT(T1.dateCreated, '%M %d, %Y') AS date, 
-		(SELECT COUNT(*) 
-         FROM createsTopic T, containsstudymaterial csm 
-         WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, 
-		(SELECT COUNT(*) 
-         FROM createsTopic T, containsstudymaterial csm 
-         WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, 
-        (SELECT COUNT(*) 
-         FROM createsTopic T, containsstudymaterial csm 
-         WHERE T.id = csm.topicId AND csm.type = 'Notes' AND T1.id = csm.topicId) AS numN, 
-         T1.color, primaryColor, gradient, circle 
-        FROM createsTopic T1, color c, Has h, Tag t 
-WHERE T1.color = c.name AND t1.id = h.topicId AND h.tagName = t.name AND t.subject = 'Science' AND T1.isPublic = TRUE
-ORDER BY date DESC;
-
-
-featured study material (why are these getting longer and longer)
-SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle
-FROM createsTopic t, color c,
-(SELECT csm1.title, csm1.type, csm1.topicId,
-		csm1.dateCreated AS idate, csm1.parsedText, COUNT(*) as numComponents 
-FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
-WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
-GROUP BY csm1.title, csm1.type, csm1.topicId, idate, csm1.parsedText
-HAVING COUNT(*) <> 0 
-UNION
-SELECT csm2.title, csm2.type, csm2.topicId,
-	   csm2.dateCreated AS idate, csm2.parsedText, COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm2, OwnsCard oc 
-WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
-GROUP BY csm2.title, csm2.type, csm2.topicId, idate, csm2.parsedText
-HAVING COUNT(*) <> 0 
-UNION 
-SELECT csm3.title, csm3.type, csm3.topicId,
-	   csm3.dateCreated AS idate, csm3.parsedText, COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm3
-WHERE  csm3.type = 'Notes'
-GROUP BY csm3.title, csm3.type, csm3.topicId, idate, csm3.parsedText
-HAVING COUNT(*) <> 0) s 
-WHERE s.topicId = t.id AND t.color = c.name
-ORDER BY STR_TO_DATE(date, '%M %d, %Y') DESC;

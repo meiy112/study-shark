@@ -7,9 +7,6 @@ const router = Router();
 // returns all the user's topics 
 router.get('/', topicController.getUserTopics);
 
-// returns all the user's topics in homepage format 
-router.get('/home-page', topicController.getUserTopicsHomepage);
-
 // returns all featured topics with a given subject
 router.get('/featured', topicController.getFeaturedTopics);
 
@@ -24,6 +21,9 @@ router.get('/studymaterial/featured', studyMaterialController.getFeaturedStudyMa
 
 // returns a list of filtered and sorted study material from the given topicId
 router.get('/:id/studymaterial', studyMaterialController.getFilteredSortedStudyMaterial);
+
+// posts all the user's topics in homepage format 
+router.post('/home-page', topicController.postUserTopicsHomepage);
 
 // deletes a given study material from the given topic
 router.delete('/:id/studymaterial/:title', studyMaterialController.deleteStudyMaterial);
