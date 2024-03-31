@@ -12,12 +12,10 @@ async function getUser(token) {
 }
 
 async function updateEmail(token, email) {
-  console.log(email)
   const data = await requests.putRequest(
     token,
     `/user/email`,
     {"email": email});
-    console.log(data)
   return data;
 }
 
