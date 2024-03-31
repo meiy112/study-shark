@@ -1,10 +1,11 @@
 import { useState, useEffect, createContext, useContext } from "react";
 
-import { View, FlatList, ScrollView, StyleSheet } from "react-native";
+import { View, FlatList, ScrollView, StyleSheet, Modal } from "react-native";
 import { Text, Appbar, Divider, Chip, IconButton } from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
 import { LinearGradient } from "expo-linear-gradient";
 import StudyMaterialCard from "./StudyMatCard";
+import Settings from "./TopicSettings";
 import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext";
 import AuthContext from "../../context/AuthContext";
@@ -25,6 +26,7 @@ export default function Topic({ route, navigation }) {
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState("lastOpened"); // for sorting studymaterial, either lastOpened or alphabetical
   const [filter, setFilter] = useState("None"); // for filtering studymaterial by type
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
 
   const { token } = useContext(AuthContext);
   const { lastUpdateTime, triggerRerender } = useContext(NotifyContext); // used to force other pages to refresh on delete
@@ -41,7 +43,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchTopic();
-   }, [token]);
+   }, [token, lastUpdateTime]);
 
    // fetch tags data
    useEffect(() => {
@@ -54,7 +56,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchTags();
-   }, [token]);
+   }, [token, lastUpdateTime]);
 
    // fetch studymaterial data
    useEffect(() => {
@@ -67,7 +69,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchStudyMat();
-   }, [token, filter, sortBy]);
+   }, [token, filter, sortBy, lastUpdateTime]);
 
     // END LOAD DATA ----------------------------------------------
 
@@ -111,11 +113,12 @@ export default function Topic({ route, navigation }) {
    // END HANDLERS -----------------------
 
   return (
+    <>
     <ColorContext.Provider value={{color: route.params.color}}>
       <NavigationContext.Provider value = {{route: route, navigation: navigation}}>
         <View>
           {/* Header */}
-          <Header topic={topic} setTopic={setTopic} />
+          <Header topic={topic} setTopic={setTopic} setSettingsModalVisible={setSettingsModalVisible} />
           <Divider />
 
           <ScrollView style={{backgroundColor: background}} stickyHeaderIndices={[1]}>
@@ -131,11 +134,22 @@ export default function Topic({ route, navigation }) {
         </View>
       </NavigationContext.Provider>
     </ColorContext.Provider>
+
+    {/* Settings Modal */}
+    <Modal
+    animationType="slide"
+    visible={settingsModalVisible}
+    onRequestClose={() => {
+      setSettingsModalVisible(!modalVisible);
+    }}>
+      <Settings closeSettings={() => setSettingsModalVisible(false)} id={topic.id} navigation={navigation} lastPage={route.params.prevScreen}/>
+    </Modal>
+    </>
   );
 }
 
 // HEADER: everything above description
-function Header({ topic }) {
+function Header({ topic, setSettingsModalVisible }) {
   const { setPage } = useContext(PageContext);
   const { navigation, route } = useContext(NavigationContext);
   const color = route.params.color; // topic colours
@@ -146,7 +160,7 @@ function Header({ topic }) {
   }
 
   function handleSettinsPress() {
-    navigation.navigate("Settings", {prevScreen: "Topic"});
+    setSettingsModalVisible(true);
   }
 
   return (
@@ -168,7 +182,7 @@ function Info({ topic, tags }) {
     <LinearGradient
     colors={[color.primary, color.gradient]} 
     start={{ x: 0.5, y: 0 }}
-    end={{ x: 0.5, y: 1 }}
+    end={{ x: 0.5, y: 0.7 }}
     style={styles.descriptionContainer}
   >
       <View style={{...styles.descriptionContainer, padding: 15 }}>

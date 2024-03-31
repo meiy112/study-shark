@@ -8,6 +8,9 @@ export const topicApi = {
   deleteStudyMaterial,
   getFeaturedTopics,
   getFeaturedStudyMaterial,
+  getSettingsTopic,
+  updateTopic,
+  deleteTopic,
 }
 
 async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
@@ -44,5 +47,22 @@ async function getFeaturedStudyMaterial(token, subject) {
 }
 
 async function deleteStudyMaterial(token, topicId, title) {
-  const response = await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
+  await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
+}
+
+async function getSettingsTopic(token, id) {
+  const data = await requests.getRequest(token, `/topic/:${id}/settings`);
+  return data;
+}
+
+async function updateTopic(token, id, topic) {
+  await requests.putRequest(
+    token,
+    `/topic/:${id}`,
+    topic
+    );
+}
+
+async function deleteTopic(token, id) {
+  await requests.deleteRequest(token, `/topic/:${id}`);
 }
