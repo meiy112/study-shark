@@ -79,7 +79,11 @@ export default function Topic({ route, navigation }) {
    }
 
    function handleFilter(selected) {
-    setFilter(selected);
+    if (selected === "Quizzes") {
+      setFilter("Quiz");
+    } else {
+      setFilter(selected);
+    }
    }
 
    function handleDelete(studyMaterial) {
@@ -213,10 +217,10 @@ function SortAndEdit({ handleSort, handleFilter, toggleEdit, isOwner }) {
   const [selected, setSelected] = useState("None"); // dropdown list selection
 
   const dropdownData = [
-    {key: 'Misc', value: 'Misc (3)'},
+    {key: 'None', value: 'All'},
     {key: 'Notes', value: 'Notes'},
     {key: 'Quizzes', value: 'Quizzes'},
-    {key: 'Flashcard', value: 'Flashcard'},
+    {key: 'Flashcards', value: 'Flashcards'},
   ];
 
   return (

@@ -67,7 +67,7 @@ export default function App() {
 
     // starts mirage server
     // comment out this line to switch to real server
-    startServer();
+    // startServer();
     return () => { // cleanup, shuts down server
       stopServer();
     };

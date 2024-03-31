@@ -31,7 +31,7 @@ async function getRequest(token, url) {
   if (response.ok) {
     return data;
   } else {
-    throw new Error(data.message + ": " + data.detail + " at GET " + url);
+    throw new Error(data.message + ": " + data.details + " at GET " + url);
   }
 }
 
@@ -62,7 +62,7 @@ async function postRequest(token, url, body) {
   if (response.ok) {
     return data;
   } else {
-    throw new Error(data.message + ": " + data.detail + " at POST " + url);
+    throw new Error(data.message + ": " + data.details + " at POST " + url);
   }
 }
 
@@ -92,7 +92,7 @@ async function putRequest(token, url, body) {
   if (response.ok) {
     return data;
   } else {
-    throw new Error(data.message + ": " + data.detail + " at POST " + url);
+    throw new Error(data.message + ": " + data.details + " at POST " + url);
   }
 }
 
@@ -118,7 +118,7 @@ async function deleteRequest(token, url) {
   if (response.ok) {
     return;
   } else {
-    throw new Error(data.message + ": " + data.detail + " at DELETE " + url);
+    throw new Error(data.message + ": " + data.details + " at DELETE " + url);
   }
 }
 
