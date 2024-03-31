@@ -59,7 +59,7 @@ class TopicService {
       }
 
       // else return all topics belonging to user in homepage format
-      if (searchQuery == "") {
+      if (searchQuery.length == 0) {
         //console.log(create + insert + head + numF + numQ + numN + tail + division + orderBy + drop);
         query = create + insert + head + numF + numQ + numN + tail + division + orderBy + drop;
       } else {
@@ -169,7 +169,7 @@ class TopicService {
     // function to check if subject is invalid 
     const checkSubjectInvalid = (subject) => {
       if (subject != "SCIENCE" && subject != "LANG" && subject != "MATH" && subject != "CREATIVE" && 
-          subject != "GAM" && subject != "LIT" && subject != "") {
+          subject != "GAM" && subject != "LIT" && subject.length != 0) {
             return true;
           }
           return false; 
@@ -185,7 +185,7 @@ class TopicService {
       if (checkSubjectInvalid(subject)) {
         return []; 
       }
-      if (subject == "") {
+      if (subject.length == 0) {
         // return all topics belonging to user in homepage format
         return new Promise ((resolve, reject) => {
           db.query(head + numF + numQ + numN + tail,
