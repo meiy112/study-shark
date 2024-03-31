@@ -11,6 +11,7 @@ export const topicApi = {
   getSettingsTopic,
   updateTopic,
   deleteTopic,
+  addTopic,
 }
 
 async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
@@ -65,4 +66,14 @@ async function updateTopic(token, id, topic) {
 
 async function deleteTopic(token, id) {
   await requests.deleteRequest(token, `/topic/:${id}`);
+}
+
+async function addTopic(token, title) {
+  await requests.postRequest(
+    token,
+    '/topic',
+    {
+      "title": title
+    }
+  )
 }
