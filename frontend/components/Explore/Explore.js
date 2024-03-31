@@ -10,6 +10,7 @@ import { useRef, useState, useEffect, useContext, createContext } from "react";
 import SearchScreen from "./Search/SearchScreen";
 import PageContext from "../../context/PageContext";
 import AuthContext from '../../context/AuthContext';
+import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
@@ -49,6 +50,7 @@ export default function Explore({ navigation }) {
   const [studyMaterial, setStudyMaterial] = useState([]);
   const [subject, setSubject] = useState(""); // subject to filter by
   const { token } = useContext(AuthContext); // jwt token
+  const { lastUpdateTime } = useContext(NotifyContext);
 
   // LOAD DATA------------------------------------
   // fetch topics
@@ -62,7 +64,7 @@ export default function Explore({ navigation }) {
       }
     }
     fetchTopics();
-  }, [token, subject]);
+  }, [token, subject, lastUpdateTime]);
 
   // fetch studyMaterial
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function Explore({ navigation }) {
         }
       } 
       fetchStudyMaterial();
-  }, [token, subject]); 
+  }, [token, subject, lastUpdateTime]); 
   // END LOAD DATA ----------------------------------------------
 
   // HANDLERS ------------------------

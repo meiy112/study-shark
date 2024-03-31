@@ -4,15 +4,17 @@ import { Button, IconButton, Text, Switch } from "react-native-paper";
 import * as appColors from "../../constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import AuthContext from "../../context/AuthContext";
+import PageContext from "../../context/PageContext";
 import { topicApi } from "../../api/TopicApi";
 import { colorApi } from "../../api/ColorApi";
+import NotifyContext from "../../context/NotifyContext";
 
 
 const { active, inactive, background, primary, shadow, line, grey } = appColors.default;
 
 const TopicContext = createContext();
 
-export default function Settings({ closeSettings, id }) {
+export default function Settings({ closeSettings, id, navigation, lastPage }) {
   const [topic, setTopic] = useState({
     title: "",
     description: "",
@@ -28,6 +30,8 @@ export default function Settings({ closeSettings, id }) {
   const [colors, setColors] = useState([]);
   const color = colors.find((item) => item.name === topic.color);
   const { token } = useContext(AuthContext);
+  const { setPage } = useContext(PageContext);
+  const { triggerRerender } = useContext(NotifyContext);
 
   // LOAD DATA------------------------------------
   // fetch topic
@@ -73,6 +77,7 @@ export default function Settings({ closeSettings, id }) {
       }
     }
     update();
+    triggerRerender();
    }
 
    function deleteTopic() {
@@ -84,6 +89,10 @@ export default function Settings({ closeSettings, id }) {
       }
     }
     delTopic();
+    triggerRerender();
+    setPage(lastPage);
+    closeSettings();
+    navigation.goBack(); 
    }
 
   // END HANDLERS ------------------------------------

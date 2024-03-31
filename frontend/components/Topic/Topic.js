@@ -43,7 +43,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchTopic();
-   }, [token]);
+   }, [token, lastUpdateTime]);
 
    // fetch tags data
    useEffect(() => {
@@ -56,7 +56,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchTags();
-   }, [token]);
+   }, [token, lastUpdateTime]);
 
    // fetch studymaterial data
    useEffect(() => {
@@ -69,7 +69,7 @@ export default function Topic({ route, navigation }) {
       }
     }
     fetchStudyMat();
-   }, [token, filter, sortBy]);
+   }, [token, filter, sortBy, lastUpdateTime]);
 
     // END LOAD DATA ----------------------------------------------
 
@@ -142,7 +142,7 @@ export default function Topic({ route, navigation }) {
     onRequestClose={() => {
       setSettingsModalVisible(!modalVisible);
     }}>
-      <Settings closeSettings={() => setSettingsModalVisible(false)} id={topic.id}/>
+      <Settings closeSettings={() => setSettingsModalVisible(false)} id={topic.id} navigation={navigation} lastPage={route.params.prevScreen}/>
     </Modal>
     </>
   );
