@@ -386,6 +386,10 @@ export function startServer() {
         const example = [
           {id: 1, name: "name1", title: "hi"},
           {id: 2, name: "name2", title: "hi"},
+          {id: 3, name: "name3", title: "hidffdsd"},
+          {id: 4, name: "name4", title: "hafdi"},
+          {id: 5, name: "name5", title: "hidffdsd"},
+          {id: 6, name: "name6", title: "hafdi"},
         ]
 
         return example;
@@ -404,7 +408,9 @@ export function startServer() {
       this.post("/admin/table/", (schema) => {
         const example = [
           {id: 1, name: "name1", title: "hi"},
-          {id: 2, name: "name2", title: "hi"},
+          {id: 2, name: "name2", title: "dafda"},
+          {id: 3, name: "name3", title: "hidffdsd"},
+          {id: 4, name: "name4", title: "hafdi"},
         ]
 
         return example;
