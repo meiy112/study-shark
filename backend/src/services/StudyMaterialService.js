@@ -194,7 +194,20 @@ class StudyMaterialService {
 
   // gets all featured study material
   async getFeaturedStudyMaterial(subject) {
+    // function to check if subject is invalid 
+    const checkSubjectInvalid = (subject) => {
+      if (subject != "SCIENCE" && subject != "LANG" && subject != "MATH" && subject != "CREATIVE" && 
+          subject != "GAM" && subject != "LIT" && subject != "") {
+            return true;
+          }
+          return false; 
+    };
+
     try {
+      // if subject is invalid, return an empty list
+      if (checkSubjectInvalid(subject)) {
+        return []; 
+      }
       // gets all featured study material
       return new Promise ((resolve, reject) => {
         let query = "";
@@ -213,12 +226,6 @@ class StudyMaterialService {
         } else {
           query = "SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle FROM createsTopic t, color c, has h, tag ta, " + numQ + numF + numN + "WHERE s.topicId = t.id AND t.color = c.name AND t.id = h.topicId AND h.tagName = ta.name AND ta.subject = ? ORDER BY STR_TO_DATE(date, '%M %d, %Y') DESC";
           db.query(query, [subject], (err, rows, fields) => {
-            if (rows.length == 0) {
-              // if query returns an empty array, return error "This subject does not have a public study material"
-              const error = new Error("This subject does not have a public study material");
-              reject(error);
-              return; 
-            }
             if (err) {
                 reject(err);
                 return;

@@ -237,12 +237,17 @@ INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened
     ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue');
 
 INSERT INTO Tag (name, color, subject) VALUES
-    ('Physics', '#5F2EB3', 'Science'),
-    ('Chemistry', '#FF7A8B', 'Science'),
-    ('Math', '#22B0D2', 'Science'),
-    ('Biology', '#399CFF', 'Science'),
-    ('Waves', '#9D3CA1', 'Science'),
-    ('Showering', '#5F2EB3', 'Public Safety');
+    ('Physics', '#5F2EB3', 'SCIENCE'),
+    ('Chemistry', '#FF7A8B', 'SCIENCE'),
+    ('Math', '#22B0D2', 'MATH'),
+    ('Biology', '#399CFF', 'SCIENCE'),
+    ('Waves', '#9D3CA1', 'SCIENCE'),
+    ('Showering', '#5F2EB3', 'GAM'), 
+    ('High Valyrian', '#2924A1', 'LANG'),
+    ('Students', '#9D3CAA', 'CREATIVE'),
+    ('Rain', '#ABD2A1', 'WEATHER'),
+    ('Books', '#FFA87B', 'LIT'),
+    ('Finance', '#2782EE', 'GAM');
 
 INSERT INTO Has (tagName, topicId) VALUES
     ('Physics', '1'),
@@ -252,7 +257,13 @@ INSERT INTO Has (tagName, topicId) VALUES
     ('Waves', '1'),
     ('Chemistry', '6'),
     ('Chemistry', '5'),
-    ('Showering', '7');
+    ('Showering', '7'),
+    ('High Valyrian', '7'),
+    ('Students', '5'),
+    ('Rain', '7'),
+    ('Books', '6'),
+    ('Finance', '7'),
+    ('Finance', '5');
 
 INSERT INTO StudyMaterialType (type, icon) VALUES
     ('Quiz', '1'),
@@ -410,3 +421,122 @@ INSERT INTO School (name, schoolLogo) VALUES
 ('Northern Baptist College', '92'),
 ('Prairie Bible Institute', '93'),
 ('Providence University College', '94');
+
+INSERT INTO AchievementLevel (difficulty, points, borderColor)
+VALUES ('Hard', '20', 'red'),
+       ('Very Hard', '50', 'Blue'),
+       ('Impossible', '1000000', 'black');
+
+INSERT INTO Achievement (title, difficulty, image) 
+VALUES ('First Topic!', 'Easy' , 'https://t.ly/FvkQO'), 
+       ('First Quiz!', 'Easy' , 'https://t.ly/FvkQT'),
+       ('First Flash Card Set!', 'Easy' , 'https://t.ly/FvkQU'),
+       ('You Are the Best!', 'Impossible' , 'https://t.ly/FvkQI'),
+       ('Learned Everything', 'Impossible' , 'https://t.ly/FvkQK');
+       
+INSERT INTO School (name, schoolLogo)
+VALUES ('UBC', 'https://t.ly/F21s'),
+       ('UBCO', 'https://t.ly/F1s'),
+       ('SFU', 'https://t.ly/G21s'),
+       ('KPU', 'https://t.ly/A21s');
+
+INSERT INTO Reputation (reputation, borderColor)
+VALUES ('a', 'green'),
+       ('c', 'yellow'),
+       ('f', 'orange'),
+       ('g', 'blue'),
+       ('z', 'black');
+
+INSERT INTO User (username, school, reputation, password, email, points, dateJoined)
+VALUES ('hacker101', 'UBC', 'z', 'SHig32b8wug', 'hacker@gmail.com', 2147483647, '2024-03-30'),
+       ('i_am_a_beginner', 'UBC', 'a', '1234', 'myemail@gmail.com', 10, '2024-03-01'),
+       ('smug_person', 'UBC', 'g', 'lmao', 'best@gmail.com', 99999, '1999-01-15'),
+       ('admin2', 'UBCO', 'z', 'h21s$7', 'admin@hotmail.net', 2147483647, '0001-01-02'),
+       ('ditto07', 'Uva Academy', 'c', 'iwannabetheverybest', 'abc@uva.com', 11284, '2005-10-22');
+
+INSERT INTO Obtains (username, achievementTitle)
+VALUES ('i_am_a_beginner', 'First Topic!'),
+       ('i_am_a_beginner', 'First Quiz!'),
+       ('i_am_a_beginner', 'First Flash Card Set!'),
+       ('smug_person', 'You Are the Best!'),
+       ('hacker101', 'Learned Everything');
+
+INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color)
+VALUES ('times_tables', 'i_am_a_beginner', 'times_tables', TRUE, 'multiplication practice for grade four', '2024-03-01', '2024-03-01', 'purple'),
+       ('Calculus 9', 'smug_person', 'Calculus 9', TRUE, 'Secrets of the Universe', '2021-12-25', '2021-12-24', 'blue'),
+       ('List of Personal Achievements', 'smug_person', 'List of Personal Achievements', TRUE, 'I am so cool', '2024-03-01', '2024-01-01', 'red'),
+       ('nuclear_codes', 'admin2', 'nuclear_codes', TRUE, 'post to internet when app is dead', '2002-02-02', '1900-02-25', 'pink'),
+       ('gen6pokemon', 'ditto07', 'gen6pokemon', TRUE, 'memorize gen 6 pokemon before pokemon z-a comes out', '2024-03-01', '0193-08-27', 'green');
+
+INSERT INTO Tag (name, color, subject)
+VALUES ('Games', 'green', 'GAM'),
+       ('Top', 'blue', 'GAM'),
+       ('UBC', 'yellow', 'LIT'),
+       ('DO NOT READ', 'black', 'CREATIVE');
+
+INSERT INTO Has (tagName, topicId)
+VALUES ('Math', 'times_tables'),
+       ('Math', 'Calculus 9'),
+       ('Games', 'gen6pokemon'),
+       ('Games', 'List Of Personal Achievements'),
+       ('DO NOT READ', 'nuclear_codes');
+
+INSERT INTO StudyMaterialType (type, icon)
+VALUES ('Super Flashcard Set', 'https://t.ly/2ir2uq r2a1s'),
+       ('MEGA QUIZ', 'https://t.ly/2i1i21wuia1s');
+
+INSERT INTO ContainsStudyMaterial (title, topicId, type, isPublic, description, lastOpened, dateCreated, parsedText, highScore)
+VALUES ('waterTypes', 'gen6pokemon', 'Flashcards', TRUE, 'Flashcards for memorizing gen6 water type pokemon', '2024-02-29', '2024-02-28', 'abc', NULL),
+       ('steelTypes', 'gen6pokemon', 'Flashcards', FALSE, 'Flashcards for memorizing gen6 steel type pokemon', '2024-02-29', '2024-02-28', 'def', NULL),
+       ('7_timestables', 'times_tables', 'Quiz', TRUE, 'SUPER HARD', '2024-03-01', '2024-03-01', 'ghi', 0.3),
+       ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', 'Flashcards', TRUE, 'ONLY FOR SUPER SMART PEOPLE', '2021-12-25', '2021-08-26', 'jkl', NULL),
+       ('Big missile', 'nuclear_codes', 'Quiz', FALSE, 'I need to pass or else our missiles will go off', '2024-03-01', '1999-12-31', 'mno', 1);
+
+INSERT INTO QuizQuestionDifficulty (type, icon)
+VALUES ('easy', 'https://t.ly/2ir2uq r2a1s'),
+       ('medium', 'https://t.ly/2r2a1s'),
+       ('hard', 'https://t.ly/2ir2ukqq r2a1s'),
+       ('very hard', 'https://t.ly/2921q r2a1s'),
+       ('impossible', 'https://t.ly/2ir1s');
+       
+INSERT INTO OwnsQuizQuestion (id, studyMatTitle, topicId, type, question, answer, points)
+VALUES ('12', '7_timestables', 'times_tables', 'easy', '1', '7', 0.1),
+       ('13', '7_timestables', 'times_tables', 'medium', '4', '28', 0.1),
+       ('14', '7_timestables', 'times_tables', 'hard', '7', '49', 0.1),
+       ('15', 'Big missile', 'nuclear_codes', 'impossible', 'Neo-Armstrong Missile', '81husv17qUI1#H21', 0.5),
+       ('16', 'Big missile', 'nuclear_codes', 'impossible', 'doom', 'ALwqkngNW(!&%*(@32', 0.5);
+
+INSERT INTO OwnsCard (id, studyMatTitle, topicId, question, answer, image)
+VALUES ('12', 'waterTypes', 'gen6pokemon', 'emo ninja', 'Greninja', 'https://t.ly/2ir2uqr2a'),
+       ('13', 'waterTypes', 'gen6pokemon', 'gun for arm', 'Clawitzer', 'https://t.ly/2ir2uqqkw r2a'),
+       ('14', 'steelTypes', 'gen6pokemon', 'double swords', 'Doublade', 'https://t.ly/2ir2uq819j'),
+       ('15', 'steelTypes', 'gen6pokemon', 'keys', 'Klefki', 'https://t.ly/q r2a'),
+       ('16','Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', 'Riemann Hypothesis?', 'true', 'https://t.ly/2ir2u91hjjq r2a');
+
+INSERT INTO `Group` (code, name)
+VALUES ('1', 'cool_kidz'),
+       ('2', 'even_cooler_kidzz'),
+       ('3', 'pokemon fans'),
+       ('4', 'UBC CS'),
+       ('5', 'DO NOT JOIN');
+
+INSERT INTO Joins (username, groupCode)
+VALUES ('i_am_a_beginner', '1'),
+       ('smug_person', '1'),
+       ('smug_person', '2'),
+       ('smug_person', '5'),
+       ('ditto07', '3');
+       
+INSERT INTO Shares (studyMaterialTitle, topicId, groupCode)
+VALUES ('7_timestables', 'times_tables', '1'),
+       ('waterTypes', 'gen6pokemon', '3'),
+       ('steelTypes', 'gen6pokemon', '3'),
+       ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', '1'),
+       ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', '3');
+
+INSERT INTO Likes (studyMaterialTitle, topicId, username)
+VALUES ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', 'i_am_a_beginner'),
+       ('waterTypes', 'gen6pokemon', 'ditto07'),
+       ('steelTypes', 'gen6pokemon', 'ditto07'),
+       ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', 'smug_person'),
+       ('Quantum Computing Quadruple Integral Wave … idk some other bs', 'Calculus 9', 'admin2');
