@@ -319,7 +319,7 @@ export function startServer() {
           totalAchievements: 5, 
         };
 
-        return admin;
+        return example;
       });
 
       // - update current user's email and return the user with newly updated email, in the same
@@ -374,7 +374,46 @@ export function startServer() {
         return example;
       });
 
-      // ADMIN PAGE-------------------------------
+      // - given a topic id, return info on the topic
+      this.get("/topic/:id/settings/", (schema) => {
+        const example = {
+            title: "Phys901",
+            description: "blub blub",
+            creationDate: "November 9, 1989",
+            tags: ["Physics, Waves"], // names of tags associated with this topic
+            isPublic: false,
+            owner: { // the topic's owner
+              name: "Expo Marker",
+              points: 11,
+            },
+            color: "purple",
+          }
+        return example;
+      });
+
+      // - updates a topic with the given fields. Additionally, set date last opened to current date
+      // - only update if the current user is the owner of the topic
+      // - return the updated topic (just returning the body as it is without modifying it is fine)
+      // - Body: JSON obj in the form of:
+      //       {
+      //         title: <title>,
+      //         isPublic: <isPublic>,
+      //         description: <description>,
+      //         color: <color>
+      //       }
+      //   isPublic is boolean, all other fields are strings. 
+      this.put("/topic/:id", (schema) => {
+        // blank
+        return [];
+      });
+
+      // - deletes the given topic
+      // - only delete if the current user is the owner of the topic
+      this.delete("/topic/:id", (schema) => {
+        // blank
+      });
+
+      // ADMIN API-------------------------------
 
       // - return all topics in database with the custom WHERE clause.
       // - if the query is invalid, return an error message (just say smth like "invalid query string" or whatever)
@@ -415,6 +454,35 @@ export function startServer() {
 
         return example;
       });
+
+      // COLOR API ----------------------------
+      // return all colors in database
+      this.get("/color", (schema) => {
+        const example = [
+          {
+            name: "purple",
+            primary: "#5F2EB3", 
+            gradient: "#29144D", 
+            circle: "#3D1E73",
+          },
+          {
+            name: "blue", 
+            primary: "#22B0D2", 
+            gradient: "#1455CE", 
+            circle: "#1455CE"
+          },
+          {
+            name: "pink", 
+            primary: "#F5878D", 
+            gradient: "#B9568C", 
+            circle: "#B9568C",
+          },
+        ]
+
+        return example;
+      });
+
+      
 
     },
   });
