@@ -19,6 +19,7 @@ import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import schoolData from "./data/schoolData";
 import { userApi } from "../../api/UserApi";
 import Admin from "../Admin/Admin";
+import NotifyContext from "../../context/NotifyContext";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
@@ -79,6 +80,7 @@ export default function Profile({ navigation }) {
   });
   const [errorMessage, setErrorMessage] = useState(""); // error message for updating email
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
+  const { lastUpdateTime } = useContext(NotifyContext);
 
   // LOAD DATA----------------------------------------
   // fetch user data
@@ -92,7 +94,7 @@ export default function Profile({ navigation }) {
       }
     }
     fetchUser();
-   }, [token]);
+   }, [token, lastUpdateTime]);
   // END LOAD DATA------------------------------------
 
   // log out
