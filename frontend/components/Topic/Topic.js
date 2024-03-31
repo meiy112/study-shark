@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
+
 import { View, FlatList, ScrollView, StyleSheet } from "react-native";
 import { Text, Appbar, Divider, Chip, IconButton } from "react-native-paper"
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -13,6 +14,7 @@ import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 const NavigationContext = createContext();
+
 
 
 
@@ -79,7 +81,11 @@ export default function Topic({ route, navigation }) {
    }
 
    function handleFilter(selected) {
-    setFilter(selected);
+    if (selected === "Quizzes") {
+      setFilter("Quiz");
+    } else {
+      setFilter(selected);
+    }
    }
 
    function handleDelete(studyMaterial) {
@@ -98,9 +104,9 @@ export default function Topic({ route, navigation }) {
     deleteStudyMaterial();
    }
 
-   function toggleEdit() {
+  function toggleEdit() {
     setIsEditing(!isEditing);
-   }
+  }
 
    // END HANDLERS -----------------------
 
@@ -143,14 +149,14 @@ function Header({ topic }) {
     navigation.navigate("Settings", {prevScreen: "Topic"});
   }
 
-  return(
+  return (
     <View>
       <Appbar.Header style={{backgroundColor: color.primary}}>
         <Appbar.BackAction color="white" onPress={handleBackButtonPress} />
         <Appbar.Content title={topic.title} color="white" titleStyle={styles.topicTitle}/>
         <Appbar.Action icon="cog-outline" color="white" onPress={handleSettinsPress}></Appbar.Action>
       </Appbar.Header>
-      <Divider style={{height: 0.7, backgroundColor: '#444444'}}/>
+      <Divider style={{ height: 0.7, backgroundColor: "#444444" }} />
     </View>
   );
 }
@@ -173,9 +179,8 @@ function Info({ topic, tags }) {
         {/* START: Tags */}
         <Tags tags={tags}/>
       </View>
-  </LinearGradient>
-
-  )
+    </LinearGradient>
+  );
 }
 
 // TAGS
@@ -213,10 +218,10 @@ function SortAndEdit({ handleSort, handleFilter, toggleEdit, isOwner }) {
   const [selected, setSelected] = useState("None"); // dropdown list selection
 
   const dropdownData = [
-    {key: 'Misc', value: 'Misc (3)'},
+    {key: 'None', value: 'All'},
     {key: 'Notes', value: 'Notes'},
     {key: 'Quizzes', value: 'Quizzes'},
-    {key: 'Flashcard', value: 'Flashcard'},
+    {key: 'Flashcards', value: 'Flashcards'},
   ];
 
   return (
@@ -259,16 +264,22 @@ function SortAndEdit({ handleSort, handleFilter, toggleEdit, isOwner }) {
       </View>
       {/* END: sort + edit */}
     </View>
-    
   );
 }
 
 // STUDY MATERIAL CONTAINTER
 function StudyMaterialList({ studyMaterial, topicId, handleDelete, isEditing }) {
   const studyMaterialComponents = studyMaterial.map((item) => {
-    return <StudyMaterialCard studyMaterial={item} topicId={topicId} handleDelete={handleDelete} isEditing={isEditing} key={item.title} />
+    return (
+      <StudyMaterialCard
+        studyMaterial={item}
+        topicId={topicId}
+        handleDelete={handleDelete}
+        isEditing={isEditing}
+        key={item.title}
+      />
+    );
   });
-
     return (
       <View style={styles.studyMatContainer}> 
         {studyMaterialComponents}

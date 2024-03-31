@@ -13,12 +13,6 @@ export default function TopicManager() {
   function handleSubmit() {
     async function fetchTopics() {
       try {
-        // check for invalid chars
-        const regex = /^[0-9a-zA-Z><="']*$/;
-        if (!regex.test(query)) {
-          throw new Error("No special characters allowed");
-        }
-
         // fetch data
         const data = await adminApi.getTopics(token, query);
         setTopics(data);
