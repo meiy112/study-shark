@@ -30,8 +30,7 @@ class TopicController {
 
   // post all user's topics for the homepage
   postUserTopicsHomepage(req, res) {
-    let newStr = req.query.searchQuery.slice(1, -1);
-    topicService.postUserTopicsHomepage(req.username, req.body.filterList, req.query.sort, newStr) 
+    topicService.postUserTopicsHomepage(req.username, req.body.filterList, req.query.sort, req.query.searchQuery) 
     .then (rows => {
       // console.log(rows);
       const arrays = rows.filter(element => Array.isArray(element));
@@ -123,8 +122,7 @@ class TopicController {
   }
 
   getFeaturedTopics(req, res) {
-    let newStr = req.query.subject.slice(1, -1);
-    topicService.getFeaturedTopics(newStr) 
+    topicService.getFeaturedTopics(req.query.subject) 
     .then (rows => {
       // process color object 
       const newRows = rows.map(obj => {
