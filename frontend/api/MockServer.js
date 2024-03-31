@@ -319,7 +319,7 @@ export function startServer() {
           totalAchievements: 5, 
         };
 
-        return example;
+        return admin;
       });
 
       // - update current user's email and return the user with newly updated email, in the same
@@ -386,6 +386,31 @@ export function startServer() {
         const example = [
           {id: 1, name: "name1", title: "hi"},
           {id: 2, name: "name2", title: "hi"},
+          {id: 3, name: "name3", title: "hidffdsd"},
+          {id: 4, name: "name4", title: "hafdi"},
+          {id: 5, name: "name5", title: "hidffdsd"},
+          {id: 6, name: "name6", title: "hafdi"},
+        ]
+
+        return example;
+      });
+
+      // - given a table name and a list of attributes, return all the tuples in the table. Project only the given attributes
+      // - if the table doesn't exist, throw error with message. This error should be checked before the next one
+      // - if the attributes dont exist for teh given table, throw error
+      // - Query Params:
+      //    - name: string - this is the table name
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "attrList": <attrs>
+      //       }
+      //   where attrs is an array of strings representing attribute names
+      this.post("/admin/table/", (schema) => {
+        const example = [
+          {id: 1, name: "name1", title: "hi"},
+          {id: 2, name: "name2", title: "dafda"},
+          {id: 3, name: "name3", title: "hidffdsd"},
+          {id: 4, name: "name4", title: "hafdi"},
         ]
 
         return example;

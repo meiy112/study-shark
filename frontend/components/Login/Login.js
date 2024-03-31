@@ -88,9 +88,11 @@ export default function Login( {setModalVisible} ) {
   // check valid inputs
   function checkValidInputs() {
     const regex = /^[0-9a-zA-Z]*$/;
-    if (!regex.test(username) || !regex.test(password) || !regex.test(school)) {
+    if (!regex.test(username) || !regex.test(password)) {
       throw new Error("Only 0-9 and alphabetical characters are allowed");
     }
+
+    const schoolRegex = /^[ a-zA-Z]*$/;
 
     if (username.length === 0 || password.length === 0) {
       throw new Error("Username and password cannot be empty");

@@ -21,6 +21,7 @@ import colors from "./constants/Colors";
 import Screens from "./navigation/Screens";
 import { startServer, stopServer } from "./api/MockServer";
 import { AuthProvider } from "./context/AuthContext";
+import { NotifyProvider } from "./context/NotifyContext";
 import PageContext from "./context/PageContext";
 
 const { active, inactive, background, primary, shadow } = colors;
@@ -82,149 +83,151 @@ export default function App() {
   return (
     <PaperProvider>
       <AuthProvider>
-        <PageContext.Provider value={pageContextValue}>
-          <NavigationContainer>
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                headerShown: false,
-                showLabel: false,
-                tabBarStyle: {
-                  elevation: 0,
-                  backgroundColor: background,
-                  borderTopLeftRadius: 30,
-                  borderTopRightRadius: 30,
-                  height: 90,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingHorizontal: "3%",
-                  ...styles.shadow,
-                },
-                tabBarActiveTintColor: active,
-                tabBarInactiveTintColor: inactive,
-                tabBarIndicatorStyle: { backgroundColor: active, height: 5 },
-              })}
-            >
-              <Tab.Screen
-                name="HomeScreen"
-                component={Screens.home}
-                listeners={({ navigation, route }) => ({
-                  tabPress: (event) => {
-                    setPage("Home");
-                    // Navigate to the stack's first screen
-                    navigation.navigate(route.name, {
-                      screen: "Home",
-                    });
+        <NotifyProvider>
+          <PageContext.Provider value={pageContextValue}>
+            <NavigationContainer>
+              <Tab.Navigator
+                screenOptions={({ route }) => ({
+                  headerShown: false,
+                  showLabel: false,
+                  tabBarStyle: {
+                    elevation: 0,
+                    backgroundColor: background,
+                    borderTopLeftRadius: 30,
+                    borderTopRightRadius: 30,
+                    height: 90,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: "3%",
+                    ...styles.shadow,
                   },
+                  tabBarActiveTintColor: active,
+                  tabBarInactiveTintColor: inactive,
+                  tabBarIndicatorStyle: { backgroundColor: active, height: 5 },
                 })}
-                options={{
-                  tabBarLabel: "",
-                  tabBarIcon: ({ color, size, focused }) => (
-                    <CustomTabBarIcon
-                      name="home-variant-outline"
-                      color={color}
-                      size={32}
-                      focused={focused}
-                    />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="ExploreScreen"
-                component={Screens.explore}
-                listeners={({ navigation, route }) => ({
-                  tabPress: (event) => {
-                    setPage("Explore");
-                    // Navigate to the stack's first screen
-                    navigation.navigate(route.name, {
-                      screen: "Explore",
-                    });
-                  },
-                })}
-                options={{
-                  tabBarLabel: "",
-                  tabBarIcon: ({ color, size, focused }) => (
-                    <CustomTabBarIcon
-                      name="compass-outline"
-                      color={color}
-                      size={32}
-                      focused={focused}
-                    />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Add"
-                component={Home}
-                listeners={({ navigation }) => ({
-                  tabPress: (event) => {
-                    event.preventDefault(); // Prevent default action
-                    setShowModal(true);
-                  },
-                })}
-                options={{
-                  tabBarLabel: "",
-                  tabBarButton: (props) => (
-                    <View style={{ width: 105 }}>
-                      <NavBarAddButton {...props} />
-                    </View>
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Groups"
-                component={Groups}
-                listeners={({ navigation, route }) => ({
-                  tabPress: (event) => {
-                    setPage("Group");
-                    // Navigate to the stack's first screen
-                    navigation.navigate(route.name, {
-                      screen: "Group",
-                    });
-                  },
-                })}
-                options={{
-                  tabBarLabel: "",
-                  tabBarIcon: ({ color, size, focused }) => (
-                    <CustomTabBarIcon
-                      name="account-group-outline"
-                      color={color}
-                      size={32}
-                      focused={focused}
-                      style={{ marginRight: 100 }}
-                    />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="ProfileScreen"
-                component={Screens.profile}
-                listeners={({ navigation, route }) => ({
-                  tabPress: (event) => {
-                    setPage("Profile");
-                    // Navigate to the stack's first screen
-                    navigation.navigate(route.name, {
-                      screen: "Profile",
-                    });
-                  },
-                })}
-                options={{
-                  tabBarLabel: "",
-                  tabBarIcon: ({ color, size, focused }) => (
-                    <CustomTabBarIcon
-                      name="account-circle-outline"
-                      color={color}
-                      size={32}
-                      focused={focused}
-                    />
-                  ),
-                }}
-              />
-            </Tab.Navigator>
-          </NavigationContainer>
-          {showModal ? (
-            <AddModal hideModal={() => setShowModal(false)} />
-          ) : null}
-        </PageContext.Provider>
+              >
+                <Tab.Screen
+                  name="HomeScreen"
+                  component={Screens.home}
+                  listeners={({ navigation, route }) => ({
+                    tabPress: (event) => {
+                      setPage("Home");
+                      // Navigate to the stack's first screen
+                      navigation.navigate(route.name, {
+                        screen: "Home",
+                      });
+                    },
+                  })}
+                  options={{
+                    tabBarLabel: "",
+                    tabBarIcon: ({ color, size, focused }) => (
+                      <CustomTabBarIcon
+                        name="home-variant-outline"
+                        color={color}
+                        size={32}
+                        focused={focused}
+                      />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="ExploreScreen"
+                  component={Screens.explore}
+                  listeners={({ navigation, route }) => ({
+                    tabPress: (event) => {
+                      setPage("Explore");
+                      // Navigate to the stack's first screen
+                      navigation.navigate(route.name, {
+                        screen: "Explore",
+                      });
+                    },
+                  })}
+                  options={{
+                    tabBarLabel: "",
+                    tabBarIcon: ({ color, size, focused }) => (
+                      <CustomTabBarIcon
+                        name="compass-outline"
+                        color={color}
+                        size={32}
+                        focused={focused}
+                      />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Add"
+                  component={Home}
+                  listeners={({ navigation }) => ({
+                    tabPress: (event) => {
+                      event.preventDefault(); // Prevent default action
+                      setShowModal(true);
+                    },
+                  })}
+                  options={{
+                    tabBarLabel: "",
+                    tabBarButton: (props) => (
+                      <View style={{ width: 105 }}>
+                        <NavBarAddButton {...props} />
+                      </View>
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Groups"
+                  component={Groups}
+                  listeners={({ navigation, route }) => ({
+                    tabPress: (event) => {
+                      setPage("Group");
+                      // Navigate to the stack's first screen
+                      navigation.navigate(route.name, {
+                        screen: "Group",
+                      });
+                    },
+                  })}
+                  options={{
+                    tabBarLabel: "",
+                    tabBarIcon: ({ color, size, focused }) => (
+                      <CustomTabBarIcon
+                        name="account-group-outline"
+                        color={color}
+                        size={32}
+                        focused={focused}
+                        style={{ marginRight: 100 }}
+                      />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="ProfileScreen"
+                  component={Screens.profile}
+                  listeners={({ navigation, route }) => ({
+                    tabPress: (event) => {
+                      setPage("Profile");
+                      // Navigate to the stack's first screen
+                      navigation.navigate(route.name, {
+                        screen: "Profile",
+                      });
+                    },
+                  })}
+                  options={{
+                    tabBarLabel: "",
+                    tabBarIcon: ({ color, size, focused }) => (
+                      <CustomTabBarIcon
+                        name="account-circle-outline"
+                        color={color}
+                        size={32}
+                        focused={focused}
+                      />
+                    ),
+                  }}
+                />
+              </Tab.Navigator>
+            </NavigationContainer>
+            {showModal ? (
+              <AddModal hideModal={() => setShowModal(false)} />
+            ) : null}
+          </PageContext.Provider>
+        </NotifyProvider>
       </AuthProvider>
     </PaperProvider>
   );

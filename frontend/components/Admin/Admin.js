@@ -1,11 +1,13 @@
 import { useState, useContext, useEffect } from "react";
-import { Text, View } from "react-native";
+import { ScrollView } from "react-native";
 import TopicManager from "./TopicManager";
+import TableViewer from "./TableViewer";
 
 export default function Admin() {
   return (
-    <View>
+    <ScrollView>
       <TopicManager />
-    </View>
+      <TableViewer />
+    </ScrollView>
   );
 }
