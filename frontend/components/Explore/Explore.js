@@ -6,17 +6,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TopicExplore from "./ListingComponents/TopicExplore";
 import MaterialExplore from "./ListingComponents/MaterialExplore";
 import { useScrollToTop } from "@react-navigation/native";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useContext, createContext } from "react";
 import SearchScreen from "./Search/SearchScreen";
+import PageContext from "../../context/PageContext";
+import AuthContext from '../../context/AuthContext';
+import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
+const NavContext = createContext();
 
 // Achievement Button beside Search
-function AchievementButton({ navigation }) {
-  // const navigation = useNavigation(); // I commented this out to set up navigation
-
+function AchievementButton() {
+  const navigation = useContext(NavContext);
+  const { setPage } = useContext(PageContext);
+  
   const handlePress = () => {
-    navigation.navigate("Achievement");
+    setPage("Achievement");
+    navigation.navigate("Achievement", {prevScreen: "Explore"});
   };
 
   return (
@@ -28,8 +34,6 @@ function AchievementButton({ navigation }) {
 
 // Search Button
 function SearchButton({ handleSearchPress }) {
-  // const navigation = useNavigation(); // I commented this out to set up navigation
-
   return (
     <TouchableOpacity onPress={handleSearchPress}>
       <MaterialCommunityIcons name="magnify" color={"#000000"} size={28} />
@@ -38,10 +42,43 @@ function SearchButton({ handleSearchPress }) {
 }
 
 // DEFAULT PAGE
-export default function Explore() {
+export default function Explore({ navigation }) {
   // search screen modal
   const [isSearchVisible, setSearchVisible] = useState(false);
+  const [topics, setTopics] = useState([]);
+  const [studyMaterial, setStudyMaterial] = useState([]);
+  const [subject, setSubject] = useState(""); // subject to filter by
+  const { token } = useContext(AuthContext); // jwt token
 
+  // LOAD DATA------------------------------------
+  // fetch topics
+  useEffect(() => {
+    async function fetchTopics() {
+      try {
+        const data = await topicApi.getFeaturedTopics(token, subject);
+        setTopics(data);
+      } catch (e) {
+        console.log("Explore page: " + e.message);
+      }
+    }
+    fetchTopics();
+  }, [token, subject]);
+
+  // fetch studyMaterial
+  useEffect(() => {
+    async function fetchStudyMaterial() {
+      try {
+          const data = await topicApi.getFeaturedStudyMaterial(token, subject);
+          setStudyMaterial(data);
+        } catch (e) {
+          console.log("Explore page: " + e.message);
+        }
+      } 
+      fetchStudyMaterial();
+  }, [token, subject]); 
+  // END LOAD DATA ----------------------------------------------
+
+  // HANDLERS ------------------------
   const handleSearchPress = () => {
     setSearchVisible(true);
   };
@@ -49,20 +86,31 @@ export default function Explore() {
     setSearchVisible(false);
   };
 
+  function handleSubjectPress(subjectTitle) {
+    if (subjectTitle === subject) {
+      setSubject("");
+    } else {
+      setSubject(subjectTitle);
+    }
+  }
+  // END HANDLERS --------------------
+
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: primary,
-        flex: 1,
-        zIndex: 3,
-      }}
-    >
-      <View style={{ flex: 1, backgroundColor: background }}>
-        <Header handleSearchPress={handleSearchPress} />
-        <ExploreFeed />
-      </View>
-      <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
-    </SafeAreaView>
+    <NavContext.Provider value={navigation}>
+      <SafeAreaView
+        style={{
+          backgroundColor: primary,
+          flex: 1,
+          zIndex: 3,
+        }}
+      >
+        <View style={{ flex: 1, backgroundColor: background }}>
+          <Header handleSearchPress={handleSearchPress} />
+          <ExploreFeed handleSubjectPress={handleSubjectPress} topics={topics} studyMaterial={studyMaterial} navigation={navigation} />
+        </View>
+        <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
+      </SafeAreaView>
+    </NavContext.Provider>
   );
 }
 
@@ -82,7 +130,7 @@ const Header = ({ handleSearchPress }) => {
 };
 
 // feed under header
-const ExploreFeed = () => {
+const ExploreFeed = ({ handleSubjectPress, topics, studyMaterial, navigation }) => {
   // scrolls to top when explore button in navbar or scrollToTop button is pressed
   const ref = useRef();
   const scrollToTop = () => {
@@ -93,11 +141,11 @@ const ExploreFeed = () => {
   return (
     <ScrollView style={styles.feedContainer} ref={ref}>
       {/*subjects*/}
-      <SubjectList />
+      <SubjectList handleSubjectPress={handleSubjectPress} />
       {/*hot topics*/}
-      <HotTopics />
+      <HotTopics topics={topics} navigation={navigation} />
       {/*featured material*/}
-      <FeaturedMaterial />
+      <FeaturedMaterial studyMaterial={studyMaterial} navigation={navigation} />
       {/*----------------------Scroll To Top Button------------------------*/}
       <TouchableOpacity
         onPress={scrollToTop}
@@ -122,7 +170,7 @@ const ExploreFeed = () => {
 };
 
 // List of subjects
-const SubjectList = () => {
+const SubjectList = ({ handleSubjectPress }) => {
   return (
     <View
       style={[styles.subjectsContainer, styles.feedComponenent, styles.scroll]}
@@ -132,28 +180,32 @@ const SubjectList = () => {
         contentContainerStyle={{}}
         showsHorizontalScrollIndicator={false}
       >
-        <SubjectItem title="SCIENCE" iconName="bulb-outline" />
+        <SubjectItem title="SCIENCE" iconName="bulb-outline" handleSubjectPress={handleSubjectPress} />
         <SubjectItem
           title="LANG"
           secondLine="UAGE"
           iconName="language-outline"
+          handleSubjectPress={handleSubjectPress}
         />
         <SubjectItem
           title="MATH"
           secondLine="EMATICS"
           iconName="calculator-outline"
+          handleSubjectPress={handleSubjectPress}
         />
         <SubjectItem
           title="CREATIVE"
           secondLine="ARTS"
           iconName="color-palette-outline"
+          handleSubjectPress={handleSubjectPress}
         />
-        <SubjectItem title="WEATHER" iconName="cloudy-night-outline" />
-        <SubjectItem title="GAM" secondLine="BLING" iconName="dice-outline" />
+        <SubjectItem title="WEATHER" iconName="cloudy-night-outline" handleSubjectPress={handleSubjectPress} />
+        <SubjectItem title="GAM" secondLine="BLING" iconName="dice-outline" handleSubjectPress={handleSubjectPress} />
         <SubjectItem
           title="LIT"
           secondLine="ERATURE"
           iconName="library-outline"
+          handleSubjectPress={handleSubjectPress}
         />
       </ScrollView>
     </View>
@@ -161,9 +213,9 @@ const SubjectList = () => {
 };
 
 // Subject component in subject list (title = first line, secondLine = second line)
-const SubjectItem = ({ title, iconName, secondLine }) => {
+const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => {handleSubjectPress(title)}}>
       <View style={[styles.subjectContainer, styles.shadow]}>
         <Ionicons name={iconName} size={32} color={"#304046"} />
         <View style={{ justifyContent: "center", height: 30, width: "100%" }}>
@@ -182,25 +234,24 @@ const SubjectItem = ({ title, iconName, secondLine }) => {
 };
 
 // Hot Topics
-const HotTopics = () => {
-  let purple = {
-      name: "purple",
-      primary: "#5F2EB3",
-      gradient: "#29144D",
-      circle: "#3D1E73",
-    },
-    pink = {
-      name: "pink",
-      primary: "#F5878D",
-      gradient: "#B9568C",
-      circle: "#B9568C",
-    },
-    blue = {
-      name: "blue",
-      primary: "#22B0D2",
-      gradient: "#1455CE",
-      circle: "#1455CE",
-    };
+const HotTopics = ({ topics, navigation }) => {
+  let listData = [];
+  let index = 0;
+  topics.forEach((item) => {
+    listData.push( <TopicExplore 
+        key={index} 
+        id={item.id}
+        title={item.title}
+        date={item.date}
+        numNotes={item.numNotes}
+        numCards={item.numCards}
+        numQuizzes={item.numQuizzes}
+        color={item.color}
+        navigation={navigation}
+     />);
+     index += 1;
+  });
+
   return (
     <View
       style={[styles.hotTopicsContainer, styles.feedComponenent, styles.shadow]}
@@ -218,39 +269,8 @@ const HotTopics = () => {
         horizontal
         contentContainerStyle={styles.scroll}
         showsHorizontalScrollIndicator={false}
-      >
-        <TopicExplore
-          title="Phys901"
-          date="March 19, 2024"
-          numNotes={3}
-          numCards={5}
-          numQuizzes={2}
-          color={purple}
-        />
-        <TopicExplore
-          title="Chem123"
-          date="March 23, 2024"
-          numNotes={21}
-          numCards={7}
-          numQuizzes={11}
-          color={pink}
-        />
-        <TopicExplore
-          title="Beep Boop"
-          date="i hate math"
-          numNotes={29}
-          numCards={45}
-          numQuizzes={22}
-          color={blue}
-        />
-        <TopicExplore
-          title="How to be emo"
-          date="September 11, 2001"
-          numNotes={0}
-          numCards={69}
-          numQuizzes={69}
-          color={purple}
-        />
+      > 
+      {listData}
       </ScrollView>
       {/*--------------------------------------------------------------*/}
     </View>
@@ -258,26 +278,23 @@ const HotTopics = () => {
 };
 
 // Featured Material
-const FeaturedMaterial = () => {
-  // reason why they're inside each function and not outside is because primary is already defined in colors
-  let purple = {
-      name: "purple",
-      primary: "#5F2EB3",
-      gradient: "#29144D",
-      circle: "#3D1E73",
-    },
-    pink = {
-      name: "pink",
-      primary: "#F5878D",
-      gradient: "#B9568C",
-      circle: "#B9568C",
-    },
-    blue = {
-      name: "blue",
-      primary: "#22B0D2",
-      gradient: "#1455CE",
-      circle: "#1455CE",
-    };
+const FeaturedMaterial = ({ studyMaterial, navigation }) => {
+  let listData = [];
+  let index = 0;
+  studyMaterial.forEach((item) => {
+    listData.push( <MaterialExplore 
+        key={index} 
+        title={item.title}
+        type={item.type}
+        date={item.date}
+        color={item.color}
+        count={item.numComponents}
+        topicTitle={item.topicTitle}
+        navigation={navigation}
+     />);
+     index += 1;
+  });
+
   return (
     <View
       style={[
@@ -305,30 +322,7 @@ const FeaturedMaterial = () => {
         contentContainerStyle={styles.scroll}
         showsHorizontalScrollIndicator={false}
       >
-        <MaterialExplore
-          title="Standing Waves"
-          type="quiz"
-          date="November 9, 1989"
-          color={purple}
-          count={19}
-          topicTitle="Phys901"
-        />
-        <MaterialExplore
-          title="Stereochemistry"
-          type="notes"
-          date="April 1, 2024"
-          color={pink}
-          count={21}
-          topicTitle="Chem123"
-        />
-        <MaterialExplore
-          title="Space Meditation"
-          type="flashcards"
-          date="April 1, 2024"
-          color={blue}
-          count={8}
-          topicTitle="Astrology101"
-        />
+        {listData}
       </ScrollView>
       {/*----------------------------------------------------------------*/}
     </View>

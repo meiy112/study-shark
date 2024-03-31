@@ -14,11 +14,14 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Tag from "../../components/Misc/Tag";
 import colors from "../../constants/Colors";
 import TopicListing from "./TopicListing";
-import * as SplashScreen from "expo-splash-screen";
 import { useScrollToTop } from "@react-navigation/native";
 import AuthContext from '../../context/AuthContext';
 import PageContext from "../../context/PageContext";
+import NotifyContext from "../../context/NotifyContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
+
+import { tagApi } from "../../api/TagApi";
+import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line, grey } = colors;
 
@@ -42,52 +45,72 @@ function AchievementButton({ size, navigation }) {
 export default function Home({ navigation }) {
   const [tags, setTags] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [filterList, setFilterList] = useState([]); // list of tags to filter by
+  const [sortBy, setSortBy] = useState("lastOpened");
+  const [searchQuery, setSearchQuery] = useState("");
   const { token } = useContext(AuthContext); // jwt token
+  const { lastUpdateTime } = useContext(NotifyContext); // to force a refresh when topics are changed from other pages
 
   // LOAD DATA------------------------------------
   // fetch tags
   useEffect(() => {
-    async function fetchData() {
+    async function fetchTags() {
       try {
-        const headers = {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        };
-        const response = await fetch('http://localhost:3000/tag', {
-            method: 'GET',
-            headers: headers,
-          });
-        const tags = await response.json();
-        setTags(tags);
+        const data = await tagApi.getTags(token);
+        setTags(data);
       } catch (e) {
-        console.log(e);
+        console.log("Home page: " + e.message);
       }
     }
-    fetchData();
-   }, [token]);
+    fetchTags();
+  }, [token]);
 
   // fetch topics
   useEffect(() => {
-    async function fetchData() {
+    async function fetchTopic() {
       try {
-        const response = await fetch ("http://localhost:3000/topic/home-page");
-        const topics = await response.json();
-        setTopics(topics);
-      } catch (e) {
-        console.log(e);
-      }
+          const data = await topicApi.getHomePageTopics(token, filterList, sortBy, searchQuery);
+          setTopics(data);
+        } catch (e) {
+          console.log("Home page: " + e.message);
+        }
+      } 
+    fetchTopic();
+  }, [token, filterList, sortBy, searchQuery, lastUpdateTime]); 
+  // END LOAD DATA ----------------------------------------------
+
+  // SEARCH / FILTER / SORT HANDLERS -----------------------------------
+  // handle search
+  function handleSearch(query) {
+    setSearchQuery(query.nativeEvent.text);
+  }
+
+  // handle sort
+  function handleSort() {
+    if (sortBy === "lastOpened") {
+      setSortBy("alphabetical");
+    } else {
+      setSortBy("lastOpened");
     }
-    fetchData();
-  }, []);
-  // ----------------------------------------------
+  }
+
+  // handle filter: callback function for Tag that updates the filterList
+  function handleSelectedTagChange(tag, isSelected) {
+    if (isSelected) {
+      setFilterList([...filterList, tag]);
+    } else {
+      setFilterList(filterList.filter(item => item.name !== tag.name));
+    }
+  }
+  // END SEARCH / FILTER / SORT HANDLERS -------------------------------
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   return (
     token?
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: background, flex: 1 }}>
-        <Header navigation={navigation} tags={tags} />
-        <SearchFilter scrollOffsetY={scrollOffsetY} />
+        <Header navigation={navigation} tags={tags} handleSelectedTagChange={handleSelectedTagChange}/>
+        <SearchFilter scrollOffsetY={scrollOffsetY} handleSearch={handleSearch} handleSort={handleSort} />
         <TopicList
           scrollOffsetY={scrollOffsetY}
           navigation={navigation}
@@ -101,7 +124,7 @@ export default function Home({ navigation }) {
 }
 
 // Header (everything above the search bar)
-function Header({ navigation, tags }) {
+function Header({ navigation, tags, handleSelectedTagChange }) {
   return (
     <View style={[styles.header, styles.shadow]}>
       {/* START: My Topics + AchievementButton*/}
@@ -123,8 +146,8 @@ function Header({ navigation, tags }) {
         contentContainerStyle={styles.tagsContainer}
         showsHorizontalScrollIndicator={false}
       >
-        {tags.map((tag, index) => (
-          <Tag key={index} title={tag.name} color={tag.color} />
+      {tags !== undefined && tags.map((tag, index) => (
+          <Tag key={index} title={tag.name} color={tag.color} callback={handleSelectedTagChange} />
         ))}
       </ScrollView>
       {/*END: TAGSLIST*/}
@@ -137,7 +160,7 @@ const Search_Min_Height = 0;
 const Scroll_Distance = Search_Max_Height - Search_Min_Height;
 
 // The search bar and filter button
-const SearchFilter = ({ scrollOffsetY }) => {
+const SearchFilter = ({ scrollOffsetY, handleSearch, handleSort }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const animatedSearchHeight = scrollOffsetY.interpolate({
@@ -161,6 +184,7 @@ const SearchFilter = ({ scrollOffsetY }) => {
           value={searchQuery}
           style={styles.paperBar}
           placeholderTextColor={"#9FA3BE"}
+          onSubmitEditing={handleSearch}
           inputStyle={{
             fontSize: 16,
             fontFamily: "mon",
@@ -169,7 +193,7 @@ const SearchFilter = ({ scrollOffsetY }) => {
         />
       </View>
       {/*real searchbar*/}
-      <TouchableHighlight style={[styles.filterButton]}>
+      <TouchableHighlight style={[styles.filterButton]} onPress={handleSort}>
         <MaterialCommunityIcons name="tune" size={24} color={inactive} />
       </TouchableHighlight>
     </Animated.View>

@@ -33,8 +33,21 @@ class AuthService {
         });
     };
 
+    const checkSchoolDoesNotExist = (school) => {
+        return new Promise((resolve, reject) => {
+            const exists = 'SELECT name FROM School WHERE name = ?'; 
+            db.query(exists, [school], (err, rows, fields) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(rows.length == 0);
+            });
+        });
+    };
+
     try {
-        const { username, password, email } = req.body;
+        const { username, password, school } = req.body;
         // Check if user already exists 
         if (await checkUserExists(username)) {
             // User already exists, return an error message
@@ -55,12 +68,26 @@ class AuthService {
                 });
             })
         }
+        // Check if school does not exist 
+        if (await checkSchoolDoesNotExist(school)) {
+            // School does not exist, return an error message
+            const error = new Error('School does not exist');
+            error.statusCode = 400; 
+            throw error; 
+        }
         const hashed_password = await bcrypt.hash(password, 12);
         console.log(hashed_password);
         // Add User 
-        const query = "INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`) VALUES (?, ?, ?, ?, ?, ?)";
+        // Get current date and time in PST
+        const currentDate = new Date();
+        const pstOffset = -8 * 60; // Pacific Standard Time (PST) is UTC-8
+        const pstDate = new Date(currentDate.getTime() + pstOffset * 60000);
+
+        // Format date in MySQL date format (YYYY-MM-DD HH:MM:SS)
+        const formattedDate = pstDate.toISOString().slice(0, 19).replace('T', ' ');
+        const query = "INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `points`, `dateJoined`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const newUser = await new Promise((resolve, reject) => {
-            db.query(query, [username, null, '-10x Engineer', hashed_password, null, 0], (err, rows, fields) => {
+            db.query(query, [username, school, '-10x Engineer', hashed_password, null, 0, formattedDate], (err, rows, fields) => {
                 if (err) {
                     reject(err);
                     return; 

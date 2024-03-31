@@ -15,8 +15,11 @@ class AuthController {
             if (err.message == 'User already exists') {
                 res.json({ message: "User already exists" });
                 return;
+            } else if (err.message == 'School does not exist') {
+                res.json({ message: "The school provided does not exist" });
+            } else {
+                res.status(500).send({message: 'Internal Server Error'});
             }
-            res.status(500).send({message: 'Internal Server Error'});
             return;
         });
   }

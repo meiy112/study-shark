@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useEffect, createContext } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -17,6 +17,8 @@ import PageContext from "../../context/PageContext";
 import colors from "../../constants/Colors";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import schoolData from "./data/schoolData";
+import { userApi } from "../../api/UserApi";
+import Admin from "../Admin/Admin";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
@@ -45,15 +47,7 @@ const achievements = [
   require("../../assets/images/achievements/croissant_achievement.png"),
 ];
 
-// update email in database
-const updateEmail = ({ email }) => {
-  // TODO: update user's email with email arg
-};
-
-// update school in database
-const updateSchool = ({ school }) => {
-  // TODO: yk
-};
+const UserContext = createContext();
 
 // Logout Button
 const LogoutButton = ({ handlePress }) => {
@@ -68,8 +62,39 @@ const LogoutButton = ({ handlePress }) => {
 };
 
 // PROFILE PAGE
-export default function Profile() {
+export default function Profile({ navigation }) {
+  const [user, setUser] = useState({
+    username: "",
+    pfp: require("../../assets/images/misc/freud.jpg"),
+    joined: "",
+    exp: 0,
+    title: "BEGINNER",
+    color: "#22B0D2",
+    school: "University of British Columbia",
+    email: "Expomarkerexpogo@gmail.com",
+    totalMat: 0,
+    totalTopics: 0,
+    totalGroups: 0,
+    totalAchievements: 0,
+  });
+  const [errorMessage, setErrorMessage] = useState(""); // error message for updating email
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
+
+  // LOAD DATA----------------------------------------
+  // fetch user data
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const data = await userApi.getUser(token);
+        console.log(data.username)
+        setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
+      } catch (e) {
+        console.log("Profile: " + e.message);
+      }
+    }
+    fetchUser();
+   }, [token]);
+  // END LOAD DATA------------------------------------
 
   // log out
   const handleLogoutButton = () => {
@@ -79,49 +104,75 @@ export default function Profile() {
 
   // navigate to achievements
   const handleSeeAllButtonClick = () => {
-    // TODO: set navigation to achievements
+    setPage("Achievement");
+    console.log("navigation to achievement")
+    navigation.navigate("Achievement", {prevScreen: "Explore"});
   };
 
-  return token ? ( // conditionally renders pages based on if user is logged in
-    <ScrollView style={{ backgroundColor: primary }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        {/*Logout Button*/}
-        <LogoutButton handlePress={handleLogoutButton} />
-        {/*Profile Info*/}
-        <ProfileInfo />
-        {/*Email and School*/}
-        <EmailSchoolContainer />
-        {/*Numerical Data*/}
-        <NumericalData />
-        {/*Achievements*/}
-        <AchievementsContainer
-          handleSeeAllButtonClick={handleSeeAllButtonClick}
-        />
-      </SafeAreaView>
-    </ScrollView>
-  ) : (
-    <UserUnauthenticatedPage action={"get started!"} />
-  );
+  // update email in database
+  const updateEmail = (email) => {
+    async function updateUserEmail() {
+      // check email validity
+      try {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regex.test(email)) {
+        throw new Error("Invalid email");
+      }
+
+        // call api
+        const data = await userApi.updateEmail(token, email);
+        setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
+        setErrorMessage("");
+      } catch (e) {
+        console.log("Profile: " + e.message);
+        setErrorMessage(e.message);
+      }
+    }
+    updateUserEmail();
+  };
+
+  // update school in database
+  const updateSchool = (school) => {
+    async function updateUserSchool() {
+      try {
+        const data = await userApi.updateSchool(token, school);
+      } catch (e) {
+        console.log("Profile: " + e.message);
+      }
+    }
+    updateUserSchool();
+  };
+
 
   return token ? ( // conditionally renders pages based on if user is logged in
-    // Hi! put all your code for Groups inside this view!
-    <View
-      style={{
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Groups - Outside.js</Text>
-    </View>
-  ) : (
-    <UserUnauthenticatedPage action={"join Groups"} />
+    user.username === 'admin' ? (<Admin />) : // conditionally render admin page
+    (<UserContext.Provider value={user}>
+      <ScrollView style={{ backgroundColor: primary }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          {/*Logout Button*/}
+          <LogoutButton handlePress={handleLogoutButton} />
+          {/*Profile Info*/}
+          <ProfileInfo />
+          {/*Email and School*/}
+          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} />
+          {/*Numerical Data*/}
+          <NumericalData />
+          {/*Achievements*/}
+          <AchievementsContainer
+            handleSeeAllButtonClick={handleSeeAllButtonClick}
+          />
+        </SafeAreaView>
+      </ScrollView>
+    </UserContext.Provider>
+  )) : (
+    <UserUnauthenticatedPage action={"get started!"} />
   );
 }
 
 // Container for Profile Picture and the Info beside it
 const ProfileInfo = () => {
+  const user = useContext(UserContext);
+  
   return (
     <View style={{ flexDirection: "row" }}>
       {/*Profile Picture*/}
@@ -163,7 +214,7 @@ const ProfileInfo = () => {
           </View>
         </View>
         {/*Title*/}
-        <View style={styles.userTitle}>
+        <View style={{...styles.userTitle, backgroundColor: user.color}}>
           <Text
             style={{
               fontFamily: "mon-m",
@@ -182,6 +233,8 @@ const ProfileInfo = () => {
 
 // Profile Picture
 const ProfileIcon = () => {
+  const user = useContext(UserContext);
+
   return (
     <View style={{ width: 100, marginLeft: 28 }}>
       {/*The picture*/}
@@ -202,7 +255,9 @@ const ProfileIcon = () => {
 };
 
 // Email and School Info
-const EmailSchoolContainer = () => {
+const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
+  const user = useContext(UserContext);
+
   const [email, setEmail] = useState(user.email);
   const [school, setSchool] = useState(user.school);
   const textInputRef = useRef(null);
@@ -292,7 +347,7 @@ const EmailSchoolContainer = () => {
         <View style={{ position: "absolute", zIndex: 3, top: -7, left: 25 }}>
           <SelectList
             setSelected={(val) => setSchool(val)}
-            onSelect={() => updateSchool(school)}
+            onSelect={() => updateSchool(schoolData[school].value)}
             data={schoolData}
             placeholder={school}
             arrowicon={
@@ -319,12 +374,15 @@ const EmailSchoolContainer = () => {
         </View>
       </View>
       {/*END: University*/}
+      <Text style={{ color:"red", marginLeft: 46, marginTop: 36, fontSize: 10}}>{errorMessage}</Text>
     </View>
   );
 };
 
 // Display number of Study Material, Topics, Groups
 const NumericalData = () => {
+  const user = useContext(UserContext);
+
   return (
     <View
       style={{
@@ -384,6 +442,8 @@ const SingleData = ({ icon, data, type, dataStyle }) => {
 
 // Achievements
 const AchievementsContainer = (handleSeeAllButtonClick) => {
+  const user = useContext(UserContext);
+
   return (
     <View style={[styles.achievementsContainer, styles.shadow]}>
       {/*------------------- START: My Achievements title and See all Button -------------------*/}
@@ -476,7 +536,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
   userTitle: {
-    backgroundColor: user.color,
     width: 76,
     height: 18,
     borderRadius: 10,
