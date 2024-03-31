@@ -73,7 +73,8 @@ class StudyMaterialController {
   // gets all featured study material
   getFeaturedStudyMaterial(req, res) {
     const words_per_page = 2;
-    studyMaterialService.getFeaturedStudyMaterial(req.query.subject)
+    let newStr = req.query.subject.slice(1, -1);
+    studyMaterialService.getFeaturedStudyMaterial(newStr)
     .then(rows => {
       for (var obj of rows) {
         if (obj.type === 'Notes') {
@@ -97,15 +98,9 @@ class StudyMaterialController {
       res.send(newRows);
     })
     .catch(err => {
-      if (err.message == 'This subject does not have a public study material') {
-        // return "Bad Request" if this subject does not have a public study material
-        res.status(400).send({message: 'Bad Request', 
-                              details: 'Error this subject does not have a public study material: getFeaturedStudyMaterial'});
-      } else {
-        // return 'Internal Service Error' if anything strange happens in the query 
-        res.status(500).send({message: 'Internal Service Error', 
-                              details: 'Error executing query: getFeaturedStudyMaterial'});
-      }
+      // return 'Internal Service Error' if anything strange happens in the query 
+      res.status(500).send({message: 'Internal Service Error', 
+                            details: 'Error executing query: getFeaturedStudyMaterial'});
       return;
     });
   }

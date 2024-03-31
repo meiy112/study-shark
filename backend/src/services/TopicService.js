@@ -164,8 +164,16 @@ class TopicService {
     } 
   }
 
-  // gets all topics belonging to the user in homepage format
+  // gets all featured topics
   async getFeaturedTopics(subject) {
+    // function to check if subject is invalid 
+    const checkSubjectInvalid = (subject) => {
+      if (subject != "SCIENCE" && subject != "LANG" && subject != "MATH" && subject != "CREATIVE" && 
+          subject != "GAM" && subject != "LIT" && subject != "") {
+            return true;
+          }
+          return false; 
+    };
     const head = "SELECT DISTINCT T1.id, T1.title, DATE_FORMAT(T1.dateCreated, '%M %d, %Y') AS date, ";
     const numF = "(SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Flashcards' AND T1.id = csm.topicId) AS numF, ";
     const numQ = "(SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.id = csm.topicId AND csm.type = 'Quiz' AND T1.id = csm.topicId) AS numQ, ";
@@ -173,6 +181,10 @@ class TopicService {
     const tail = "T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c WHERE T1.color = c.name AND T1.isPublic = TRUE ORDER BY date DESC;";
     const atail = "T1.color, primaryColor, gradient, circle FROM createsTopic T1, color c, Has h, Tag t WHERE T1.color = c.name AND t1.id = h.topicId AND h.tagName = t.name AND t.subject = ? AND T1.isPublic = TRUE ORDER BY date DESC;";
     try {
+      // if subject is invalid, return an empty list
+      if (checkSubjectInvalid(subject)) {
+        return []; 
+      }
       if (subject == "") {
         // return all topics belonging to user in homepage format
         return new Promise ((resolve, reject) => {
@@ -190,12 +202,6 @@ class TopicService {
         return new Promise ((resolve, reject) => {
           db.query(head + numF + numQ + numN + atail,
             [subject], (err, rows, fields) => {
-              if (rows.length == 0) {
-                // if query returns an empty array, return error "This subject does not have a public topic"
-                const error = new Error("This subject does not have a public topic");
-                reject(error);
-                return; 
-              }
               if (err) {
                   reject(err);
                   return;

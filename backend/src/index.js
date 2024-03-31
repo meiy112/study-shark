@@ -19,6 +19,8 @@ app.use("/achievement-level", routes.achievementLevel);
 app.use("/", routes.authRoute);
 app.use("/tag", routes.tag);
 app.use("/topic", routes.topic);
+app.use("/user", routes.user);
+app.use("/admin", routes.admin);
 // add more here, for example:
 // app.use('/users', routes.user);
 

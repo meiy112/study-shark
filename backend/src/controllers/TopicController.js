@@ -30,7 +30,8 @@ class TopicController {
 
   // post all user's topics for the homepage
   postUserTopicsHomepage(req, res) {
-    topicService.postUserTopicsHomepage(req.username, req.body.filterList, req.query.sort, req.query.searchQuery) 
+    let newStr = req.query.searchQuery.slice(1, -1);
+    topicService.postUserTopicsHomepage(req.username, req.body.filterList, req.query.sort, newStr) 
     .then (rows => {
       // console.log(rows);
       const arrays = rows.filter(element => Array.isArray(element));
@@ -122,7 +123,8 @@ class TopicController {
   }
 
   getFeaturedTopics(req, res) {
-    topicService.getFeaturedTopics(req.query.subject) 
+    let newStr = req.query.subject.slice(1, -1);
+    topicService.getFeaturedTopics(newStr) 
     .then (rows => {
       // process color object 
       const newRows = rows.map(obj => {
@@ -139,15 +141,9 @@ class TopicController {
       res.send(newRows);
     })
     .catch (err => {
-      if (err.message == 'This subject does not have a public topic') {
-        // return "Bad Request" if this subject does not have a public topic
-        res.status(400).send({message: 'Bad Request', 
-                              details: 'Error this subject does not have a public topic: getFeaturedTopics'});
-      } else {
-        // return 'Internal Service Error' if anything strange happens in the query 
-        res.status(500).send({message: 'Internal Service Error', 
-                              details: 'Error executing query: getFeaturedTopics'});
-      }
+      // return 'Internal Service Error' if anything strange happens in the query 
+      res.status(500).send({message: 'Internal Service Error', 
+                            details: 'Error executing query: getFeaturedTopics'});
       return;
     });
   }
