@@ -14,7 +14,7 @@ class UserService {
       } 
       // else return user's info
       return new Promise ((resolve, reject) => {
-        const head = "SELECT username, dateJoined AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
+        const head = "SELECT username, DATE_FORMAT(dateJoined, '%M %Y') AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
         const mat = "(SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.username = u.username AND T.id = csm.topicId) AS totalMat, ";
         const topic = "(SELECT COUNT(*) FROM createsTopic T WHERE T.username = u.username) AS totalTopics, ";
         const group = "(SELECT COUNT(*) FROM joins j WHERE j.username = u.username) AS totalGroups, ";
@@ -63,7 +63,7 @@ class UserService {
       // else return user's info
       return new Promise ((resolve, reject) => {
         const update = "UPDATE user SET email = ? WHERE user.username = ?; ";
-        const head = "SELECT username, dateJoined AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
+        const head = "SELECT username, DATE_FORMAT(dateJoined, '%M %Y') AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
         const mat = "(SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.username = u.username AND T.id = csm.topicId) AS totalMat, ";
         const topic = "(SELECT COUNT(*) FROM createsTopic T WHERE T.username = u.username) AS totalTopics, ";
         const group = "(SELECT COUNT(*) FROM joins j WHERE j.username = u.username) AS totalGroups, ";
@@ -112,7 +112,7 @@ class UserService {
       // else return user's info
       return new Promise ((resolve, reject) => {
         const update = "UPDATE user SET school = ? WHERE user.username = ?; ";
-        const head = "SELECT username, dateJoined AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
+        const head = "SELECT username, DATE_FORMAT(dateJoined, '%M %Y') AS joined, points AS exp, u.reputation AS title, r.borderColor AS color, school, email, ";
         const mat = "(SELECT COUNT(*) FROM createsTopic T, containsstudymaterial csm WHERE T.username = u.username AND T.id = csm.topicId) AS totalMat, ";
         const topic = "(SELECT COUNT(*) FROM createsTopic T WHERE T.username = u.username) AS totalTopics, ";
         const group = "(SELECT COUNT(*) FROM joins j WHERE j.username = u.username) AS totalGroups, ";
