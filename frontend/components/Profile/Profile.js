@@ -86,7 +86,6 @@ export default function Profile({ navigation }) {
     async function fetchUser() {
       try {
         const data = await userApi.getUser(token);
-        console.log(data.username)
         setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
       } catch (e) {
         console.log("Profile: " + e.message);
@@ -114,7 +113,8 @@ export default function Profile({ navigation }) {
     async function updateUserEmail() {
       // check email validity
       try {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        ;
       if (!regex.test(email)) {
         throw new Error("Invalid email");
       }
@@ -125,7 +125,12 @@ export default function Profile({ navigation }) {
         setErrorMessage("");
       } catch (e) {
         console.log("Profile: " + e.message);
-        setErrorMessage(e.message);
+        if (e.message === "Invalid email") {
+          setErrorMessage(e.message);
+        } else {
+          setErrorMessage("Email already exists");
+        }
+        console.log(e.message);
       }
     }
     updateUserEmail();
@@ -154,7 +159,7 @@ export default function Profile({ navigation }) {
           {/*Profile Info*/}
           <ProfileInfo />
           {/*Email and School*/}
-          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} />
+          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} email={user.email} school={user.school}/>
           {/*Numerical Data*/}
           <NumericalData />
           {/*Achievements*/}
@@ -255,12 +260,10 @@ const ProfileIcon = () => {
 };
 
 // Email and School Info
-const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
+const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, email, school }) => {
   const user = useContext(UserContext);
-
-  const [email, setEmail] = useState(user.email);
-  const [school, setSchool] = useState(user.school);
   const textInputRef = useRef(null);
+  const [tempEmail, setTempEmail] = useState(email);
 
   // when editing email
   const handleEditButtonPress = () => {
@@ -271,11 +274,10 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
 
   // when not editing email
   const handleBlur = () => {
-    updateEmail(email);
   };
 
   const handleEmailChange = (text) => {
-    setEmail(text);
+    setTempEmail(text);
   };
 
   return (
@@ -314,9 +316,10 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
           <TextInput
             ref={textInputRef}
             style={[styles.emailInput, { pointerEvents: "none" }]}
-            value={email}
+            value={tempEmail}
             onChangeText={handleEmailChange}
             onBlur={handleBlur}
+            onSubmitEditing={() => updateEmail(tempEmail)}
           />
           {/*Open Select Button*/}
           <TouchableOpacity onPress={handleEditButtonPress}>
