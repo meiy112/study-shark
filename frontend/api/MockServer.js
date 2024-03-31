@@ -278,6 +278,59 @@ export function startServer() {
         return example;
       });
 
+      // - given a topic id, return info on the topic
+      this.get("/topic/:id/settings/", (schema) => {
+        const example = {
+            title: "Phys901",
+            description: "blub blub",
+            creationDate: "November 9, 1989",
+            tags: ["Physics, Waves"], // names of tags associated with this topic
+            isPublic: false,
+            owner: { // the topic's owner
+              name: "Expo Marker",
+              points: 11,
+            },
+            color: "purple",
+          }
+        return example;
+      });
+
+      // - updates a topic with the given fields. Additionally, set date last opened to current date
+      // - only update if the current user is the owner of the topic
+      // - return the updated topic (just returning the body as it is without modifying it is fine)
+      // - Body: JSON obj in the form of:
+      //       {
+      //         title: <title>,
+      //         isPublic: <isPublic>,
+      //         description: <description>,
+      //         color: <color>
+      //       }
+      //   isPublic is boolean, all other fields are strings. 
+      this.put("/topic/:id", (schema) => {
+        // blank
+        return [];
+      });
+
+      // - deletes the given topic
+      // - only delete if the current user is the owner of the topic
+      this.delete("/topic/:id", (schema) => {
+        // blank
+      });
+
+      // - adds a topic
+      // - use a uuid generator or smth to make a random id
+      // - set both dates to current date, description to empty string, isPublic to false, username to current user, color to default color
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "title": <title>
+      //       }
+      //   where <title> is a string representing the title of the topic
+      this.post("/topic", (schema) => {
+        // blank
+        return {}
+      })
+      
+
       // TAGS ------------------------------------
       // gets all the tags of all the topics belonging to the current user
       this.get("/tag", (schema) => {
@@ -319,7 +372,7 @@ export function startServer() {
           totalAchievements: 5, 
         };
 
-        return example;
+        return admin;
       });
 
       // - update current user's email and return the user with newly updated email, in the same
@@ -372,45 +425,6 @@ export function startServer() {
           totalAchievements: 5, 
         };
         return example;
-      });
-
-      // - given a topic id, return info on the topic
-      this.get("/topic/:id/settings/", (schema) => {
-        const example = {
-            title: "Phys901",
-            description: "blub blub",
-            creationDate: "November 9, 1989",
-            tags: ["Physics, Waves"], // names of tags associated with this topic
-            isPublic: false,
-            owner: { // the topic's owner
-              name: "Expo Marker",
-              points: 11,
-            },
-            color: "purple",
-          }
-        return example;
-      });
-
-      // - updates a topic with the given fields. Additionally, set date last opened to current date
-      // - only update if the current user is the owner of the topic
-      // - return the updated topic (just returning the body as it is without modifying it is fine)
-      // - Body: JSON obj in the form of:
-      //       {
-      //         title: <title>,
-      //         isPublic: <isPublic>,
-      //         description: <description>,
-      //         color: <color>
-      //       }
-      //   isPublic is boolean, all other fields are strings. 
-      this.put("/topic/:id", (schema) => {
-        // blank
-        return [];
-      });
-
-      // - deletes the given topic
-      // - only delete if the current user is the owner of the topic
-      this.delete("/topic/:id", (schema) => {
-        // blank
       });
 
       // ADMIN API-------------------------------
