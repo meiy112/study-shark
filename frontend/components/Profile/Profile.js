@@ -22,22 +22,6 @@ import Admin from "../Admin/Admin";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
-// fake user data
-const user = {
-  username: "Expo Marker",
-  pfp: require("../../assets/images/misc/rice.jpeg"),
-  joined: "May 2024",
-  exp: 1200,
-  title: "BEGINNER",
-  color: "#22B0D2",
-  school: "University of British Columbia",
-  email: "Expomarkerexpogo@gmail.com",
-  totalMat: 21,
-  totalTopics: 12,
-  totalGroups: 11,
-  totalAchievements: 5,
-};
-
 // fake achievements
 const achievements = [
   require("../../assets/images/achievements/croissant_achievement.png"),
@@ -86,6 +70,7 @@ export default function Profile({ navigation }) {
     async function fetchUser() {
       try {
         const data = await userApi.getUser(token);
+        console.log(data.username)
         setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
       } catch (e) {
         console.log("Profile: " + e.message);
@@ -113,8 +98,7 @@ export default function Profile({ navigation }) {
     async function updateUserEmail() {
       // check email validity
       try {
-        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-        ;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!regex.test(email)) {
         throw new Error("Invalid email");
       }
@@ -125,12 +109,7 @@ export default function Profile({ navigation }) {
         setErrorMessage("");
       } catch (e) {
         console.log("Profile: " + e.message);
-        if (e.message === "Invalid email") {
-          setErrorMessage(e.message);
-        } else {
-          setErrorMessage("Email already exists");
-        }
-        console.log(e.message);
+        setErrorMessage(e.message);
       }
     }
     updateUserEmail();
@@ -159,7 +138,7 @@ export default function Profile({ navigation }) {
           {/*Profile Info*/}
           <ProfileInfo />
           {/*Email and School*/}
-          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} email={user.email} school={user.school}/>
+          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} />
           {/*Numerical Data*/}
           <NumericalData />
           {/*Achievements*/}
@@ -260,10 +239,12 @@ const ProfileIcon = () => {
 };
 
 // Email and School Info
-const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, email, school }) => {
+const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
   const user = useContext(UserContext);
+
+  const [email, setEmail] = useState(user.email);
+  const [school, setSchool] = useState(user.school);
   const textInputRef = useRef(null);
-  const [tempEmail, setTempEmail] = useState(email);
 
   // when editing email
   const handleEditButtonPress = () => {
@@ -274,10 +255,11 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, email, 
 
   // when not editing email
   const handleBlur = () => {
+    updateEmail(email);
   };
 
   const handleEmailChange = (text) => {
-    setTempEmail(text);
+    setEmail(text);
   };
 
   return (
@@ -316,10 +298,9 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, email, 
           <TextInput
             ref={textInputRef}
             style={[styles.emailInput, { pointerEvents: "none" }]}
-            value={tempEmail}
+            value={email}
             onChangeText={handleEmailChange}
             onBlur={handleBlur}
-            onSubmitEditing={() => updateEmail(tempEmail)}
           />
           {/*Open Select Button*/}
           <TouchableOpacity onPress={handleEditButtonPress}>
