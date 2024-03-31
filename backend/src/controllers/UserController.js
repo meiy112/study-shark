@@ -33,7 +33,7 @@ class UserController {
     userService.putUserEmail(req.username, req.body.email)
     .then (rows => {
       const arrays = rows.filter(element => Array.isArray(element));
-      res.send(arrays[0]);
+      res.send(arrays[0][0]);
     })
     .catch (err => {
       if (err.message == 'No username') {
@@ -64,7 +64,7 @@ class UserController {
     userService.putUserSchool(req.username, req.body.school)
     .then (rows => {
       const arrays = rows.filter(element => Array.isArray(element));
-      res.send(arrays[0]);
+      res.send(arrays[0][0]);
     })
     .catch (err => {
       if (err.message == 'No username') {
