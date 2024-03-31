@@ -9,4 +9,5 @@ export default {
   grey: "#E4E9F5",
   title: "#171717",
   lightIcon: "#333333",
+  greyIcon: "#414141",
 };

@@ -448,11 +448,11 @@ VALUES ('a', 'green'),
        ('z', 'black');
 
 INSERT INTO User (username, school, reputation, password, email, points, dateJoined)
-VALUES ('hacker101', 'UBC', 'z', '$2a$12$OPejK4n0vTI51CQ53lzg8O3yVpbkHO5W1c79QLO1F0xoS4/o6smfO', 'hacker@gmail.com', 2147483647, '2024-03-30'),
-       ('i_am_a_beginner', 'UBC', 'a', '$2a$12$ZlsKZEbCvscZhzaxAi0xzOWZNNr.92JJ1T1nEj7rYbSj9eERdO1C6', 'myemail@gmail.com', 10, '2024-03-01'),
-       ('smug_person', 'UBC', 'g', '$2a$12$DvDYc9CyIOlf1fp6mM/uXO8dt2JHbwrr.e3BXcaNdaSqzsndnc4ya', 'best@gmail.com', 99999, '1999-01-15'),
-       ('admin2', 'UBCO', 'z', '$2a$12$vh1Xa8r1GIqcwUBvYhaRGOAnrKq3es8xOl7QHimdHNOzeke2sXLm.', 'admin@hotmail.net', 2147483647, '0001-01-02'),
-       ('ditto07', 'Uva Academy', 'c', '$2a$12$7rnUr3Ud1Ttl9bjgOOSpneQrCKBYkjBEGXZ0KHaHczee9skaGPL9a', 'abc@uva.com', 11284, '2005-10-22');
+VALUES ('hacker101', 'Université du Québec à Trois-Rivières (UQTR)', 'z', '$2a$12$OPejK4n0vTI51CQ53lzg8O3yVpbkHO5W1c79QLO1F0xoS4/o6smfO', 'hacker@gmail.com', 2147483647, '2024-03-30'),
+       ('i_am_a_beginner', 'Royal Roads University', 'a', '$2a$12$ZlsKZEbCvscZhzaxAi0xzOWZNNr.92JJ1T1nEj7rYbSj9eERdO1C6', 'myemail@gmail.com', 10, '2024-03-01'),
+       ('smug_person', 'University of British Columbia', 'g', '$2a$12$DvDYc9CyIOlf1fp6mM/uXO8dt2JHbwrr.e3BXcaNdaSqzsndnc4ya', 'best@gmail.com', 99999, '1999-01-15'),
+       ('admin2', 'University of Toronto', 'z', '$2a$12$vh1Xa8r1GIqcwUBvYhaRGOAnrKq3es8xOl7QHimdHNOzeke2sXLm.', 'admin@hotmail.net', 2147483647, '0001-01-02'),
+       ('ditto07', 'Acadia University', 'c', '$2a$12$7rnUr3Ud1Ttl9bjgOOSpneQrCKBYkjBEGXZ0KHaHczee9skaGPL9a', 'abc@uva.com', 11284, '2005-10-22');
 
 -- List of passwords
 -- hacker101 => SHig32b8wug
