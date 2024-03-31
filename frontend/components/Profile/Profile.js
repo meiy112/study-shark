@@ -23,7 +23,7 @@ const { active, inactive, background, primary, shadow, grey } = colors;
 // fake user data
 const user = {
   username: "Expo Marker",
-  pfp: require("../../assets/images/misc/freud.jpg"),
+  pfp: require("../../assets/images/misc/rice.jpeg"),
   joined: "May 2024",
   exp: 1200,
   title: "BEGINNER",

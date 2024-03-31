@@ -174,14 +174,14 @@ export default function App() {
                 }}
               />
               <Tab.Screen
-                name="Groups"
-                component={Groups}
+                name="GroupsScreen"
+                component={Screens.group}
                 listeners={({ navigation, route }) => ({
                   tabPress: (event) => {
-                    setPage("Group");
+                    setPage("Groups");
                     // Navigate to the stack's first screen
                     navigation.navigate(route.name, {
-                      screen: "Group",
+                      screen: "Groups",
                     });
                   },
                 })}
