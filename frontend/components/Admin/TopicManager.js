@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { Text, View, TextInput } from "react-native";
-import { adminApi } from "../api/AdminApi";
-import AuthContext from "../context/AuthContext";
+import { adminApi } from "../../api/AdminApi";
+import AuthContext from "../../context/AuthContext";
 
 export default function TopicManager() {
   const [topics, setTopics] = useState([]);
@@ -13,6 +13,13 @@ export default function TopicManager() {
   function handleSubmit() {
     async function fetchTopics() {
       try {
+        // check for invalid chars
+        const regex = /^[0-9a-zA-Z><="']*$/;
+        if (!regex.test(query)) {
+          throw new Error("No special characters allowed");
+        }
+
+        // fetch data
         const data = await adminApi.getTopics(token, query);
         setTopics(data);
         setErrorMessage("");

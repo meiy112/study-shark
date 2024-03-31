@@ -18,7 +18,7 @@ import colors from "../../constants/Colors";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import schoolData from "./data/schoolData";
 import { userApi } from "../../api/UserApi";
-import Admin from "../../Admin/Admin";
+import Admin from "../Admin/Admin";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
