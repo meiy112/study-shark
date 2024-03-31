@@ -43,6 +43,7 @@ export default function TableViewer() {
 
       <Text>Please enter the table name that you wish to view:</Text>
       <TextInput 
+      keyboardType={'ascii-capable'}
       style={{borderColor: 'black', borderWidth: 1}}
       value={tableName}
       onChangeText={val => setTableName(val)}
