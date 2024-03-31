@@ -55,7 +55,9 @@ const MaterialExplore = (props) => {
           flex: 1,
           height: 229,
           width: 170,
-          marginRight: 15,
+          marginRight: 10,
+          marginLeft: 5,
+          marginBottom: 10,
         },
       ]}
       activeOpacity={1}

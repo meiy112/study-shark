@@ -22,6 +22,22 @@ import Admin from "../Admin/Admin";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
 
+// fake user data
+const user = {
+  username: "Expo Marker",
+  pfp: require("../../assets/images/misc/rice.jpeg"),
+  joined: "May 2024",
+  exp: 1200,
+  title: "BEGINNER",
+  color: "#22B0D2",
+  school: "University of British Columbia",
+  email: "Expomarkerexpogo@gmail.com",
+  totalMat: 21,
+  totalTopics: 12,
+  totalGroups: 11,
+  totalAchievements: 5,
+};
+
 // fake achievements
 const achievements = [
   require("../../assets/images/achievements/croissant_achievement.png"),
