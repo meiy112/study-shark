@@ -12,7 +12,7 @@ class GroupService {
         const err = new Error("No username");
         throw err; 
       } 
-      const head = "SELECT DISTINCT g.name AS title, COUNT(*) AS numMaterials FROM `Group` g, Shares s, Joins j ";
+      const head = "SELECT DISTINCT g.name AS title, g.code AS joinCode, COUNT(*) AS numMaterials FROM `Group` g, Shares s, Joins j ";
       const tail = "WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = ? GROUP BY g.code;";
       // return groups
       return new Promise ((resolve, reject) => {

@@ -219,6 +219,30 @@ WHERE u.reputation = r.reputation AND u.username = 'test';
 SELECT id, username AS name, title FROM createsTopic WHERE .....
 
 
+                                <<<<<<<<< gets user's groups >>>>>>>>>
+                                   <<<<<<<<< get - group >>>>>>>>>   
+
+
+SELECT DISTINCT g.name AS title, COUNT(*) AS numMaterials 
+FROM `Group` g, Shares s, Joins j
+WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = 'ditto07' 
+GROUP BY g.code;
+
+
+                                <<<<<<<<< gets average likes of all public topics >>>>>>>>>
+                        <<<<<<< Find the average likes for topic (total likes / number of study materials) >>>>>>>
+                                         <<<<<<<<< get - topic/likes >>>>>>>>>   
+
+
+SELECT topicId, avg(c)
+FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
+        FROM Likes l, containsStudyMaterial csm 
+        WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID
+        GROUP BY csm.title, csm.topicId) as T
+GROUP BY topicId;
+
+
+
 =====================================================================================================================
 
 
@@ -249,13 +273,6 @@ Find the topics that have more likes than average
                     WHERE l.studyMaterialTitle = csm.title
                     GROUP BY csm.topicId) as T2)
 
-Find the average likes for topic (total likes / number of study materials)
-    SELECT topicId, avg(c)
-    FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
-          FROM Likes l, containsStudyMaterial csm 
-          WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID
-          GROUP BY csm.title, csm.topicId) as T
-    GROUP BY topicId;
 
 DIVISION: 
 Find the topics that have a certain tag
@@ -278,10 +295,3 @@ WHERE NOT EXISTS (SELECT ta.name
                                      FROM has 
                                      WHERE 'Chemistry' = has.tagName
                                      AND has.topicId = T.id))
-
-NORMAL GROUP BY: 
-(counts the number of study material per group)
-SELECT DISTINCT g.name, COUNT(*)
-FROM `Group` g, Shares s, containsstudymaterial csm
-WHERE g.code = s.groupCode AND s.studyMaterialTitle = csm.title
-GROUP BY g.code
