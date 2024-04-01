@@ -51,7 +51,7 @@ WHERE NOT EXISTS (SELECT T.id
 
             <<<<<<<<< returns all public study material sorted by most recent creation date >>>>>>>>>
                             <<<<<<<<< get - topic/studymaterial/featured >>>>>>>>>
-
+                        <<<<<<<< Only returns the study material with non zero components >>>>>>>>
 
 SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle
 FROM createsTopic t, color c, has h, tag ta, 
@@ -253,7 +253,7 @@ Find the average likes for topic (total likes / number of study materials)
     SELECT topicId, avg(c)
     FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
           FROM Likes l, containsStudyMaterial csm 
-          WHERE l.studyMaterialTitle = csm.title
+          WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID
           GROUP BY csm.title, csm.topicId) as T
     GROUP BY topicId;
 
@@ -278,3 +278,10 @@ WHERE NOT EXISTS (SELECT ta.name
                                      FROM has 
                                      WHERE 'Chemistry' = has.tagName
                                      AND has.topicId = T.id))
+
+NORMAL GROUP BY: 
+(counts the number of study material per group)
+SELECT DISTINCT g.name, COUNT(*)
+FROM `Group` g, Shares s, containsstudymaterial csm
+WHERE g.code = s.groupCode AND s.studyMaterialTitle = csm.title
+GROUP BY g.code
