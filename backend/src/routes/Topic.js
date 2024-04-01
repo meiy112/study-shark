@@ -10,6 +10,9 @@ router.get('/', topicController.getUserTopics);
 // returns all featured topics with a given subject
 router.get('/featured', topicController.getFeaturedTopics);
 
+// returns average likes of all public topics
+router.get('/likes', topicController.getTopicsAverageLikes);
+
 // returns a given topic's general info
 router.get('/:id/general-info', topicController.getUserTopicsGeneral);
 

