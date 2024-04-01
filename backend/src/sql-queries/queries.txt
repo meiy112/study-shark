@@ -219,6 +219,16 @@ WHERE u.reputation = r.reputation AND u.username = 'test';
 SELECT id, username AS name, title FROM createsTopic WHERE .....
 
 
+                                <<<<<<<<< gets user's groups >>>>>>>>>
+                                   <<<<<<<<< get - group >>>>>>>>>   
+
+
+SELECT DISTINCT g.name AS title, COUNT(*) AS numMaterials 
+FROM `Group` g, Shares s, Joins j
+WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = 'ditto07' 
+GROUP BY g.code;
+
+
 =====================================================================================================================
 
 
@@ -278,10 +288,3 @@ WHERE NOT EXISTS (SELECT ta.name
                                      FROM has 
                                      WHERE 'Chemistry' = has.tagName
                                      AND has.topicId = T.id))
-
-NORMAL GROUP BY: 
-(counts the number of study material per group)
-SELECT DISTINCT g.name, COUNT(*)
-FROM `Group` g, Shares s, containsstudymaterial csm
-WHERE g.code = s.groupCode AND s.studyMaterialTitle = csm.title
-GROUP BY g.code
