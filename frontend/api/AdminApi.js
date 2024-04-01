@@ -6,7 +6,8 @@ export const adminApi = {
 }
 
 async function getTopics(token, queryString) {
-  const data = await requests.getRequest(token, `/admin/topic/?query=${queryString}`);
+  const encodedQuery = encodeURIComponent(queryString);
+  const data = await requests.getRequest(token, `/admin/topic/?query=${encodedQuery}`);
   return data;
 }
 

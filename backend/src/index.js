@@ -21,6 +21,7 @@ app.use("/tag", routes.tag);
 app.use("/topic", routes.topic);
 app.use("/user", routes.user);
 app.use("/admin", routes.admin);
+app.use("/color", routes.color);
 // add more here, for example:
 // app.use('/users', routes.user);
 

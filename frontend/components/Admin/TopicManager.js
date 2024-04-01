@@ -31,6 +31,7 @@ export default function TopicManager() {
       <Text>Enter a string of conditions connected with 'AND' or 'OR'.</Text>
       <Text>Attributes to use in the conditions: id, username, title, isPublic, description. </Text>
       <TextInput 
+      keyboardType={'ascii-capable'}
       style={{borderColor: 'black', borderWidth: 1}}
       value={query}
       onChangeText={query => setQuery(query)}

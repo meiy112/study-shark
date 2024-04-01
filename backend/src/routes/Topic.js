@@ -16,6 +16,9 @@ router.get('/:id/general-info', topicController.getUserTopicsGeneral);
 // returns all tags associated with a topic
 router.get('/:id/tags', topicController.getUserTopicsTags);
 
+// returns a given topic's settings info
+router.get('/:id/settings', topicController.getTopicSettings);
+
 // returns all public study material sorted by most recent creation date
 router.get('/studymaterial/featured', studyMaterialController.getFeaturedStudyMaterial);
 
@@ -24,6 +27,15 @@ router.get('/:id/studymaterial', studyMaterialController.getFilteredSortedStudyM
 
 // posts all the user's topics in homepage format 
 router.post('/home-page', topicController.postUserTopicsHomepage);
+
+// posts a new topic from user
+router.post('/', topicController.postTopic);
+
+// updates given topic 
+router.put('/:id', topicController.putTopic);
+
+// deletes a given topic
+router.delete('/:id', topicController.deleteTopic);
 
 // deletes a given study material from the given topic
 router.delete('/:id/studymaterial/:title', studyMaterialController.deleteStudyMaterial);

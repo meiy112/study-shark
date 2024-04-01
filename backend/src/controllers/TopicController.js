@@ -145,6 +145,130 @@ class TopicController {
       return;
     });
   }
+
+  // gets a given topic's settings info
+  getTopicSettings(req, res) {
+    topicService.getTopicSettings(req.params.id) 
+    .then (rows => {
+      const tags = rows[0].map((item) => {
+        return item.tagName;
+      }); 
+      const data = rows[1];
+      const newRows = { 
+        title: data.title, 
+        description: data.description,
+        creationDate: data.creationDate, 
+        tags: tags, 
+        isPublic: data.isPublic, 
+        owner: { name: data.username, points: data.points },
+        color: data.color
+      }
+      res.send(newRows);
+    })
+    .catch (err => {
+      if (err.message == 'Error topic does not exist') {
+        // return 'Bad Request' if topicId does not exist 
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error topic does not exist: getTopicSettings'});
+      } else if (err.message == 'No topicId') {
+        // return "Bad Request" if no topicId is given
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error no topicId given: getTopicSettings'});
+      } else {
+        // return 'Internal Service Error' if anything strange happens in the query 
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: getTopicSettings'});
+      }
+      return;
+    });
+  }
+
+  // updates given topic
+  putTopic(req, res) {
+    topicService.putTopic(req.params.id, req.body.title, req.body.isPublic, req.body.description, req.body.color, req.username) 
+    .then (rows => {
+      const arrays = rows.filter(element => Array.isArray(element));
+      res.send(arrays[0]);
+    })
+    .catch (err => {
+      if (err.message == 'Error topic does not exist') {
+        // return 'Bad Request' if topicId does not exist 
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error topic does not exist: putTopic'});
+      } else if (err.message == 'No topicId') {
+        // return "Bad Request" if no topicId is given
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error no topicId given: putTopic'});
+      } else if (err.message == 'Error user does not own topic') {
+        // return "Forbidden" if user does not own topic
+        res.status(403).send({message: 'Forbidden', 
+                              details: 'Error user does not own topic: putTopic'});
+      } else if (err.message == 'Error color does not exist') {
+        // return "Bad Request" if color does not exist
+        res.status(400).send({message: 'Bad Request', 
+                              details: 'Error color does not exist: putTopic'});
+      } else {
+        // return 'Internal Service Error' if anything strange happens in the query 
+        res.status(500).send({message: 'Internal Service Error', 
+                              details: 'Error executing query: putTopic'});
+      }
+      return;
+    });
+  }
+
+  // deletes given topic
+  deleteTopic(req, res) {
+    topicService.deleteTopic(req.params.id, req.username) 
+      .then (() => {
+        res.send("Topic: " + req.params.id + " deleted successfully");
+      })
+      .catch (err => {
+        if (err.message == 'Error topic does not exist') {
+          // return 'Bad Request' if topicId does not exist 
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error topic does not exist: deleteTopic'});
+        } else if (err.message == 'No topicId') {
+          // return "Bad Request" if no topicId is given
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error no topicId given: deleteTopic'});
+        } else if (err.message == 'Error user does not own topic') {
+          // return "Forbidden" if user does not own topic
+          res.status(403).send({message: 'Forbidden', 
+                                details: 'Error user does not own topic: deleteTopic'});
+        } else {
+          // return 'Internal Service Error' if anything strange happens in the query 
+          res.status(500).send({message: 'Internal Service Error', 
+                                details: 'Error executing query: deleteTopic'});
+        }
+        return;
+      });
+    }
+
+    // posts a new topic
+    postTopic(req, res) {
+      topicService.postTopic(req.body.title, req.username) 
+        .then (() => {
+          res.send("Topic: " + req.body.title + " created successfully");
+        })
+        .catch (err => {
+          if (err.message == 'No username') {
+            if (req.expired == 'true') {
+              // return "Forbidden" if user was not authenticated because jwt expired
+              res.status(403).send({message: 'Forbidden', 
+                                      details: 'unidentified user tried to access topics, jwt expired'});
+            } else {
+              // return "Forbidden" if user was not authenticated
+              res.status(403).send({message: 'Forbidden', 
+                                      details: 'unidentified user tried to access topics'});
+            }
+          } else {
+            // return 'Internal Service Error' if anything strange happens in the query 
+            res.status(500).send({message: 'Internal Service Error', 
+                                  details: 'Error executing query: postTopic'});
+          }
+          return;
+        });
+      }
 }
 
 module.exports = new TopicController();
