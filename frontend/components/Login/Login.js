@@ -87,7 +87,7 @@ export default function Login( {setModalVisible} ) {
 
   // check valid inputs
   function checkValidInputs() {
-    const regex = /^[0-9a-zA-Z]*$/;
+    const regex = /^[0-9a-zA-Z_-]*$/;
     if (!regex.test(username) || !regex.test(password)) {
       throw new Error("Only 0-9 and alphabetical characters are allowed");
     }
