@@ -25,7 +25,7 @@ export default function TableViewer() {
         setAttrList(attrAsArray);
 
         // fetch data
-        const data = await adminApi.getTables(token, tableName, attrList);
+        const data = await adminApi.getTables(token, tableName, attrAsArray);
         setRecords(data);
         setErrorMessage("");
       } catch (e) {

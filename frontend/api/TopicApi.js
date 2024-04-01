@@ -52,20 +52,20 @@ async function deleteStudyMaterial(token, topicId, title) {
 }
 
 async function getSettingsTopic(token, id) {
-  const data = await requests.getRequest(token, `/topic/:${id}/settings`);
+  const data = await requests.getRequest(token, `/topic/${id}/settings`);
   return data;
 }
 
 async function updateTopic(token, id, topic) {
   await requests.putRequest(
     token,
-    `/topic/:${id}`,
+    `/topic/${id}`,
     topic
     );
 }
 
 async function deleteTopic(token, id) {
-  await requests.deleteRequest(token, `/topic/:${id}`);
+  await requests.deleteRequest(token, `/topic/${id}`);
 }
 
 async function addTopic(token, title) {
