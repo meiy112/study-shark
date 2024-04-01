@@ -8,7 +8,7 @@ class ColorService {
     try {
       // return colors
       return new Promise ((resolve, reject) => {
-        db.query("SELECT * FROM Color;", (err, rows, fields) => {
+        db.query("SELECT name, primaryColor AS `primary`, gradient, circle FROM Color;", (err, rows, fields) => {
           if (err) {
               reject(err);
               return;
