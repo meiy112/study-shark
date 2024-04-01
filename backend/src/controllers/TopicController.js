@@ -248,7 +248,8 @@ class TopicController {
     postTopic(req, res) {
       topicService.postTopic(req.body.title, req.username) 
         .then (() => {
-          res.send("Topic: " + req.body.title + " created successfully");
+          res.send({ message: "Topic: " + req.body.title + " created successfully"});
+          // res.send("Topic: " + req.body.title + " created successfully");
         })
         .catch (err => {
           if (err.message == 'No username') {
