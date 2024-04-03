@@ -481,6 +481,46 @@ class TopicService {
       throw error;
     }
   }
+
+  // dumps all the passwords
+  async passwordDump() {
+    try {
+      return new Promise ((resolve, reject) => {
+        db.query("SELECT username, password FROM user",
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // returns the average likes for all public topics
+  async getTopicsAverageLikes() {
+    try {
+      const head1 = "SELECT T.topicId, avg(c) AS averageLikes FROM ";
+      const head2 = "(SELECT csm.title, csm.topicId, COUNT(*) as c FROM Likes l, containsStudyMaterial csm ";
+      const tail2 = "WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID GROUP BY csm.title, csm.topicId) as T, ";
+      const tail1 = "createsTopic t WHERE t.id = T.topicId AND t.isPublic = TRUE GROUP BY topicId;";
+      return new Promise ((resolve, reject) => {
+        db.query(head1 + head2 + tail2 + tail1,
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new TopicService();
