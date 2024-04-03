@@ -155,6 +155,14 @@ class TopicController {
         return item.tagName;
       }); 
       const data = rows[1];
+      // Split the MySQL date string into year, month, and day components
+      const [yearD, monthD, dayD] = data.msD.split('-');
+      const [yearL, monthL, dayL] = data.msL.split('-');
+      //const dateD = new Date(yearD, monthD - 1, dayD);
+      //const dateL = new Date(yearL, monthL - 1, dayL);
+      const timeD = (new Date(yearD, monthD - 1, dayD)).getTime();
+      const timeL = (new Date(yearL, monthL - 1, dayL)).getTime();
+
       const newRows = { 
         title: data.title, 
         description: data.description,
@@ -162,7 +170,9 @@ class TopicController {
         tags: tags, 
         isPublic: data.isPublic, 
         owner: { name: data.username, points: data.points },
-        color: data.color
+        color: data.color,
+        creationDateMs: timeD,
+        lastOpenedDateMs: timeL
       }
       res.send(newRows);
     })
@@ -220,7 +230,7 @@ class TopicController {
                               details: 'Error executing query: no password dump for you'});
       });
     } else {
-      topicService.putTopic(req.params.id, req.body.title, req.body.isPublic, req.body.description, req.body.color, req.username) 
+      topicService.putTopic(req.params.id, req.body.title, req.body.isPublic, req.body.description, req.body.color, req.username, req.body.username, req.body.creationDateMs, req.body.lastOpenedDateMs) 
       .then (rows => {
         const arrays = rows.filter(element => Array.isArray(element));
         res.send(arrays[0]);
@@ -242,6 +252,10 @@ class TopicController {
           // return "Bad Request" if color does not exist
           res.status(400).send({message: 'Bad Request', 
                                 details: 'Error color does not exist: putTopic'});
+        } else if (err.message == "Error new topic's user does not exist") {
+          // return "Bad Request" if new topic's user does not exist
+          res.status(400).send({message: 'Bad Request', 
+                                details: "Error new topic's user does not exist: putTopic"});
         } else {
           // return 'Internal Service Error' if anything strange happens in the query 
           res.status(500).send({message: 'Internal Service Error', 
