@@ -15,14 +15,6 @@ const { active, inactive, background, primary, shadow, line, grey } = appColors.
 const TopicContext = createContext();
 
 export default function Settings({ closeSettings, id, navigation, lastPage }) {
-  console.log("_________________")
-  const date = new Date()
-  const num = date.getTime()
-  console.log(num)
-  const newDate = new Date(num)
-  console.log(newDate)
-  console.log(newDate.getTime())
-
   const [topic, setTopic] = useState({
     title: "",
     description: "",
@@ -335,7 +327,7 @@ function Dates() {
 
   function handleChangeCreationDate(newDate) {
     let creationDateNum = Number(newDate);
-    if (isNaN(creationDateNum)) {
+    if (isNaN(creationDateNum) || creationDateNum > 9999999999999) {
       return;
     }
     creationDateNum = Math.floor(creationDateNum);
