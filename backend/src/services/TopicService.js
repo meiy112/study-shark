@@ -247,10 +247,11 @@ class TopicService {
 
     // get topic's settings data
     const getData = (topicId) => {
-      const head = "SELECT title, description, DATE_FORMAT(dateCreated, '%M %d, %Y') AS creationDate, id AS tags, isPublic, t.username, u.points, t.color "; 
+      const head = "SELECT title, description, DATE_FORMAT(dateCreated, '%M %d, %Y') AS creationDate, id AS tags, isPublic, t.username, ";
+      const attr = "u.points, t.color, DATE_FORMAT(t.lastOpened, '%Y-%m-%d') AS msL, DATE_FORMAT(t.dateCreated, '%Y-%m-%d') AS msD "; 
       const tail = "FROM createstopic t, user u WHERE id = ? AND t.username = u.username;";
       return new Promise ((resolve, reject) => {
-        db.query(head + tail,  
+        db.query(head + attr + tail,  
           [topicId], (err, rows, fields) => {
             if (err) {
                 reject(err);
@@ -283,7 +284,7 @@ class TopicService {
   }
 
   // updates given topic
-  async putTopic(topicId, title, isPublic, description, color, username) {
+  async putTopic(topicId, title, isPublic, description, color, username, new_username, cDMS, loDMS) {
     // function to check if user is not the owner of the topic
     const checkUserDoesNotOwnTopic = (topicId, username) => {
       return new Promise((resolve, reject) => {
@@ -325,6 +326,20 @@ class TopicService {
           });
       });
     };
+
+    // function to check if user does not exist
+    const checkUserDoesNotExist = (username) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT username FROM user WHERE username = ?'; 
+          db.query(exists, [username], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
     
     try {
       // if no topicId is given return error "No topicId"
@@ -347,14 +362,40 @@ class TopicService {
         const err = new Error("Error color does not exist");
         throw err;
       }
-      
-      const update = "UPDATE createsTopic SET title = ?, isPublic = ?, description = ?, color = ?, lastOpened = NOW() WHERE id = ?; ";
+      // if user does not exist return error "Error new topic's user does not exist"
+      if (await checkUserDoesNotExist(new_username)) {
+        const err = new Error("Error new topic's user does not exist");
+        throw err;
+      }
+
+      const dateC = new Date(cDMS); 
+      const dateL = new Date(loDMS);
+
+      // Extract year, month, and day from the Date object
+      const yearC = dateC.getFullYear();
+      const monthC = String(dateC.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it is zero-based
+      const dayC = String(dateC.getDate()).padStart(2, '0');
+
+      // Concatenate year, month, and day in the format YYYY-MM-DD
+      const formattedDateC = `${yearC}-${monthC}-${dayC}`;
+
+      // Extract year, month, and day from the Date object
+      const yearL = dateL.getFullYear();
+      const monthL = String(dateL.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it is zero-based
+      const dayL = String(dateL.getDate()).padStart(2, '0');
+
+      // Concatenate year, month, and day in the format YYYY-MM-DD
+      const formattedDateL = `${yearL}-${monthL}-${dayL}`;
+
+      const update = "UPDATE createsTopic SET title = ?, isPublic = ?, description = ?, color = ?, " 
+      const extra = "lastOpened = ?, username = ?, dateCreated = ? WHERE id = ?; ";
       const query = "SELECT * FROM createsTopic WHERE id = ?";
       // updates topic with given information and returns it
       return new Promise ((resolve, reject) => {
-        db.query(update + query, [title, isPublic, description, color, topicId, topicId], 
+        db.query(update + extra + query, [title, isPublic, description, color, formattedDateL, new_username, formattedDateC, topicId, topicId], 
           (err, rows, fields) => {
             if (err) {
+                console.log("uh oh");
                 reject(err);
                 return;
             }
