@@ -1,8 +1,9 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { View, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Button, IconButton, Text, Switch } from "react-native-paper";
-import * as appColors from "../../constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
+
+import * as appColors from "../../constants/Colors";
 import AuthContext from "../../context/AuthContext";
 import PageContext from "../../context/PageContext";
 import NotifyContext from "../../context/NotifyContext";
@@ -407,7 +408,7 @@ function Dates() {
     let lastOpenedDateNum = Number(newDate);
 
     // check if date is valid
-    if (isNaN(lastOpenedDateNum || lastOpenedDateNum > 9999999999999)) {
+    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 9999999999999) {
       return;
     }
     lastOpenedDateNum = Math.floor(lastOpenedDateNum);
