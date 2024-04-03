@@ -389,7 +389,7 @@ function Dates() {
   function handleChangeCreationDate(newDate) {
     let creationDateNum = Number(newDate);
 
-    // check if date is valid
+    // if date is invalid, do nothing
     if (isNaN(creationDateNum) || creationDateNum > 9999999999999) {
       return;
     }
@@ -402,7 +402,7 @@ function Dates() {
     setTopic(newTopic);
   }
 
-  // handle last opened date change
+  // if date is invalid, do nothing
   function handleChangeLastOpenedDate(newDate) {
     let lastOpenedDateNum = Number(newDate);
 
@@ -430,7 +430,7 @@ function Dates() {
         onChangeText={(val) => handleChangeCreationDate(val)} 
       />
       {/* Last opened */}
-      <Text style={styles.subheading}>Date Last Opened:</Text>
+      <Text style={{...styles.subheading, marginTop: 10}}>Date Last Opened:</Text>
       <Text style={{fontSize: 11, fontFamily: 'mon-l'}}>{lastOpenedDateStr}</Text>
       <TextInput 
         style={styles.textInput} 
