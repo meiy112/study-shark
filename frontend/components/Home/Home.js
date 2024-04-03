@@ -63,7 +63,7 @@ export default function Home({ navigation }) {
       }
     }
     fetchTags();
-  }, [token]);
+  }, [token, lastUpdateTime]);
 
   // fetch topics
   useEffect(() => {

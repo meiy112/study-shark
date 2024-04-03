@@ -10,6 +10,7 @@ function NotifyProvider({ children }) {
 
   function triggerRerender() {
     setLastUpdateTime(new Date());
+    console.log(new Date());
   }
 
   return (

@@ -279,7 +279,8 @@ export function startServer() {
       });
 
       // - given a topic id, return info on the topic
-      this.get("/topic/:id/settings/", (schema) => {
+      // - creation/lastOpenedDateMs you can get by going topic.creationDate.getTime()
+      this.get("/topic/:id/settings", (schema) => {
         const example = {
             title: "Phys901",
             description: "blub blub",
@@ -291,21 +292,27 @@ export function startServer() {
               points: 11,
             },
             color: "purple",
+            creationDateMs: 1712961181026,
+            lastOpenedDateMs: 1712161181026,
           }
         return example;
       });
 
-      // - updates a topic with the given fields. Additionally, set date last opened to current date
+      // - updates a topic with the given fields, convert dateMs to date objects before updating. 
       // - only update if the current user is the owner of the topic
       // - return the updated topic (just returning the body as it is without modifying it is fine)
+      // - throw an error "username: <username> does not exist" if <username> does not exist Users table
       // - Body: JSON obj in the form of:
       //       {
-      //         title: <title>,
-      //         isPublic: <isPublic>,
-      //         description: <description>,
-      //         color: <color>
+      //         title: <title>, string
+      //         isPublic: <isPublic>, boolean
+      //         description: <description>, string
+      //         color: <color>, string
+      //         username: <username>, string,
+      //         creationDateMs: <creationDateMs>, integer
+      //         lastOpenedDateMs: <lastOpenedDateMs>, integer
       //       }
-      //   isPublic is boolean, all other fields are strings. 
+      //    - convert creation/lastOpenedDateMs to a date object with const date = new Date(creationDateMs)
       this.put("/topic/:id", (schema) => {
         // blank
         return [];

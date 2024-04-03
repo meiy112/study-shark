@@ -4,6 +4,7 @@ import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext"
 import { Button } from "react-native-paper";
 import AuthContext from "../../context/AuthContext";
+import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
 const { active, inactive, background, primary, shadow, line } = colors;
@@ -58,6 +59,7 @@ const AddModal = (props) => {
 };
 
 function AddStudyMaterial({ topicId }) {
+  // TODO
   return(
     <View>
       <Text>Add study material</Text>
@@ -66,6 +68,7 @@ function AddStudyMaterial({ topicId }) {
 }
 
 function AddGroup() {
+  // TODO
   return(
     <View>
       <Text>Add group</Text>
@@ -78,6 +81,7 @@ function AddTopic() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { token } = useContext(AuthContext);
+  const { triggerRerender } = useContext(NotifyContext);
 
   function handleAdd() {
     async function addTopic() {
@@ -92,11 +96,12 @@ function AddTopic() {
       }
     }
     addTopic();
+    triggerRerender();
   }
 
   return(
     <View style={{alignItems: "center"}}>
-      <Text style={{fontSize: 20, fontWeight: 500, marginBottom: 20}}>Add topic</Text>
+      <Text style={styles.modalTitle}>Add topic</Text>
       <View>
         <Text>Title:</Text>
         <TextInput style={styles.textInput} value={input} onChangeText={(val) => setInput(val)}></TextInput>
@@ -163,6 +168,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 200,
   },
+  modalTitle: {
+    fontSize: 20, 
+    fontWeight: 500, 
+    marginBottom: 20
+  }
 });
 
 export default AddModal;
