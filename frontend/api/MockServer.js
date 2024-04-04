@@ -503,6 +503,20 @@ export function startServer() {
         return example;
       });
 
+      // studymaterial api?????
+      // post studymaterial ???? 
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "title": <title>,
+      //         "type": <type>
+      //         "topicId": <topicId>
+      //       }
+      // where <title>, <type> and <topicId> are strings
+      this.post("/studyMaterial", (schema) => {
+        // return nothing....
+        return {}
+      });
+
       
 
     },
