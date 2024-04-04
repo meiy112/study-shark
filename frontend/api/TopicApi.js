@@ -9,7 +9,11 @@ export const topicApi = {
   getFeaturedTopics,
   getFeaturedStudyMaterial,
   getAverageLikes,
-};
+  getSettingsTopic,
+  updateTopic,
+  deleteTopic,
+  addTopic,
+}
 
 async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
   const data = await requests.postRequest(
@@ -58,13 +62,37 @@ async function getFeaturedStudyMaterial(token, subject) {
 }
 
 async function deleteStudyMaterial(token, topicId, title) {
-  const response = await requests.deleteRequest(
-    token,
-    `/topic/${topicId}/studymaterial/${title}`
-  );
+  await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
 }
 
 async function getAverageLikes(token) {
   const data = await requests.getRequest(token, `/topic/likes`);
   return data;
+}
+
+async function getSettingsTopic(token, id) {
+  const data = await requests.getRequest(token, `/topic/${id}/settings`);
+  return data;
+}
+
+async function updateTopic(token, id, topic) {
+  await requests.putRequest(
+    token,
+    `/topic/${id}`,
+    topic
+    );
+}
+
+async function deleteTopic(token, id) {
+  await requests.deleteRequest(token, `/topic/${id}`);
+}
+
+async function addTopic(token, title) {
+  await requests.postRequest(
+    token,
+    '/topic',
+    {
+      "title": title
+    }
+  )
 }

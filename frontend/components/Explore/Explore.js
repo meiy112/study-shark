@@ -9,7 +9,8 @@ import { useScrollToTop } from "@react-navigation/native";
 import { useRef, useState, useEffect, useContext, createContext } from "react";
 import SearchScreen from "./Search/SearchScreen";
 import PageContext from "../../context/PageContext";
-import AuthContext from "../../context/AuthContext";
+import AuthContext from '../../context/AuthContext';
+import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
 const {
@@ -58,6 +59,7 @@ export default function Explore({ navigation }) {
   const [topics, setTopics] = useState([]);
   const [subject, setSubject] = useState(""); // subject to filter by
   const { token } = useContext(AuthContext); // jwt token
+  const { lastUpdateTime } = useContext(NotifyContext);
 
   // LOAD DATA------------------------------------
   // fetch topics
@@ -71,7 +73,20 @@ export default function Explore({ navigation }) {
       }
     }
     fetchTopics();
-  }, [token, subject]);
+  }, [token, subject, lastUpdateTime]);
+
+  // fetch studyMaterial
+  useEffect(() => {
+    async function fetchStudyMaterial() {
+      try {
+          const data = await topicApi.getFeaturedStudyMaterial(token, subject);
+          setStudyMaterial(data);
+        } catch (e) {
+          console.log("Explore page: " + e.message);
+        }
+      } 
+      fetchStudyMaterial();
+  }, [token, subject, lastUpdateTime]); 
   // END LOAD DATA ----------------------------------------------
 
   // HANDLERS ------------------------

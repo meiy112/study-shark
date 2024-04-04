@@ -19,24 +19,9 @@ import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import schoolData from "./data/schoolData";
 import { userApi } from "../../api/UserApi";
 import Admin from "../Admin/Admin";
+import NotifyContext from "../../context/NotifyContext";
 
 const { active, inactive, background, primary, shadow, grey } = colors;
-
-// fake user data
-const user = {
-  username: "Expo Marker",
-  pfp: require("../../assets/images/misc/rice.jpeg"),
-  joined: "May 2024",
-  exp: 1200,
-  title: "BEGINNER",
-  color: "#22B0D2",
-  school: "University of British Columbia",
-  email: "Expomarkerexpogo@gmail.com",
-  totalMat: 21,
-  totalTopics: 12,
-  totalGroups: 11,
-  totalAchievements: 5,
-};
 
 // fake achievements
 const achievements = [
@@ -78,7 +63,9 @@ export default function Profile({ navigation }) {
     totalAchievements: 0,
   });
   const [errorMessage, setErrorMessage] = useState(""); // error message for updating email
+  const [successMessage, setSuccessMessage] = useState("") // success message for updating email
   const { token, userLogout } = useContext(AuthContext); // jwt token + logout function
+  const { lastUpdateTime } = useContext(NotifyContext);
 
   // LOAD DATA----------------------------------------
   // fetch user data
@@ -93,7 +80,7 @@ export default function Profile({ navigation }) {
       }
     }
     fetchUser();
-   }, [token]);
+   }, [token, lastUpdateTime]);
   // END LOAD DATA------------------------------------
 
   // log out
@@ -123,9 +110,11 @@ export default function Profile({ navigation }) {
         const data = await userApi.updateEmail(token, email);
         setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
         setErrorMessage("");
+        setSuccessMessage("Email changed!");
       } catch (e) {
         console.log("Profile: " + e.message);
         setErrorMessage(e.message);
+        setSuccessMessage("");
       }
     }
     updateUserEmail();
@@ -154,7 +143,7 @@ export default function Profile({ navigation }) {
           {/*Profile Info*/}
           <ProfileInfo />
           {/*Email and School*/}
-          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} />
+          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} successMessage={successMessage} />
           {/*Numerical Data*/}
           <NumericalData />
           {/*Achievements*/}
@@ -255,7 +244,7 @@ const ProfileIcon = () => {
 };
 
 // Email and School Info
-const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
+const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, successMessage }) => {
   const user = useContext(UserContext);
 
   const [email, setEmail] = useState(user.email);
@@ -374,7 +363,8 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage }) => {
         </View>
       </View>
       {/*END: University*/}
-      <Text style={{ color:"red", marginLeft: 46, marginTop: 36, fontSize: 10}}>{errorMessage}</Text>
+      <Text style={{ color:"red", marginLeft: 46, marginTop: 34, fontSize: 10 }}>{errorMessage}</Text>
+      <Text style={{ color:"green", marginLeft: 46, marginTop: -8, fontSize: 10}}>{successMessage}</Text>
     </View>
   );
 };

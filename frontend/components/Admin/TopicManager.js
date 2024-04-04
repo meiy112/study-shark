@@ -13,12 +13,6 @@ export default function TopicManager() {
   function handleSubmit() {
     async function fetchTopics() {
       try {
-        // check for invalid chars
-        const regex = /^[0-9a-zA-Z><="']*$/;
-        if (!regex.test(query)) {
-          throw new Error("No special characters allowed");
-        }
-
         // fetch data
         const data = await adminApi.getTopics(token, query);
         setTopics(data);
@@ -37,6 +31,7 @@ export default function TopicManager() {
       <Text>Enter a string of conditions connected with 'AND' or 'OR'.</Text>
       <Text>Attributes to use in the conditions: id, username, title, isPublic, description. </Text>
       <TextInput 
+      keyboardType={'ascii-capable'}
       style={{borderColor: 'black', borderWidth: 1}}
       value={query}
       onChangeText={query => setQuery(query)}

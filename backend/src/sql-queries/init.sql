@@ -228,13 +228,13 @@ INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `po
 
 
 INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color) VALUES
-    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue'),
-    ('2', 'test', 'Chem123', false, 'idk what to write here bro', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'green'),
-    ('3', 'test', 'Math049', false, 'Man my neck hurts', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'red'),
-    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', NOW(), NOW(), 'blue'),
-    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'green'),
-    ('6', 'test', 'How to swim', false, 'description here', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'red'),
-    ('7', 'test', 'Bible studies', true, 'description here 2', NOW(), DATE_SUB(NOW(), INTERVAL 1 DAY), 'blue');
+    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', '1997-06-24', '1995-03-01', 'blue'),
+    ('2', 'test', 'Chem123', false, 'idk what to write here bro', '1998-06-24', '1967-07-18', 'green'),
+    ('3', 'test', 'Math049', false, 'Man my neck hurts', '1997-08-24', '1994-03-30', 'red'),
+    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', '1297-06-24', '1241-11-23', 'blue'),
+    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', '1957-06-24', '1095-03-02', 'green'),
+    ('6', 'test', 'How to swim', false, 'description here', '1993-06-24', '1712-10-14', 'red'),
+    ('7', 'test', 'Bible studies', true, 'description here 2', '1237-06-24', '1095-12-01', 'blue');
 
 INSERT INTO Tag (name, color, subject) VALUES
     ('Physics', '#5F2EB3', 'SCIENCE'),

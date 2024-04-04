@@ -42,16 +42,16 @@ SELECT id, title, description, username FROM createstopic WHERE id = '1';
 SELECT name 
 FROM tag ta 
 WHERE NOT EXISTS (SELECT T.id
-				  FROM createsTopic T 
+                  FROM createsTopic T 
                   WHERE NOT EXISTS (SELECT tagName 
-									FROM has 
+                                   FROM has 
                                     WHERE '1' = has.topicId
                                     AND has.tagName = ta.name));
 
 
             <<<<<<<<< returns all public study material sorted by most recent creation date >>>>>>>>>
                             <<<<<<<<< get - topic/studymaterial/featured >>>>>>>>>
-
+                        <<<<<<<< Only returns the study material with non zero components >>>>>>>>
 
 SELECT DISTINCT s.title, s.type, DATE_FORMAT(s.idate, '%M %d, %Y') AS date, s.parsedText, s.numComponents, c.name, c.primaryColor, c.gradient, c.circle, t.title AS topicTitle
 FROM createsTopic t, color c, has h, tag ta, 
@@ -219,6 +219,30 @@ WHERE u.reputation = r.reputation AND u.username = 'test';
 SELECT id, username AS name, title FROM createsTopic WHERE .....
 
 
+                                <<<<<<<<< gets user's groups >>>>>>>>>
+                                   <<<<<<<<< get - group >>>>>>>>>   
+
+
+SELECT DISTINCT g.name AS title, COUNT(*) AS numMaterials 
+FROM `Group` g, Shares s, Joins j
+WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = 'ditto07' 
+GROUP BY g.code;
+
+
+                                <<<<<<<<< gets average likes of all public topics >>>>>>>>>
+                        <<<<<<< Find the average likes for topic (total likes / number of study materials) >>>>>>>
+                                         <<<<<<<<< get - topic/likes >>>>>>>>>   
+
+
+SELECT topicId, avg(c)
+FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
+        FROM Likes l, containsStudyMaterial csm 
+        WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID
+        GROUP BY csm.title, csm.topicId) as T
+GROUP BY topicId;
+
+
+
 =====================================================================================================================
 
 
@@ -249,13 +273,6 @@ Find the topics that have more likes than average
                     WHERE l.studyMaterialTitle = csm.title
                     GROUP BY csm.topicId) as T2)
 
-Find the average likes for topic (total likes / number of study materials)
-    SELECT topicId, avg(c)
-    FROM (SELECT csm.title, csm.topicId, COUNT(*) as c
-          FROM Likes l, containsStudyMaterial csm 
-          WHERE l.studyMaterialTitle = csm.title
-          GROUP BY csm.title, csm.topicId) as T
-    GROUP BY topicId;
 
 DIVISION: 
 Find the topics that have a certain tag

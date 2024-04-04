@@ -484,6 +484,66 @@ export function startServer() {
         return example;
       });
 
+      // - given a topic id, return info on the topic
+      // - creation/lastOpenedDateMs you can get by going topic.creationDate.getTime()
+      this.get("/topic/:id/settings", (schema) => {
+        const example = {
+            title: "Phys901",
+            description: "blub blub",
+            creationDate: "November 9, 1989",
+            tags: ["Physics, Waves"], // names of tags associated with this topic
+            isPublic: false,
+            owner: { // the topic's owner
+              name: "Expo Marker",
+              points: 11,
+            },
+            color: "purple",
+            creationDateMs: 1712961181026,
+            lastOpenedDateMs: 1712161181026,
+          }
+        return example;
+      });
+
+      // - updates a topic with the given fields, convert dateMs to date objects before updating. 
+      // - only update if the current user is the owner of the topic
+      // - return the updated topic (just returning the body as it is without modifying it is fine)
+      // - throw an error "username: <username> does not exist" if <username> does not exist Users table
+      // - Body: JSON obj in the form of:
+      //       {
+      //         title: <title>, string
+      //         isPublic: <isPublic>, boolean
+      //         description: <description>, string
+      //         color: <color>, string
+      //         username: <username>, string,
+      //         creationDateMs: <creationDateMs>, integer
+      //         lastOpenedDateMs: <lastOpenedDateMs>, integer
+      //       }
+      //    - convert creation/lastOpenedDateMs to a date object with const date = new Date(creationDateMs)
+      this.put("/topic/:id", (schema) => {
+        // blank
+        return [];
+      });
+
+      // - deletes the given topic
+      // - only delete if the current user is the owner of the topic
+      this.delete("/topic/:id", (schema) => {
+        // blank
+      });
+
+      // - adds a topic
+      // - use a uuid generator or smth to make a random id
+      // - set both dates to current date, description to empty string, isPublic to false, username to current user, color to default color
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "title": <title>
+      //       }
+      //   where <title> is a string representing the title of the topic
+      this.post("/topic", (schema) => {
+        // blank
+        return {}
+      })
+      
+
       // TAGS ------------------------------------
       // gets all the tags of all the topics belonging to the current user
       this.get("/tag", (schema) => {
@@ -608,7 +668,7 @@ export function startServer() {
         return example;
       });
 
-      // ADMIN PAGE-------------------------------
+      // ADMIN API-------------------------------
 
       // - return all topics in database with the custom WHERE clause.
       // - if the query is invalid, return an error message (just say smth like "invalid query string" or whatever)
@@ -641,14 +701,43 @@ export function startServer() {
       //   where attrs is an array of strings representing attribute names
       this.post("/admin/table/", (schema) => {
         const example = [
-          { id: 1, name: "name1", title: "hi" },
-          { id: 2, name: "name2", title: "dafda" },
-          { id: 3, name: "name3", title: "hidffdsd" },
-          { id: 4, name: "name4", title: "hafdi" },
-        ];
+          {id: 1, name: "name1", title: "hi"},
+          {id: 2, name: "name2", title: "dafda"},
+          {id: 3, name: "name3", title: "hidffdsd"},
+          {id: 4, name: "name4", title: "hafdi"},
+        ]
+ 
+        return example;
+      });
+
+      // COLOR API ----------------------------
+      // return all colors in database
+      this.get("/color", (schema) => {
+        const example = [
+          {
+            name: "purple",
+            primary: "#5F2EB3", 
+            gradient: "#29144D", 
+            circle: "#3D1E73",
+          },
+          {
+            name: "blue", 
+            primary: "#22B0D2", 
+            gradient: "#1455CE", 
+            circle: "#1455CE"
+          },
+          {
+            name: "pink", 
+            primary: "#F5878D", 
+            gradient: "#B9568C", 
+            circle: "#B9568C",
+          },
+        ]
 
         return example;
       });
+
+      
     },
   });
 }

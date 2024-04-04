@@ -63,13 +63,14 @@ export default function Home({ navigation }) {
       }
     }
     fetchTags();
-  }, [token]);
+  }, [token, lastUpdateTime]);
 
   // fetch topics
   useEffect(() => {
     async function fetchTopic() {
       try {
-          const data = await topicApi.getHomePageTopics(token, filterList, sortBy, searchQuery);
+          const tagsList = filterList.map((item) => item.name);
+          const data = await topicApi.getHomePageTopics(token, tagsList, sortBy, searchQuery);
           setTopics(data);
         } catch (e) {
           console.log("Home page: " + e.message);

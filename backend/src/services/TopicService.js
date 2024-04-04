@@ -59,7 +59,7 @@ class TopicService {
       }
 
       // else return all topics belonging to user in homepage format
-      if (searchQuery == "") {
+      if (searchQuery.length == 0) {
         //console.log(create + insert + head + numF + numQ + numN + tail + division + orderBy + drop);
         query = create + insert + head + numF + numQ + numN + tail + division + orderBy + drop;
       } else {
@@ -169,7 +169,7 @@ class TopicService {
     // function to check if subject is invalid 
     const checkSubjectInvalid = (subject) => {
       if (subject != "SCIENCE" && subject != "LANG" && subject != "MATH" && subject != "CREATIVE" && 
-          subject != "GAM" && subject != "LIT" && subject != "") {
+          subject != "GAM" && subject != "LIT" && subject.length != 0) {
             return true;
           }
           return false; 
@@ -185,7 +185,7 @@ class TopicService {
       if (checkSubjectInvalid(subject)) {
         return []; 
       }
-      if (subject == "") {
+      if (subject.length == 0) {
         // return all topics belonging to user in homepage format
         return new Promise ((resolve, reject) => {
           db.query(head + numF + numQ + numN + tail,
@@ -210,6 +210,354 @@ class TopicService {
             });
         })
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // gets a given topic's settings info
+  async getTopicSettings(topicId) {
+    // function to check if topic does not exist
+    const checkTopicDoesNotExist = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to get tags from topic 
+    const getTopicTags = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT tagName FROM Has WHERE topicId = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows);
+          });
+      });
+    };
+
+    // get topic's settings data
+    const getData = (topicId) => {
+      const head = "SELECT title, description, DATE_FORMAT(dateCreated, '%M %d, %Y') AS creationDate, id AS tags, isPublic, t.username, ";
+      const attr = "u.points, t.color, DATE_FORMAT(t.lastOpened, '%Y-%m-%d') AS msL, DATE_FORMAT(t.dateCreated, '%Y-%m-%d') AS msD "; 
+      const tail = "FROM createstopic t, user u WHERE id = ? AND t.username = u.username;";
+      return new Promise ((resolve, reject) => {
+        db.query(head + attr + tail,  
+          [topicId], (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows[0]);
+          });
+      })
+    };
+
+    try {
+      // if topic does not exist return error "Error topic does not exist"
+      if (await checkTopicDoesNotExist(topicId)) {
+        const err = new Error("Error topic does not exist");
+        throw err;
+      }
+
+      // if no topicId is given return error "No topicId"
+      if (topicId.length == 0) {
+        const err = new Error("No topicId");
+        throw err; 
+      }
+      const tags = await getTopicTags(topicId);
+      const data = await getData(topicId);
+      return [tags, data];
+      
+    } catch (error) {
+      throw error; 
+    }
+  }
+
+  // updates given topic
+  async putTopic(topicId, title, isPublic, description, color, username, new_username, cDMS, loDMS) {
+    // function to check if user is not the owner of the topic
+    const checkUserDoesNotOwnTopic = (topicId, username) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ? AND username = ?'; 
+          db.query(exists, [topicId, username], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if topic does not exist
+    const checkTopicDoesNotExist = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if color does not exist
+    const checkColorDoesNotExist = (color) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT name FROM color WHERE name = ?'; 
+          db.query(exists, [color], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if user does not exist
+    const checkUserDoesNotExist = (username) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT username FROM user WHERE username = ?'; 
+          db.query(exists, [username], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+    
+    try {
+      // if no topicId is given return error "No topicId"
+      if (topicId.length == 0) {
+        const err = new Error("No topicId");
+        throw err; 
+      }
+      // if topic does not exist return error "Error topic does not exist"
+      if (await checkTopicDoesNotExist(topicId)) {
+        const err = new Error("Error topic does not exist");
+        throw err;
+      }
+      // if user does not own topic return error "Error user does not own topic"
+      if (await checkUserDoesNotOwnTopic(topicId, username)) {
+        const err = new Error("Error user does not own topic");
+        throw err; 
+      }
+      // if color does not exist return error "Error color does not exist"
+      if (await checkColorDoesNotExist(color)) {
+        const err = new Error("Error color does not exist");
+        throw err;
+      }
+      // if user does not exist return error "Error new topic's user does not exist"
+      if (await checkUserDoesNotExist(new_username)) {
+        const err = new Error("Error new topic's user does not exist");
+        throw err;
+      }
+
+      const dateC = new Date(cDMS); 
+      const dateL = new Date(loDMS);
+
+      // Extract year, month, and day from the Date object
+      const yearC = dateC.getFullYear();
+      const monthC = String(dateC.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it is zero-based
+      const dayC = String(dateC.getDate()).padStart(2, '0');
+
+      // Concatenate year, month, and day in the format YYYY-MM-DD
+      const formattedDateC = `${yearC}-${monthC}-${dayC}`;
+
+      // Extract year, month, and day from the Date object
+      const yearL = dateL.getFullYear();
+      const monthL = String(dateL.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because it is zero-based
+      const dayL = String(dateL.getDate()).padStart(2, '0');
+
+      // Concatenate year, month, and day in the format YYYY-MM-DD
+      const formattedDateL = `${yearL}-${monthL}-${dayL}`;
+
+      const update = "UPDATE createsTopic SET title = ?, isPublic = ?, description = ?, color = ?, " 
+      const extra = "lastOpened = ?, username = ?, dateCreated = ? WHERE id = ?; ";
+      const query = "SELECT * FROM createsTopic WHERE id = ?";
+      // updates topic with given information and returns it
+      return new Promise ((resolve, reject) => {
+        db.query(update + extra + query, [title, isPublic, description, color, formattedDateL, new_username, formattedDateC, topicId, topicId], 
+          (err, rows, fields) => {
+            if (err) {
+                console.log("uh oh");
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // deletes given topic
+  async deleteTopic(topicId, username) {
+    // function to check if user is not the owner of the topic
+    const checkUserDoesNotOwnTopic = (topicId, username) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ? AND username = ?'; 
+          db.query(exists, [topicId, username], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if topic does not exist
+    const checkTopicDoesNotExist = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+    
+    try {
+      // if no topicId is given return error "No topicId"
+      if (topicId.length == 0) {
+        const err = new Error("No topicId");
+        throw err; 
+      }
+      // if topic does not exist return error "Error topic does not exist"
+      if (await checkTopicDoesNotExist(topicId)) {
+        const err = new Error("Error topic does not exist");
+        throw err;
+      }
+      // if user does not own topic return error "Error user does not own topic"
+      if (await checkUserDoesNotOwnTopic(topicId, username)) {
+        const err = new Error("Error user does not own topic");
+        throw err; 
+      }
+      
+      const query = "DELETE FROM createsTopic WHERE id = ?";
+      // deletes given topic
+      return new Promise ((resolve, reject) => {
+        db.query(query, [topicId], 
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // posts a new topic
+  async postTopic(title, username) {
+    // function to check if topic does not exist
+    const checkTopicDoesNotExist = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+    try {
+      // if user is not authenticated return error "No username"
+      if (username == 'no user') {
+        const err = new Error("No username");
+        throw err; 
+      } 
+      // generate a new topicId 
+      const max = 9999999;
+      let topicId = 0;
+      for (let i = 0; i < max; i++) {
+        topicId = Math.floor(Math.random() * (max + 1));
+        if (await checkTopicDoesNotExist(topicId)) {
+          break;
+        }
+      }
+      const id = topicId.toString();
+      const today = new Date();
+      // console.log(topicId);
+      // console.log(id);
+      const head = "INSERT INTO createsTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color) VALUES ";
+      const values = "(?, ?, ?, ?, ?, ?, ?, ?);";
+      // posts a new topic
+      return new Promise ((resolve, reject) => {
+        db.query(head + values, [id, username, title, false, '', today, today, 'default'],
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // dumps all the passwords
+  async passwordDump() {
+    try {
+      return new Promise ((resolve, reject) => {
+        db.query("SELECT username, password FROM user",
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // returns the average likes for all public topics
+  async getTopicsAverageLikes() {
+    try {
+      const head1 = "SELECT T.topicId, avg(c) AS averageLikes FROM ";
+      const head2 = "(SELECT csm.title, csm.topicId, COUNT(*) as c FROM Likes l, containsStudyMaterial csm ";
+      const tail2 = "WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID GROUP BY csm.title, csm.topicId) as T, ";
+      const tail1 = "createsTopic t WHERE t.id = T.topicId AND t.isPublic = TRUE GROUP BY topicId;";
+      return new Promise ((resolve, reject) => {
+        db.query(head1 + head2 + tail2 + tail1,
+          (err, rows, fields) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
     } catch (error) {
       throw error;
     }
