@@ -53,7 +53,7 @@ class TopicService {
       let query = "";
 
       if (sort == "lastOpened") {
-        orderBy = "ORDER BY T1.lastOpened ASC; ";
+        orderBy = "ORDER BY T1.lastOpened DESC; ";
       } else {
         orderBy = "ORDER BY T1.title ASC; ";
       }
