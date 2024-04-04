@@ -389,9 +389,10 @@ function Dates() {
   // handle creation date change
   function handleChangeCreationDate(newDate) {
     let creationDateNum = Number(newDate);
+    console.log(newDate);
 
     // if date is invalid, do nothing
-    if (isNaN(creationDateNum) || creationDateNum > 9999999999999) {
+    if (isNaN(creationDateNum) || creationDateNum > 99999999999999) {
       return;
     }
     creationDateNum = Math.floor(creationDateNum);
@@ -408,7 +409,7 @@ function Dates() {
     let lastOpenedDateNum = Number(newDate);
 
     // check if date is valid
-    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 9999999999999) {
+    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 99999999999999) {
       return;
     }
     lastOpenedDateNum = Math.floor(lastOpenedDateNum);
