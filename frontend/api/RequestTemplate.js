@@ -16,6 +16,7 @@ async function getRequest(token, url) {
   let response;
   let data;
 
+  console.log(BASE_URL + url)
   // try to call backend
   try {
     response = await fetch(BASE_URL + url, {
