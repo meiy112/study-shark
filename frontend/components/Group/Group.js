@@ -114,7 +114,7 @@ const materials = [
 ];
 // ------------------------------------------------------------------------
 
-export default function Group({ navigation, group, members }) {
+export default function Group({ navigation, group }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: primary }}>
       <View style={{ backgroundColor: background, flex: 1 }}>

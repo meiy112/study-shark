@@ -13,27 +13,17 @@ import AuthContext from '../../context/AuthContext';
 import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
-const {
-  active,
-  inactive,
-  background,
-  primary,
-  shadow,
-  line,
-  grey,
-  title,
-  greyIcon,
-} = colors;
+const { active, inactive, background, primary, shadow, line, grey } = colors;
 const NavContext = createContext();
 
 // Achievement Button beside Search
 function AchievementButton() {
   const navigation = useContext(NavContext);
   const { setPage } = useContext(PageContext);
-
+  
   const handlePress = () => {
     setPage("Achievement");
-    navigation.navigate("Achievement", { prevScreen: "Explore" });
+    navigation.navigate("Achievement", {prevScreen: "Explore"});
   };
 
   return (
@@ -57,6 +47,7 @@ export default function Explore({ navigation }) {
   // search screen modal
   const [isSearchVisible, setSearchVisible] = useState(false);
   const [topics, setTopics] = useState([]);
+  const [studyMaterial, setStudyMaterial] = useState([]);
   const [subject, setSubject] = useState(""); // subject to filter by
   const { token } = useContext(AuthContext); // jwt token
   const { lastUpdateTime } = useContext(NotifyContext);
@@ -117,13 +108,7 @@ export default function Explore({ navigation }) {
       >
         <View style={{ flex: 1, backgroundColor: background }}>
           <Header handleSearchPress={handleSearchPress} />
-          <ExploreFeed
-            handleSubjectPress={handleSubjectPress}
-            topics={topics}
-            navigation={navigation}
-            token={token}
-            subject={subject}
-          />
+          <ExploreFeed handleSubjectPress={handleSubjectPress} topics={topics} studyMaterial={studyMaterial} navigation={navigation} />
         </View>
         <SearchScreen isVisible={isSearchVisible} onClose={handleCloseSearch} />
       </SafeAreaView>
@@ -147,13 +132,7 @@ const Header = ({ handleSearchPress }) => {
 };
 
 // feed under header
-const ExploreFeed = ({
-  handleSubjectPress,
-  topics,
-  navigation,
-  token,
-  subject,
-}) => {
+const ExploreFeed = ({ handleSubjectPress, topics, studyMaterial, navigation }) => {
   // scrolls to top when explore button in navbar or scrollToTop button is pressed
   const ref = useRef();
   const scrollToTop = () => {
@@ -166,14 +145,9 @@ const ExploreFeed = ({
       {/*subjects*/}
       <SubjectList handleSubjectPress={handleSubjectPress} />
       {/*hot topics*/}
-      <HotTopics topics={topics} navigation={navigation} token={token} />
+      <HotTopics topics={topics} navigation={navigation} />
       {/*featured material*/}
-      {/*<ShowMaterialButton showMaterials={showMaterials} />*/}
-      <FeaturedMaterial
-        navigation={navigation}
-        token={token}
-        subject={subject}
-      />
+      <FeaturedMaterial studyMaterial={studyMaterial} navigation={navigation} />
       {/*----------------------Scroll To Top Button------------------------*/}
       <TouchableOpacity
         onPress={scrollToTop}
@@ -208,11 +182,7 @@ const SubjectList = ({ handleSubjectPress }) => {
         contentContainerStyle={{}}
         showsHorizontalScrollIndicator={false}
       >
-        <SubjectItem
-          title="SCIENCE"
-          iconName="bulb-outline"
-          handleSubjectPress={handleSubjectPress}
-        />
+        <SubjectItem title="SCIENCE" iconName="bulb-outline" handleSubjectPress={handleSubjectPress} />
         <SubjectItem
           title="LANG"
           secondLine="UAGE"
@@ -231,17 +201,8 @@ const SubjectList = ({ handleSubjectPress }) => {
           iconName="color-palette-outline"
           handleSubjectPress={handleSubjectPress}
         />
-        <SubjectItem
-          title="WEATHER"
-          iconName="cloudy-night-outline"
-          handleSubjectPress={handleSubjectPress}
-        />
-        <SubjectItem
-          title="GAM"
-          secondLine="BLING"
-          iconName="dice-outline"
-          handleSubjectPress={handleSubjectPress}
-        />
+        <SubjectItem title="WEATHER" iconName="cloudy-night-outline" handleSubjectPress={handleSubjectPress} />
+        <SubjectItem title="GAM" secondLine="BLING" iconName="dice-outline" handleSubjectPress={handleSubjectPress} />
         <SubjectItem
           title="LIT"
           secondLine="ERATURE"
@@ -256,11 +217,7 @@ const SubjectList = ({ handleSubjectPress }) => {
 // Subject component in subject list (title = first line, secondLine = second line)
 const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
   return (
-    <TouchableOpacity
-      onPress={() => {
-        handleSubjectPress(title);
-      }}
-    >
+    <TouchableOpacity onPress={() => {handleSubjectPress(title)}}>
       <View style={[styles.subjectContainer, styles.shadow]}>
         <Ionicons name={iconName} size={32} color={"#304046"} />
         <View style={{ justifyContent: "center", height: 30, width: "100%" }}>
@@ -279,79 +236,43 @@ const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
 };
 
 // Hot Topics
-const HotTopics = ({ topics, navigation, token }) => {
-  const [isLikesShown, setIsLikesShown] = useState(false);
-  const [listData, setListData] = useState([]);
-  const [avgLikes, setAvgLikes] = useState({});
-
-  useEffect(() => {
-    const updatedListData = topics.map((item, index) => {
-      console.log("tee hee updating hot topics");
-      const topicId = item.id;
-      const numLikes = avgLikes[topicId];
-      return (
-        <TopicExplore
-          key={index}
-          id={item.id}
-          title={item.title}
-          date={item.date}
-          numNotes={item.numNotes}
-          numCards={item.numCards}
-          numQuizzes={item.numQuizzes}
-          color={item.color}
-          navigation={navigation}
-          isLikesShown={isLikesShown}
-          numLikes={numLikes}
-        />
-      );
-    });
-    setListData(updatedListData);
-  }, [isLikesShown, topics]);
-
-  const toggleLikesShown = async () => {
-    await getLikes();
-    setIsLikesShown(!isLikesShown);
-  };
-
-  const getLikes = async () => {
-    try {
-      const data = await topicApi.getAverageLikes(token);
-      console.log("HAHAHA (got likes)");
-      setAvgLikes(data);
-    } catch (e) {
-      console.log("Explore page: " + e.message);
-    }
-  };
+const HotTopics = ({ topics, navigation }) => {
+  let listData = [];
+  let index = 0;
+  topics.forEach((item) => {
+    listData.push( <TopicExplore 
+        key={index} 
+        id={item.id}
+        title={item.title}
+        date={item.date}
+        numNotes={item.numNotes}
+        numCards={item.numCards}
+        numQuizzes={item.numQuizzes}
+        color={item.color}
+        navigation={navigation}
+     />);
+     index += 1;
+  });
 
   return (
     <View
       style={[styles.hotTopicsContainer, styles.feedComponenent, styles.shadow]}
     >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text
-          style={[
-            styles.title,
-            { paddingBottom: 9, paddingLeft: 25, paddingTop: 8 },
-          ]}
-        >
-          Hot Topics
-        </Text>
-        <TouchableOpacity
-          style={[styles.viewButton, { marginRight: 10, height: 30 }]}
-          onPress={toggleLikesShown}
-        >
-          <Text style={styles.buttonText}>
-            {isLikesShown ? "Hide Likes" : "Show Likes"}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Text
+        style={[
+          styles.title,
+          { paddingBottom: 9, paddingLeft: 25, paddingTop: 8 },
+        ]}
+      >
+        Hot Topics
+      </Text>
       {/*-----------------------Topics go in here----------------------*/}
       <ScrollView
         horizontal
         contentContainerStyle={styles.scroll}
         showsHorizontalScrollIndicator={false}
-      >
-        {listData}
+      > 
+      {listData}
       </ScrollView>
       {/*--------------------------------------------------------------*/}
     </View>
@@ -359,25 +280,22 @@ const HotTopics = ({ topics, navigation, token }) => {
 };
 
 // Featured Material
-const FeaturedMaterial = ({ navigation, token, subject }) => {
-  const [isMaterialShowed, setIsMaterialShowed] = useState(false);
-  const [loadedStudyMaterial, setLoadedStudyMaterial] = useState([]);
-
-  const handleOnPress = async () => {
-    await fetchStudyMaterial();
-    setIsMaterialShowed(true);
-  };
-
-  // fetch study mats when handleOnPress is called
-  const fetchStudyMaterial = async () => {
-    try {
-      const data = await topicApi.getFeaturedStudyMaterial(token, subject);
-      console.log("HAHA (study mats got fetched)");
-      setLoadedStudyMaterial(data);
-    } catch (e) {
-      console.log("Explore page: " + e.message);
-    }
-  };
+const FeaturedMaterial = ({ studyMaterial, navigation }) => {
+  let listData = [];
+  let index = 0;
+  studyMaterial.forEach((item) => {
+    listData.push( <MaterialExplore 
+        key={index} 
+        title={item.title}
+        type={item.type}
+        date={item.date}
+        color={item.color}
+        count={item.numComponents}
+        topicTitle={item.topicTitle}
+        navigation={navigation}
+     />);
+     index += 1;
+  });
 
   return (
     <View
@@ -401,32 +319,13 @@ const FeaturedMaterial = ({ navigation, token, subject }) => {
         Featured Material
       </Text>
       {/*-----------------------StudyMats go in here----------------------*/}
-      {isMaterialShowed ? (
-        <ScrollView
-          horizontal
-          contentContainerStyle={styles.scroll}
-          showsHorizontalScrollIndicator={false}
-        >
-          {loadedStudyMaterial.map((item, index) => (
-            <MaterialExplore
-              key={index}
-              title={item.title}
-              type={item.type}
-              date={item.date}
-              color={item.color}
-              count={item.numComponents}
-              topicTitle={item.topicTitle}
-              navigation={navigation}
-            />
-          ))}
-        </ScrollView>
-      ) : (
-        <View style={styles.viewButtonContainer}>
-          <TouchableOpacity style={styles.viewButton} onPress={handleOnPress}>
-            <Text style={styles.buttonText}>VIEW</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <ScrollView
+        horizontal
+        contentContainerStyle={styles.scroll}
+        showsHorizontalScrollIndicator={false}
+      >
+        {listData}
+      </ScrollView>
       {/*----------------------------------------------------------------*/}
     </View>
   );
@@ -499,24 +398,5 @@ const styles = StyleSheet.create({
     height: 311,
     width: "100%",
     paddingTop: 20,
-  },
-  viewButtonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    height: 80,
-  },
-  viewButton: {
-    backgroundColor: greyIcon,
-    height: 41,
-    width: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontFamily: "mon-sb",
-    fontSize: 12,
   },
 });

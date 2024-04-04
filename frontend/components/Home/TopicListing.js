@@ -16,17 +16,8 @@ const { active, inactive, background, primary, shadow, line } = colors;
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicListing = (props) => {
-  const {
-    id,
-    title,
-    isPublic,
-    date,
-    numNotes,
-    numCards,
-    numQuizzes,
-    color,
-    navigation,
-  } = props;
+  const { id, title, isPublic, date, numNotes, numCards, numQuizzes, color, navigation } =
+    props;
 
   const [scaleValue] = useState(new Animated.Value(1));
   const { setPage, setTopicId } = useContext(PageContext);
@@ -50,7 +41,7 @@ const TopicListing = (props) => {
   const handleClick = () => {
     setPage("Topic");
     setTopicId(id);
-    navigation.navigate("Topic", { id: id, color: color, prevScreen: "Home" });
+    navigation.navigate("Topic", {id: id, color: color, prevScreen: "Home"});
   };
 
   return (
@@ -133,7 +124,9 @@ function StudyDataEntry({ number, name, color }) {
   return (
     <View style={styles.studyDataEntryContainer}>
       {/*Number + Circle*/}
-      <View style={[styles.numberCircle, { backgroundColor: color.circle }]}>
+      <View
+        style={[styles.numberCircle, { backgroundColor: color.circle }]}
+      >
         <Text style={{ fontFamily: "mon-sb", fontSize: 11, color: primary }}>
           {number}
         </Text>

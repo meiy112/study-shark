@@ -9,26 +9,13 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../../../constants/Colors";
 import PageContext from "../../../context/PageContext";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
 // TOPICLISTING: (title, isPublic, date, numNotes, numCards, numQuizzes, color)
 // displayed on home screen, click in to go to Topic page
 const TopicExplore = (props) => {
-  const {
-    id,
-    title,
-    date,
-    numNotes,
-    numCards,
-    numQuizzes,
-    color,
-    navigation,
-    isLikesShown,
-    numLikes,
-  } = props;
-  // Number of likes
+  const { id, title, date, numNotes, numCards, numQuizzes, color, navigation } = props;
 
   const [scaleValue] = useState(new Animated.Value(1));
   const { setPage, setTopicId } = useContext(PageContext);
@@ -52,11 +39,7 @@ const TopicExplore = (props) => {
   const handleClick = () => {
     setPage("Topic");
     setTopicId(id);
-    navigation.navigate("Topic", {
-      id: id,
-      color: color,
-      prevScreen: "Explore",
-    });
+    navigation.navigate("Topic", {id: id, color: color, prevScreen: "Explore"});
   };
 
   return (
@@ -80,12 +63,7 @@ const TopicExplore = (props) => {
         end={{ x: 0.5, y: 1 }}
       ></LinearGradient>
       {/*HEADER*/}
-      <Header
-        title={title}
-        date={date}
-        isLikesShown={isLikesShown}
-        numLikes={numLikes}
-      />
+      <Header title={title} date={date} />
       {/*STUDY MATERIAL DATA*/}
       <StudyData
         numNotes={numNotes}
@@ -98,35 +76,9 @@ const TopicExplore = (props) => {
 };
 
 // everything above the container with # StudyMaterial
-function Header({ title, date, isLikesShown, numLikes }) {
+function Header({ title, date }) {
   return (
     <View style={styles.header}>
-      {/*Likes*/}
-      <View style={{ alignSelf: "flex-start" }}>
-        {isLikesShown ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Ionicons name="heart-outline" color={"#FFFFFF"} size={18} />
-            <Text
-              style={{
-                color: primary,
-                fontSize: 12,
-                fontFamily: "mon-m",
-                marginLeft: 3,
-              }}
-            >
-              {numLikes}
-            </Text>
-          </View>
-        ) : (
-          <Ionicons name="heart-dislike-outline" color={"#FFFFFF"} size={18} />
-        )}
-      </View>
       <View style={styles.titleDate}>
         {/*DATE*/}
         <Text
@@ -202,6 +154,7 @@ const styles = StyleSheet.create({
     width: 170,
     flex: 1,
     padding: 15,
+    paddingTop: 35,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
