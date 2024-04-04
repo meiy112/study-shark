@@ -8,18 +8,23 @@ export const topicApi = {
   deleteStudyMaterial,
   getFeaturedTopics,
   getFeaturedStudyMaterial,
-}
+  getAverageLikes,
+};
 
 async function getHomePageTopics(token, filterList, sortBy, searchQuery) {
   const data = await requests.postRequest(
     token,
-     `/topic/home-page/?sort=${sortBy}&searchQuery=${searchQuery}`,
-     {"filterList": filterList});
+    `/topic/home-page/?sort=${sortBy}&searchQuery=${searchQuery}`,
+    { filterList: filterList }
+  );
   return data;
 }
 
 async function getGeneralInfo(token, topicId) {
-  const data = await requests.getRequest(token, `/topic/${topicId}/general-info`);
+  const data = await requests.getRequest(
+    token,
+    `/topic/${topicId}/general-info`
+  );
   return data;
 }
 
@@ -29,20 +34,37 @@ async function getTags(token, topicId) {
 }
 
 async function getFilteredSortedStudymaterial(token, topicId, type, sortBy) {
-  const data = await requests.getRequest(token, `/topic/${topicId}/studymaterial/?type=${type}&sort=${sortBy}`);
+  const data = await requests.getRequest(
+    token,
+    `/topic/${topicId}/studymaterial/?type=${type}&sort=${sortBy}`
+  );
   return data;
 }
 
 async function getFeaturedTopics(token, subject) {
-  const data = await requests.getRequest(token, `/topic/featured/?subject=${subject}`);
+  const data = await requests.getRequest(
+    token,
+    `/topic/featured/?subject=${subject}`
+  );
   return data;
 }
 
 async function getFeaturedStudyMaterial(token, subject) {
-  const data = await requests.getRequest(token, `/topic/studymaterial/featured/?subject=${subject}`);
+  const data = await requests.getRequest(
+    token,
+    `/topic/studymaterial/featured/?subject=${subject}`
+  );
   return data;
 }
 
 async function deleteStudyMaterial(token, topicId, title) {
-  const response = await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
+  const response = await requests.deleteRequest(
+    token,
+    `/topic/${topicId}/studymaterial/${title}`
+  );
+}
+
+async function getAverageLikes(token) {
+  const data = await requests.getRequest(token, `/topic/likes`);
+  return data;
 }

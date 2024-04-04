@@ -15,19 +15,9 @@ const Members = [
   },
 ];
 
-const GroupData = [
-  {
-    title: "Jaywalkers",
-    numMats: 12,
-    members: [Members[0], Members[1], Members[2], Members[3], Members[4]],
-    joinCode: "LXA8H14G9",
-  },
-  {
-    title: "Psychoanalysis",
-    numMats: 69,
-    members: [Members[3], Members[4]],
-    joinCode: "B6A87VX1A",
-  },
+const memberData = [
+  [Members[0], Members[1], Members[2], Members[3], Members[4]],
+  [Members[3], Members[4]],
 ];
 
-export default GroupData;
+export default memberData;
