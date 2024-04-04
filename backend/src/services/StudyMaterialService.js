@@ -21,16 +21,28 @@ class StudyMaterialService {
       });
     };
 
-    // function to check if topic does not exist
+    // get all quizzes with the given topicId
     const getQuizzes = (topicId, sort) => {
       return new Promise((resolve, reject) => {
           var exists;
+          const select1 = "SELECT csm1.title, csm1.type, DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, ";
+          const from1 = "COUNT(*) as numComponents FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq ";
+          const where1 = "WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId AND csm1.topicId = ?";
+          const group1 = "GROUP BY csm1.title, csm1.type, lastOpened UNION ";
+          const select2 = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, 0 ";
+          const from2 = "FROM ContainsStudyMaterial csm WHERE csm.type = 'Quiz' AND csm.title NOT IN ";
+          const nest1 = "(SELECT csm2.title FROM ContainsStudyMaterial csm2, OwnsQuizQuestion oqq ";
+          const nest2 = "WHERE oqq.studyMatTitle = csm2.title AND oqq.topicId = csm2.topicId) AND csm.topicId = ?";
+          const group2 = "GROUP BY csm.title, csm.type, lastOpened ";
+          const orderByT = "ORDER BY title ASC;";
+          const orderByL = "ORDER BY lastOpened ASC;";
+          exists = select1 + from1 + where1 + group1 + select2 + from2 + nest1 + nest2 + group2;
           if (sort == 'lastOpened') {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm.title AND oqq.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY lastOpened DESC";
+            exists += orderByL;
           } else {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm.title AND oqq.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY title ASC"; 
+            exists += orderByT;
           }
-          db.query(exists, [topicId], (err, rows, fields) => {
+          db.query(exists, [topicId, topicId], (err, rows, fields) => {
               if (err) {
                   reject(err);
                   return;
@@ -40,16 +52,28 @@ class StudyMaterialService {
       });
     };
 
-    // function to check if topic does not exist
+    // gets all flashcards with the given topicID
     const getFlashcards = (topicId, sort) => {
       return new Promise((resolve, reject) => {
           var exists;
+          const select1 = "SELECT csm2.title, csm2.type, DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, ";
+          const from1 = "COUNT(*) as numComponents FROM ContainsStudyMaterial csm2, OwnsCard oc ";
+          const where1 = "WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId AND csm2.topicId = ? ";
+          const group1 = "GROUP BY csm2.title, csm2.type, lastOpened UNION ";
+          const select2 = "SELECT csm4.title, csm4.type, DATE_FORMAT(csm4.lastOpened, '%M %d, %Y') AS lastOpened, 0 ";
+          const from2 = "FROM ContainsStudyMaterial csm4 WHERE csm4.type = 'Flashcards' AND csm4.title NOT IN ";
+          const nest1 = "(SELECT csm5.title FROM ContainsStudyMaterial csm5, OwnsCard oc2 ";
+          const nest2 = "WHERE oc2.studyMatTitle = csm5.title AND oc2.topicId = csm5.topicId) AND csm4.topicId = ? ";
+          const group2 = "GROUP BY csm4.title, csm4.type, lastOpened ";
+          const orderByT = "ORDER BY title ASC;";
+          const orderByL = "ORDER BY lastOpened ASC;";
+          exists = select1 + from1 + where1 + group1 + select2 + from2 + nest1 + nest2 + group2;
           if (sort == 'lastOpened') {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsCard oc WHERE oc.studyMatTitle = csm.title AND oc.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY lastOpened ASC";
+            exists += orderByL;
           } else {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsCard oc WHERE oc.studyMatTitle = csm.title AND oc.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY title ASC"; 
+            exists += orderByT;
           }
-          db.query(exists, [topicId], (err, rows, fields) => {
+          db.query(exists, [topicId, topicId], (err, rows, fields) => {
               if (err) {
                   reject(err);
                   return;
@@ -64,7 +88,7 @@ class StudyMaterialService {
       return new Promise((resolve, reject) => {
           var exists;
           if (sort == 'lastOpened') {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, csm.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm WHERE  csm.type = 'Notes' AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened, csm.parsedText ORDER BY lastOpened ASC";
+            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, csm.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm WHERE  csm.type = 'Notes' AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened, csm.parsedText ORDER BY lastOpened DESC";
           } else {
             exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, csm.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm WHERE  csm.type = 'Notes' AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened, csm.parsedText ORDER BY title ASC";
           }
@@ -84,7 +108,7 @@ class StudyMaterialService {
           const quiz = "SELECT csm1.title, csm1.type, DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, csm1.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId AND csm1.topicId = ? GROUP BY csm1.title, csm1.type, lastOpened, csm1.parsedText UNION ";
           const flashcard = "SELECT csm2.title, csm2.type, DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, csm2.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm2, OwnsCard oc WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId AND csm2.topicId = ? GROUP BY csm2.title, csm2.type, lastOpened, csm2.parsedText UNION "; 
           const notes = "SELECT csm3.title, csm3.type, DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, csm3.parsedText, COUNT(*) as numComponents FROM ContainsStudyMaterial csm3 WHERE  csm3.type = 'Notes' AND csm3.topicId = ? GROUP BY csm3.title, csm3.type, lastOpened, csm3.parsedText "; 
-          const orderByDate = "ORDER BY lastOpened ASC;";
+          const orderByDate = "ORDER BY lastOpened DESC;";
           const orderByTitle = "ORDER BY title ASC;";
           var exists;
           if (sort == 'lastOpened') {
