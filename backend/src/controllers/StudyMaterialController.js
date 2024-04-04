@@ -103,6 +103,45 @@ class StudyMaterialController {
       return;
     });
   }
+
+  // posts a new studyMaterial
+  postStudyMaterial(req, res) {
+    studyMaterialService.postStudyMaterial(req.body.title, req.username, req.body.type, req.body.topicId) 
+      .then (() => {
+        res.send({ message: "Topic: " + req.body.title + " created successfully"});
+        // res.send("Topic: " + req.body.title + " created successfully");
+      })
+      .catch (err => {
+        if (err.message == 'No username') {
+          if (req.expired == 'true') {
+            // return "Forbidden" if user was not authenticated because jwt expired
+            res.status(403).send({message: 'Forbidden', 
+                                    details: 'unidentified user tried to access study materials, jwt expired'});
+          } else {
+            // return "Forbidden" if user was not authenticated
+            res.status(403).send({message: 'Forbidden', 
+                                    details: 'unidentified user tried to access study materials'});
+          }
+        } else if (err.message == 'Error topic does not exist') {
+          // Return 'Bad Request' if topic ID is invalid
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error topic does not exist: postStudyMaterial'});
+        } else if (err.message == 'User does not own topic') {
+          // return "Bad Request" if user does not own topic
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error user does not own topic: postStudyMaterial'});
+        } else if (err.message == 'Study Material already exists') {
+          // return "Bad Request" if study material already exists
+          res.status(400).send({message: 'Bad Request', 
+                                details: 'Error study material already exists: postStudyMaterial'});
+        } else {
+          // return 'Internal Service Error' if anything strange happens in the query 
+          res.status(500).send({message: 'Internal Service Error', 
+                                details: 'Error executing query: postStudyMaterial'});
+        }
+        return;
+      });
+    }
 }
 
 module.exports = new StudyMaterialController();
