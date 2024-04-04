@@ -1,24 +1,75 @@
-import { createServer, Model } from "miragejs"
+import { createServer, Model } from "miragejs";
 
 let mirageServer;
 
 export function startServer() {
   mirageServer = createServer({
     models: {
-      topic: Model, 
+      topic: Model,
       tag: Model,
       color: Model,
     },
 
     // Seed data
     seeds(server) {
-      server.create("topic", { id: "1", title: "Phys901", isPublic: true, lastOpened: new Date(), description: "Random fake description very fake pretend this is a description", isOwner: true }); 
-      server.create("topic", { id: "2", title: "Chem123", isPublic: false, lastOpened: new Date(), description: "idk what to write here bro", isOwner: true }); 
-      server.create("topic", { id: "3", title: "Math049", isPublic: false, lastOpened: new Date(), description: "Man my neck hurts", isOwner: true }); 
-      server.create("topic", { id: "4", title: "Cpsc304", isPublic: true, lastOpened: new Date(), description: "blah blah blah blah blah blah blah ahhhhhhhhhhhh", isOwner: true }); 
-      server.create("topic", { id: "5", title: "Hello World", isPublic: false, lastOpened: new Date(), description: "someone save me im not creative enough to come up with these", isOwner: true }); 
-      server.create("topic", { id: "6", title: "How to swim", isPublic: false, lastOpened: new Date(), description: "description here", isOwner: true }); 
-      server.create("topic", { id: "7", title: "Bible studies", isPublic: true, lastOpened: new Date(), description: "description here 2", isOwner: true }); 
+      server.create("topic", {
+        id: "1",
+        title: "Phys901",
+        isPublic: true,
+        lastOpened: new Date(),
+        description:
+          "Random fake description very fake pretend this is a description",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "2",
+        title: "Chem123",
+        isPublic: false,
+        lastOpened: new Date(),
+        description: "idk what to write here bro",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "3",
+        title: "Math049",
+        isPublic: false,
+        lastOpened: new Date(),
+        description: "Man my neck hurts",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "4",
+        title: "Cpsc304",
+        isPublic: true,
+        lastOpened: new Date(),
+        description: "blah blah blah blah blah blah blah ahhhhhhhhhhhh",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "5",
+        title: "Hello World",
+        isPublic: false,
+        lastOpened: new Date(),
+        description:
+          "someone save me im not creative enough to come up with these",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "6",
+        title: "How to swim",
+        isPublic: false,
+        lastOpened: new Date(),
+        description: "description here",
+        isOwner: true,
+      });
+      server.create("topic", {
+        id: "7",
+        title: "Bible studies",
+        isPublic: true,
+        lastOpened: new Date(),
+        description: "description here 2",
+        isOwner: true,
+      });
       // mocked public topics below
       server.create("topic", {
         id: "10",
@@ -29,7 +80,12 @@ export function startServer() {
         numQuizzes: 3,
         description: "lmao",
         isOwner: false,
-        color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+        color: {
+          name: "pink",
+          primary: "#F5878D",
+          gradient: "#B9568C",
+          circle: "#B9568C",
+        },
       });
       server.create("topic", {
         id: "11",
@@ -40,7 +96,12 @@ export function startServer() {
         numQuizzes: 13,
         description: "sldkjflsdjflksjdflksdjlkfjsfd",
         isOwner: false,
-        color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+        color: {
+          name: "blue",
+          primary: "#22B0D2",
+          gradient: "#1455CE",
+          circle: "#1455CE",
+        },
       });
 
       server.create("tag", { name: "Physics", color: "#5F2EB3" });
@@ -50,39 +111,58 @@ export function startServer() {
       server.create("tag", { name: "Waves", color: "#9D3CA1" });
       server.create("tag", { name: "Showering", color: "#5F2EB3" });
 
-      server.create("color", {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"});
-      server.create("color", {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"});
-      server.create("color", {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
-      server.create("color", {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"});
-      
+      server.create("color", {
+        name: "pink",
+        primary: "#F5878D",
+        gradient: "#B9568C",
+        circle: "#B9568C",
+      });
+      server.create("color", {
+        name: "blue",
+        primary: "#22B0D2",
+        gradient: "#1455CE",
+        circle: "#1455CE",
+      });
+      server.create("color", {
+        name: "purple",
+        primary: "#5F2EB3",
+        gradient: "#29144D",
+        circle: "#3D1E73",
+      });
+      server.create("color", {
+        name: "default",
+        primary: "#5F2EB3",
+        gradient: "#29144D",
+        circle: "#3D1E73",
+      });
     },
 
-    // ROUTES 
+    // ROUTES
     // - Oscar pls ignore the code inside the route, they dont actually reflect what the backend should do
     // - each route has a path as well as a comment describing what it should return. you should use
-    //   as an interface to the backend api. 
-    // - Some routes will have an example variable showing what fields are requried, for the ones without examples, 
+    //   as an interface to the backend api.
+    // - Some routes will have an example variable showing what fields are requried, for the ones without examples,
     //   return the entire entity with all of its fields.
     // - None of these routes are actually complete, they all need user authentication which i have not yet included.
     routes() {
-      this.urlPrefix = "http://localhost:3000"; 
+      this.urlPrefix = "http://localhost:3000";
 
       // already finished, can ignore this
       // AUTH -------------------------------
       this.post("/login", () => {
         return {
-          "message": "User logged in successfully",
-          "success": true,
-          "token": "test"
-        }
+          message: "User logged in successfully",
+          success: true,
+          token: "test",
+        };
       });
 
       this.post("/signup", () => {
         return {
-          "message": "User signed in successfully",
-          "success": true,
-          "token": "test"
-        }
+          message: "User signed in successfully",
+          success: true,
+          token: "test",
+        };
       });
 
       // TOPIC -------------------------------
@@ -94,7 +174,7 @@ export function startServer() {
       // returns sorted, filtered topics for home page. Note that this is a post, with a post body.
       // Query Params:
       //    - sort: string - sort by either lastOpened or alphabetical
-      //    - searchQuery: string - if string is empty, return all, else return only topic titles that contain this string 
+      //    - searchQuery: string - if string is empty, return all, else return only topic titles that contain this string
       // Body: JSON obj in the form of:
       //       {
       //         "filterList" : <filters>
@@ -110,7 +190,12 @@ export function startServer() {
             numNotes: 3, // count studymaterail of type "Notes" within this topic
             numCards: 5, // count studymaterail of type "Flashcard" within this topic
             numQuizzes: 2, // count studymaterail of type "Quiz" within this topic
-            color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, // topic color
+            color: {
+              name: "purple",
+              primary: "#5F2EB3",
+              gradient: "#29144D",
+              circle: "#3D1E73",
+            }, // topic color
           },
           {
             id: "2",
@@ -120,7 +205,12 @@ export function startServer() {
             numNotes: 21,
             numCards: 7,
             numQuizzes: 11,
-            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+            color: {
+              name: "pink",
+              primary: "#F5878D",
+              gradient: "#B9568C",
+              circle: "#B9568C",
+            },
           },
           {
             id: "3",
@@ -130,7 +220,12 @@ export function startServer() {
             numNotes: 49,
             numCards: 49,
             numQuizzes: 49,
-            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+            color: {
+              name: "blue",
+              primary: "#22B0D2",
+              gradient: "#1455CE",
+              circle: "#1455CE",
+            },
           },
           {
             id: "4",
@@ -140,7 +235,12 @@ export function startServer() {
             numNotes: 11,
             numCards: 210,
             numQuizzes: 3,
-            color: {name: "default", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"},
+            color: {
+              name: "default",
+              primary: "#5F2EB3",
+              gradient: "#29144D",
+              circle: "#3D1E73",
+            },
           },
           {
             id: "5",
@@ -150,7 +250,12 @@ export function startServer() {
             numNotes: 23,
             numCards: 10,
             numQuizzes: 78,
-            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+            color: {
+              name: "pink",
+              primary: "#F5878D",
+              gradient: "#B9568C",
+              circle: "#B9568C",
+            },
           },
           {
             id: "6",
@@ -160,7 +265,12 @@ export function startServer() {
             numNotes: 34,
             numCards: 3,
             numQuizzes: 5,
-            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+            color: {
+              name: "blue",
+              primary: "#22B0D2",
+              gradient: "#1455CE",
+              circle: "#1455CE",
+            },
           },
           {
             id: "7",
@@ -170,10 +280,15 @@ export function startServer() {
             numNotes: 5,
             numCards: 3,
             numQuizzes: 13,
-            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+            color: {
+              name: "blue",
+              primary: "#22B0D2",
+              gradient: "#1455CE",
+              circle: "#1455CE",
+            },
           },
         ];
-        return (example);
+        return example;
       });
 
       // Return topic by id. Only return data if topic's user is authorized user, or if topic is public
@@ -183,7 +298,7 @@ export function startServer() {
           title: "Phys901", // topic title
           description: "description here", // topic description
           isOwner: true, // true if current user is the owner of the topic
-        }
+        };
 
         const { id } = request.params;
         return schema.topics.find(id).attrs;
@@ -194,25 +309,60 @@ export function startServer() {
         return schema.tags.all().models; // fake data, currently returns all tags, doing this just for simplicity
       });
 
-      // - Given a topic id, returns its sorted and filtered study material. 
+      // - Given a topic id, returns its sorted and filtered study material.
       // - lastOpened field should be a string in the form of "January 01, 2025"
       // - numComponents is the number of components inside the study material. Is either number of pages, num of quizzes,
       //   or num of flashcards depending on type. Num of pages is #words / words_per_page rounded up. Havent yet decided on
       //   what words per page should be, you can choose some random number since it wont be hard to change.
-      // - Query Params: 
+      // - Query Params:
       //    type: string, is either "Notes", "Flashcards", "Quiz", or "None". if not "None", filter by type, else return all
       //    sort: string, is either "lastOpened" or "alphabetical", Sort by either last opened date or alphabetically
       this.get("/topic/:id/studymaterial/", (schema, request) => {
         const { type, sort } = request.queryParams;
 
         const example = [
-            {title: "Wave Interference", type: "Notes", lastOpened: "January 69, 2025", numComponents: 69},
-            {title: "Simple Harmonic Motion", type: "Flashcards", lastOpened: "Febuary 12, 1992", numComponents: 19},
-            {title: "Standing Waves", type: "Quiz", lastOpened: "April 2, 2937", numComponents: 9},
-            {title: "1", type: "Notes", lastOpened: "January 20, 2006", numComponents: 26},
-            {title: "2", type: "Flashcards", lastOpened: "September 28, 1078", numComponents: 20},
-            {title: "3", type: "Notes", lastOpened: "Febuary 9, 3057", numComponents: 7},
-            {title: "4", type: "Quiz", lastOpened: "December 90, 2004", numComponents: 32}
+          {
+            title: "Wave Interference",
+            type: "Notes",
+            lastOpened: "January 69, 2025",
+            numComponents: 69,
+          },
+          {
+            title: "Simple Harmonic Motion",
+            type: "Flashcards",
+            lastOpened: "Febuary 12, 1992",
+            numComponents: 19,
+          },
+          {
+            title: "Standing Waves",
+            type: "Quiz",
+            lastOpened: "April 2, 2937",
+            numComponents: 9,
+          },
+          {
+            title: "1",
+            type: "Notes",
+            lastOpened: "January 20, 2006",
+            numComponents: 26,
+          },
+          {
+            title: "2",
+            type: "Flashcards",
+            lastOpened: "September 28, 1078",
+            numComponents: 20,
+          },
+          {
+            title: "3",
+            type: "Notes",
+            lastOpened: "Febuary 9, 3057",
+            numComponents: 7,
+          },
+          {
+            title: "4",
+            type: "Quiz",
+            lastOpened: "December 90, 2004",
+            numComponents: 32,
+          },
         ];
 
         return example;
@@ -237,7 +387,12 @@ export function startServer() {
             numNotes: 3, // count studymaterial of type "Notes" within this topic
             numCards: 5, // count studymaterial of type "Flashcard" within this topic
             numQuizzes: 2, // count studymaterial of type "Quiz" within this topic
-            color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, // topic color
+            color: {
+              name: "purple",
+              primary: "#5F2EB3",
+              gradient: "#29144D",
+              circle: "#3D1E73",
+            }, // topic color
           },
           {
             id: "10",
@@ -246,7 +401,12 @@ export function startServer() {
             numNotes: 11,
             numCards: 210,
             numQuizzes: 3,
-            color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"},
+            color: {
+              name: "pink",
+              primary: "#F5878D",
+              gradient: "#B9568C",
+              circle: "#B9568C",
+            },
           },
           {
             id: "11",
@@ -255,10 +415,20 @@ export function startServer() {
             numNotes: 5,
             numCards: 3,
             numQuizzes: 13,
-            color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"},
+            color: {
+              name: "blue",
+              primary: "#22B0D2",
+              gradient: "#1455CE",
+              circle: "#1455CE",
+            },
           },
         ];
 
+        return example;
+      });
+
+      this.get("/topic/likes", (schema, request) => {
+        const example = { 1: 12, 10: 11, 11: 432 };
         return example;
       });
 
@@ -270,9 +440,45 @@ export function startServer() {
       //                        If subject is an empty string, return all public study material.
       this.get("/topic/studymaterial/featured", (schema, request) => {
         const example = [
-          {title: "Standing Waves", type: "Quiz", date: "April 69, 6969", numComponents: 9, color: {name: "purple", primary: "#5F2EB3", gradient: "#29144D", circle: "#3D1E73"}, topicTitle: "PHYS901"},
-          {title: "Stereochemistry", type: "Notes", date: "November 69, 2000", numComponents: 69, color: {name: "pink", primary: "#F5878D", gradient: "#B9568C", circle: "#B9568C"}, topicTitle:"CHEM123"},
-          {title: "Space Meditation", type: "Flashcards", date: "April 1 1992", numComponents: 19, color: {name: "blue", primary: "#22B0D2", gradient: "#1455CE", circle: "#1455CE"}, topicTitle: "ASTR101"},
+          {
+            title: "Standing Waves",
+            type: "Quiz",
+            date: "April 69, 6969",
+            numComponents: 9,
+            color: {
+              name: "purple",
+              primary: "#5F2EB3",
+              gradient: "#29144D",
+              circle: "#3D1E73",
+            },
+            topicTitle: "PHYS901",
+          },
+          {
+            title: "Stereochemistry",
+            type: "Notes",
+            date: "November 69, 2000",
+            numComponents: 69,
+            color: {
+              name: "pink",
+              primary: "#F5878D",
+              gradient: "#B9568C",
+              circle: "#B9568C",
+            },
+            topicTitle: "CHEM123",
+          },
+          {
+            title: "Space Meditation",
+            type: "Flashcards",
+            date: "April 1 1992",
+            numComponents: 19,
+            color: {
+              name: "blue",
+              primary: "#22B0D2",
+              gradient: "#1455CE",
+              circle: "#1455CE",
+            },
+            topicTitle: "ASTR101",
+          },
         ];
 
         return example;
@@ -342,8 +548,36 @@ export function startServer() {
       // gets all the tags of all the topics belonging to the current user
       this.get("/tag", (schema) => {
         return schema.tags.all().models;
-      }); 
+      });
 
+      // GROUPS --------------------------------------
+      // returns the info of all groups that the user is in
+      this.get("/group", (schema) => {
+        const example = [
+          {
+            numMaterials: 12,
+            title: "Jaywalkers",
+            joinCode: "LXA8H14G9",
+          },
+          {
+            numMaterials: 69,
+            title: "Psychoanalysis",
+            joinCode: "B6A87VX1A",
+          },
+          {
+            numMaterials: 420,
+            title: "Hi There",
+            joinCode: "B6A87VX1A",
+          },
+          {
+            numMaterials: 878,
+            title: "Tee hee",
+            joinCode: "blahblah",
+          },
+        ];
+
+        return example;
+      });
 
       // USER ----------------------------------------
       // get the current user
@@ -357,29 +591,29 @@ export function startServer() {
           color: "#22B0D2", // this is border color
           school: "University of British Columbia",
           email: "Expomarkerexpogo@gmail.com",
-          totalMat: 21, 
-          totalTopics: 12, 
-          totalGroups: 11, 
-          totalAchievements: 5, 
+          totalMat: 21,
+          totalTopics: 12,
+          totalGroups: 11,
+          totalAchievements: 5,
         };
 
         // Maggie u can return this instead of example to see the admin page
         // you have to log out first though and then relogin
         const admin = {
           username: "admin",
-          joined: "May 2024", 
+          joined: "May 2024",
           exp: 1200,
-          title: "BEGINNER", 
-          color: "#22B0D2", 
+          title: "BEGINNER",
+          color: "#22B0D2",
           school: "University of British Columbia",
           email: "Expomarkerexpogo@gmail.com",
-          totalMat: 21, 
-          totalTopics: 12, 
-          totalGroups: 11, 
-          totalAchievements: 5, 
+          totalMat: 21,
+          totalTopics: 12,
+          totalGroups: 11,
+          totalAchievements: 5,
         };
 
-        return admin;
+        return example;
       });
 
       // - update current user's email and return the user with newly updated email, in the same
@@ -400,10 +634,10 @@ export function startServer() {
           color: "#22B0D2", // this is border color
           school: "University of British Columbia",
           email: "Expomarkerexpogo@gmail.com",
-          totalMat: 21, 
-          totalTopics: 12, 
-          totalGroups: 11, 
-          totalAchievements: 5, 
+          totalMat: 21,
+          totalTopics: 12,
+          totalGroups: 11,
+          totalAchievements: 5,
         };
         return example;
       });
@@ -426,10 +660,10 @@ export function startServer() {
           color: "#22B0D2", // this is border color
           school: "University of British Columbia",
           email: "Expomarkerexpogo@gmail.com",
-          totalMat: 21, 
-          totalTopics: 12, 
-          totalGroups: 11, 
-          totalAchievements: 5, 
+          totalMat: 21,
+          totalTopics: 12,
+          totalGroups: 11,
+          totalAchievements: 5,
         };
         return example;
       });
@@ -444,13 +678,13 @@ export function startServer() {
       //                   - if the query is an empty string, return everything
       this.get("/admin/topic/", (schema) => {
         const example = [
-          {id: 1, name: "name1", title: "hi"},
-          {id: 2, name: "name2", title: "hi"},
-          {id: 3, name: "name3", title: "hidffdsd"},
-          {id: 4, name: "name4", title: "hafdi"},
-          {id: 5, name: "name5", title: "hidffdsd"},
-          {id: 6, name: "name6", title: "hafdi"},
-        ]
+          { id: 1, name: "name1", title: "hi" },
+          { id: 2, name: "name2", title: "hi" },
+          { id: 3, name: "name3", title: "hidffdsd" },
+          { id: 4, name: "name4", title: "hafdi" },
+          { id: 5, name: "name5", title: "hidffdsd" },
+          { id: 6, name: "name6", title: "hafdi" },
+        ];
 
         return example;
       });
@@ -504,7 +738,6 @@ export function startServer() {
       });
 
       
-
     },
   });
 }
