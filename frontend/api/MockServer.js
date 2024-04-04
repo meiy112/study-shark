@@ -511,7 +511,8 @@ export function startServer() {
       //         "type": <type>
       //         "topicId": <topicId>
       //       }
-      // where <title>, <type> and <topicId> are strings
+      // where <title> and <type> are strings
+      // <topicId> is one of "Notes", "Quiz", "Flashcards"
       this.post("/studyMaterial", (schema) => {
         // return nothing....
         return {}
