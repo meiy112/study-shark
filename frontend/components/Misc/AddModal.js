@@ -67,7 +67,7 @@ function AddStudyMaterial({ topicId }) {
   const [successMessage, setSuccessMessage] = useState("");
   const { token } = useContext(AuthContext);
   const { triggerRerender } = useContext(NotifyContext);
-  const names = ["Quiz", "Notes", "FlashCards"];
+  const names = ["Quiz", "Notes", "Flashcards"];
 
   function handleButtonPress() {
     async function addStudyMaterial() {
