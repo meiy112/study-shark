@@ -100,7 +100,7 @@ function AddStudyMaterial({ topicId }) {
               buttonColor="#6749B9" 
               textColor="#ffffff"
               onPress={() => handleButtonPress()}> Add Study Material</Button>
-      {successMessage.length != 0 ? 
+      {successMessage.length !== 0 ? 
         <Text style={{color: 'green', marginTop: 5, marginBottom: -20}}>{successMessage}</Text> : 
         <Text style={{color: 'red', marginTop: 5, marginBottom: -20}}>{errorMessage}</Text>}
     </View>

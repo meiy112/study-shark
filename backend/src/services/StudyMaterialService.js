@@ -26,7 +26,7 @@ class StudyMaterialService {
       return new Promise((resolve, reject) => {
           var exists;
           if (sort == 'lastOpened') {
-            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm.title AND oqq.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY lastOpened ASC";
+            exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm.title AND oqq.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY lastOpened DESC";
           } else {
             exists = "SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, COUNT(*) as numComponents FROM ContainsStudyMaterial csm, OwnsQuizQuestion oqq WHERE oqq.studyMatTitle = csm.title AND oqq.topicId = csm.topicId AND csm.topicId = ? GROUP BY csm.title, csm.type, lastOpened ORDER BY title ASC"; 
           }
@@ -237,6 +237,94 @@ class StudyMaterialService {
     } catch (error) {
       throw error; 
     } 
+  }
+
+  // posts a new study material
+  async postStudyMaterial(title, username, type, topicId) {
+    // function to check if topic does not exist
+    const checkTopicDoesNotExist = (topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE id = ?'; 
+          db.query(exists, [topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if user does not have a topic
+    const checkUserDoesNotHaveTopic = (username, topicId) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT id FROM createstopic WHERE username = ? AND id = ?'; 
+          db.query(exists, [username, topicId], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length == 0);
+          });
+      });
+    };
+
+    // function to check if study material already exists
+    const checkStudyMaterialExists = (topicId, type, title) => {
+      return new Promise((resolve, reject) => {
+          const exists = 'SELECT title FROM containsStudyMaterial c WHERE topicId = ? AND title = ?'; 
+          db.query(exists, [topicId, type, title], (err, rows, fields) => {
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              resolve(rows.length != 0);
+          });
+      });
+    };
+    
+    try {
+      // if user is not authenticated return error "No username"
+      if (username == 'no user') {
+        const err = new Error("No username");
+        throw err; 
+      } 
+      // if topic does not exist return error "Error topic does not exist"
+      if (await checkTopicDoesNotExist(topicId)) {
+        const err = new Error("Error topic does not exist");
+        throw err;
+      }
+      // if user does not own the topic return error "User does not own topic"
+      if (await checkUserDoesNotHaveTopic(username, topicId)) {
+        const err = new Error("User does not own topic");
+        throw err;
+      }
+      // if study material already exists return error "Study Material already exists"
+      if (await checkStudyMaterialExists(topicId, title)) {
+        const err = new Error("Study Material already exists");
+        throw err;
+      }
+      const today = new Date();
+      // console.log(topicId);
+      // console.log(type);
+      // console.log(title);
+      const head = "INSERT INTO ContainsStudyMaterial (title, topicId, type, isPublic, description, lastOpened, dateCreated, parsedText, highScore) VALUES ";
+      const values = "(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+      // posts a new topic
+      return new Promise ((resolve, reject) => {
+        db.query(head + values, [title, topicId, type, false, title, today, today, title, 0],
+          (err, rows, fields) => {
+            if (err) {
+              console.log("uh oh")
+                reject(err);
+                return;
+            }
+          resolve(rows);
+          });
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

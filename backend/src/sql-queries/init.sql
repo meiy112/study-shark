@@ -197,7 +197,8 @@ INSERT INTO `cpsc304`.`AchievementLevel` (`difficulty`, `points`, `borderColor`)
 
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('pink', '#F5878D', '#B9568C', '#B9568C');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('blue', '#22B0D2', '#1455CE', '#1455CE');
-INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('red', '#5F77B3', '#29784D', '#3D1903');
+-- INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('red', '#5F77B3', '#29784D', '#3D1903');
+INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('red', '#FF0000', '#FF5733', '#FFC300');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('green', '#9D2EB3', '#29140D', '#3A1E73');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('purple', '#5F2EB3', '#29144D', '#3D1E73');
 INSERT INTO `Color` (`name`, `primaryColor`, `gradient`, `circle`) VALUES ('default', '#5F2EB3', '#29144D', '#3D1E73');
