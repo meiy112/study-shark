@@ -737,6 +737,21 @@ export function startServer() {
         return example;
       });
 
+      // studymaterial api?????
+      // post studymaterial ???? 
+      // - Body: JSON obj in the form of:
+      //       {
+      //         "title": <title>,
+      //         "type": <type>
+      //         "topicId": <topicId>
+      //       }
+      // where <title> and <type> are strings
+      // <topicId> is one of "Notes", "Quiz", "Flashcards"
+      this.post("/studyMaterial", (schema) => {
+        // return nothing....
+        return {}
+      });
+
       
     },
   });

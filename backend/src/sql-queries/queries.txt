@@ -90,13 +90,31 @@ FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
 WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
 GROUP BY csm1.title, csm1.type, lastOpened
 UNION
+SELECT csm6.title, csm6.type, 
+		DATE_FORMAT(csm6.lastOpened, '%M %d, %Y') AS lastOpened, 0
+FROM ContainsStudyMaterial csm6
+WHERE csm6.type = 'Quiz' AND csm6.title NOT IN
+                                (SELECT csm7.title
+                                FROM ContainsStudyMaterial csm7, OwnsQuizQuestion oqq2
+                                WHERE oqq2.studyMatTitle = csm7.title AND oqq2.topicId = csm7.topicId) 
+GROUP BY csm6.title, csm6.type, lastOpened
+UNION
 SELECT csm2.title, csm2.type, 
 		DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
         COUNT(*) as numComponents
 FROM ContainsStudyMaterial csm2, OwnsCard oc 
 WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
 GROUP BY csm2.title, csm2.type, lastOpened
-UNION 
+UNION
+SELECT csm4.title, csm4.type, 
+		DATE_FORMAT(csm4.lastOpened, '%M %d, %Y') AS lastOpened, 0
+FROM ContainsStudyMaterial csm4
+WHERE csm4.type = 'Flashcards' AND csm4.title NOT IN
+                                (SELECT csm5.title
+                                FROM ContainsStudyMaterial csm5, OwnsCard oc2 
+                                WHERE oc2.studyMatTitle = csm5.title AND oc2.topicId = csm5.topicId) 
+GROUP BY csm4.title, csm4.type, lastOpened
+UNION
 SELECT csm3.title, csm3.type, 
 		DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
         COUNT(*) as numComponents

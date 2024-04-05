@@ -23,6 +23,7 @@ app.use("/user", routes.user);
 app.use("/admin", routes.admin);
 app.use("/color", routes.color);
 app.use("/group", routes.group);
+app.use("/studyMaterial", routes.studyMaterial);
 // add more here, for example:
 // app.use('/users', routes.user);
 

@@ -2,10 +2,11 @@ import React, { useState, useContext, } from "react";
 import { TouchableOpacity, View, StyleSheet, Text, Modal, TextInput } from "react-native";
 import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext"
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import AuthContext from "../../context/AuthContext";
 import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
+import { studyMaterialApi } from "../../api/StudyMaterialApi";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
@@ -60,9 +61,67 @@ const AddModal = (props) => {
 
 function AddStudyMaterial({ topicId }) {
   // TODO
+  const [checkBox, setCheckBox] = useState("");
+  const [inputText, setInputText] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const { token } = useContext(AuthContext);
+  const { triggerRerender } = useContext(NotifyContext);
+  const names = ["Quiz", "Notes", "Flashcards"];
+
+  function handleButtonPress() {
+    async function addStudyMaterial() {
+      try {
+        checkValidInput(inputText);
+        await studyMaterialApi.addStudyMaterial(token, inputText, checkBox, topicId);
+        setSuccessMessage("Study Material added successfully!");
+        setErrorMessage("")
+      } catch (error) {
+        setErrorMessage(error.message);
+        setSuccessMessage("");
+      }
+    }
+    addStudyMaterial();
+    triggerRerender();
+  }
+  // ()=>console.log("checkBox = " + checkBox + ", inputText = " + inputText)
   return(
     <View>
-      <Text>Add study material</Text>
+      <Text>Add Study Material</Text>
+      <Text style={{marginBottom: -10}}>Type:</Text>
+      <CheckBoxList checkBox={checkBox} names={names} handleClick={setCheckBox}/>
+      <Text style={{marginTop: 15, marginBottom: -20}}>Title:</Text>
+      <TextInput value={inputText} 
+                 onChangeText={(text) => setInputText(text)}
+                 style={{color:'black', marginTop: 20, marginBottom: 10}}
+                 placeholder="Enter title here:">
+      </TextInput>
+      <Button mode="contained" 
+              buttonColor="#6749B9" 
+              textColor="#ffffff"
+              onPress={() => handleButtonPress()}> Add Study Material</Button>
+      {successMessage.length !== 0 ? 
+        <Text style={{color: 'green', marginTop: 5, marginBottom: -20}}>{successMessage}</Text> : 
+        <Text style={{color: 'red', marginTop: 5, marginBottom: -20}}>{errorMessage}</Text>}
+    </View>
+  )
+}
+
+function CheckBoxList({ checkBox, handleClick, names}) {
+  return (
+    <View>
+      {names.map((name, index) => {
+        return(
+          <View key={index}>
+            {
+              <View style={{flexDirection:'row', alignItems:'center', marginBottom:-25}}>
+                <IconButton icon={name === checkBox ? "checkbox-outline" : "checkbox-blank-outline"} 
+                            onPress={() => handleClick(name)}/>
+                <Text>{name}</Text>
+              </View>
+            }
+          </View>
+      )})}
     </View>
   )
 }
