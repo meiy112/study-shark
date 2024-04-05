@@ -83,44 +83,27 @@ ORDER BY STR_TO_DATE(date, '%M %d, %Y') DESC;
                                 <<<<<<<<< get - topic/:id/studymaterial >>>>>>>>>
 
 
-SELECT csm1.title, csm1.type,
-		DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, 
-		COUNT(*) as numComponents 
-FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
-WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId 
-GROUP BY csm1.title, csm1.type, lastOpened
-UNION
-SELECT csm6.title, csm6.type, 
-		DATE_FORMAT(csm6.lastOpened, '%M %d, %Y') AS lastOpened, 0
-FROM ContainsStudyMaterial csm6
-WHERE csm6.type = 'Quiz' AND csm6.title NOT IN
-                                (SELECT csm7.title
-                                FROM ContainsStudyMaterial csm7, OwnsQuizQuestion oqq2
-                                WHERE oqq2.studyMatTitle = csm7.title AND oqq2.topicId = csm7.topicId) 
-GROUP BY csm6.title, csm6.type, lastOpened
-UNION
-SELECT csm2.title, csm2.type, 
-		DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
-        COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm2, OwnsCard oc 
+SELECT csm1.title, csm1.type, DATE_FORMAT(csm1.lastOpened, '%M %d, %Y') AS lastOpened, 
+COUNT(*) as numComponents, csm1.parsedText FROM ContainsStudyMaterial csm1, OwnsQuizQuestion oqq
+WHERE oqq.studyMatTitle = csm1.title AND oqq.topicId = csm1.topicId AND csm1.topicId = '1'
+GROUP BY csm1.title, csm1.type, lastOpened, csm1.parsedText UNION
+SELECT csm.title, csm.type, DATE_FORMAT(csm.lastOpened, '%M %d, %Y') AS lastOpened, 0, csm.parsedText 
+FROM ContainsStudyMaterial csm WHERE csm.type = 'Quiz' AND csm.title NOT IN 
+(SELECT csm2.title FROM ContainsStudyMaterial csm2, OwnsQuizQuestion oqq 
+WHERE oqq.studyMatTitle = csm2.title AND oqq.topicId = csm2.topicId) AND csm.topicId = '1'
+GROUP BY csm.title, csm.type, lastOpened, csm.parsedText UNION
+SELECT csm2.title, csm2.type, DATE_FORMAT(csm2.lastOpened, '%M %d, %Y') AS lastOpened, 
+COUNT(*) as numComponents, csm2.parsedText FROM ContainsStudyMaterial csm2, OwnsCard oc 
 WHERE oc.studyMatTitle = csm2.title AND oc.topicId = csm2.topicId 
-GROUP BY csm2.title, csm2.type, lastOpened
-UNION
-SELECT csm4.title, csm4.type, 
-		DATE_FORMAT(csm4.lastOpened, '%M %d, %Y') AS lastOpened, 0
-FROM ContainsStudyMaterial csm4
-WHERE csm4.type = 'Flashcards' AND csm4.title NOT IN
-                                (SELECT csm5.title
-                                FROM ContainsStudyMaterial csm5, OwnsCard oc2 
-                                WHERE oc2.studyMatTitle = csm5.title AND oc2.topicId = csm5.topicId) 
-GROUP BY csm4.title, csm4.type, lastOpened
-UNION
-SELECT csm3.title, csm3.type, 
-		DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
-        COUNT(*) as numComponents
-FROM ContainsStudyMaterial csm3
-WHERE  csm3.type = 'Notes'
-GROUP BY csm3.title, csm3.type, lastOpened
+GROUP BY csm2.title, csm2.type, lastOpened, csm2.parsedText UNION
+SELECT csm4.title, csm4.type, DATE_FORMAT(csm4.lastOpened, '%M %d, %Y') AS lastOpened, 0, csm4.parsedText
+FROM ContainsStudyMaterial csm4 WHERE csm4.type = 'Flashcards' AND csm4.title NOT IN
+(SELECT csm5.title FROM ContainsStudyMaterial csm5, OwnsCard oc2 
+WHERE oc2.studyMatTitle = csm5.title AND oc2.topicId = csm5.topicId) 
+GROUP BY csm4.title, csm4.type, lastOpened, csm4.parsedText UNION
+SELECT csm3.title, csm3.type, DATE_FORMAT(csm3.lastOpened, '%M %d, %Y') AS lastOpened, 
+COUNT(*) as numComponents, csm3.parsedText FROM ContainsStudyMaterial csm3
+WHERE  csm3.type = 'Notes' GROUP BY csm3.title, csm3.type, lastOpened, csm3.parsedText
 ORDER BY title ASC;
 
 
@@ -241,10 +224,19 @@ SELECT id, username AS name, title FROM createsTopic WHERE .....
                                    <<<<<<<<< get - group >>>>>>>>>   
 
 
-SELECT DISTINCT g.name AS title, COUNT(*) AS numMaterials 
+SELECT DISTINCT g.name AS title, g.code AS joinCode, COUNT(*) AS numMaterials 
 FROM `Group` g, Shares s, Joins j
 WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = 'ditto07' 
+GROUP BY g.code
+UNION
+SELECT DISTINCT g.name AS title, g.code AS joinCode, 0
+FROM `Group` g, Joins j 
+WHERE g.code = j.groupCode AND g.name NOT IN (SELECT DISTINCT g.name AS title
+                                                FROM `Group` g, Shares s, Joins j
+                                                WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = 'ditto07' 
+                                                GROUP BY g.code) AND j.username = 'ditto07'
 GROUP BY g.code;
+
 
 
                                 <<<<<<<<< gets average likes of all public topics >>>>>>>>>
