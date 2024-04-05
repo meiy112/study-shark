@@ -18,6 +18,7 @@ import memberData from "./data/groupData.js";
 import InviteModal from "./components/InviteModal.js";
 import CreateModal from "./components/CreateModal.js";
 import { groupApi } from "../../api/GroupApi.js";
+import { userApi } from "../../api/UserApi.js";
 
 const {
   active,
@@ -60,8 +61,9 @@ export default function Groups({ navigation }) {
   useEffect(() => {
     async function fetchGroups() {
       try {
+        const user = await userApi.getUser(token);
         const data = await groupApi.getGroups(token);
-        console.log("fetched! tee hee uwu");
+        console.log("fetched groups! tee hee uwu");
         setGroups(data);
       } catch (e) {
         console.log("Groups page: " + e.message);
