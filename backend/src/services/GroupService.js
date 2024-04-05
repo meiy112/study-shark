@@ -12,11 +12,13 @@ class GroupService {
         const err = new Error("No username");
         throw err; 
       } 
-      const head = "SELECT DISTINCT g.name AS title, g.code AS joinCode, COUNT(*) AS numMaterials FROM `Group` g, Shares s, Joins j ";
-      const tail = "WHERE g.code = s.groupCode AND g.code = j.groupCode AND j.username = ? GROUP BY g.code;";
+      const query = `SELECT DISTINCT g.name AS title, g.code AS joinCode, count(s.studyMaterialTitle) AS numMaterials FROM \`Group\` g
+                    LEFT JOIN Shares s ON g.code = s.groupCode 
+                    INNER JOIN Joins j ON g.code = j.groupCode
+                    WHERE j.username = ? GROUP BY g.code;`
       // return groups
       return new Promise ((resolve, reject) => {
-        db.query(head + tail, [username], (err, rows, fields) => {
+        db.query(query, [username], (err, rows, fields) => {
           if (err) {
               reject(err);
               return;
