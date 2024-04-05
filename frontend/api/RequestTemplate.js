@@ -31,14 +31,15 @@ async function getRequest(token, url) {
   if (response.ok) {
     return data;
   } else {
-    // throw new Error(data.message + ": " + data.details + " at GET " + url); // for debugging
-    throw new Error(data.details); // for production
+    throw new Error(data.message + ": " + data.details + " at GET " + url); // for debugging
+    // throw new Error(data.details); // for production
   }
 }
 
 // performs a post request to the given url with the given jwt token and body. Throws an error on faliure
 // body must be a json object
 async function postRequest(token, url, body) {
+  console.log("post")
   // req headers
   const headers = {
     'Authorization': `Bearer ${token}`,
@@ -63,8 +64,8 @@ async function postRequest(token, url, body) {
   if (response.ok) {
     return data;
   } else {
-    // throw new Error(data.message + ": " + data.details + " at POST " + url); // for debugging
-    throw new Error(data.details); // for production
+    throw new Error(data.message + ": " + data.details + " at POST " + url); // for debugging
+    // throw new Error(data.details); // for production
   }
 }
 
@@ -94,8 +95,8 @@ async function putRequest(token, url, body) {
   if (response.ok) {
     return data;
   } else {
-    // throw new Error(data.message + ": " + data.details + " at PUT " + url); // for debugging
-    throw new Error(data.details); // for production
+    throw new Error(data.message + ": " + data.details + " at PUT " + url); // for debugging
+    // throw new Error(data.details); // for production
   }
 }
 
@@ -121,8 +122,8 @@ async function deleteRequest(token, url) {
   if (response.ok) {
     return;
   } else {
-    // throw new Error(data.message + ": " + data.details + " at DELETE " + url); // for debugging
-    throw new Error(data.details); // for production
+    throw new Error(data.message + ": " + data.details + " at DELETE " + url); // for debugging
+    // throw new Error(data.details); // for production
   }
 }
 

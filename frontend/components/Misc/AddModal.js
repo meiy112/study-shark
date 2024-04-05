@@ -1,4 +1,4 @@
-import React, { useState, useContext, } from "react";
+import React, { useState, useContext, useEffect, } from "react";
 import { TouchableOpacity, View, StyleSheet, Text, Modal, TextInput } from "react-native";
 import colors from "../../constants/Colors";
 import PageContext from "../../context/PageContext"
@@ -7,6 +7,8 @@ import AuthContext from "../../context/AuthContext";
 import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 import { studyMaterialApi } from "../../api/StudyMaterialApi";
+import { colorApi } from "../../api/ColorApi";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { active, inactive, background, primary, shadow, line } = colors;
 
@@ -65,9 +67,11 @@ function AddStudyMaterial({ topicId }) {
   const [inputText, setInputText] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [color, setColor] = useState({primary: "white", gradient: "white", circle: "white"});
   const { token } = useContext(AuthContext);
   const { triggerRerender } = useContext(NotifyContext);
   const names = ["Quiz", "Notes", "Flashcards"];
+
 
   function handleButtonPress() {
     async function addStudyMaterial() {
@@ -84,6 +88,22 @@ function AddStudyMaterial({ topicId }) {
     addStudyMaterial();
     triggerRerender();
   }
+  
+  useEffect(() => {
+    async function fetchColor() {
+      try {
+        const data = await topicApi.getSettingsTopic(token, topicId);
+        const colors = await colorApi.getColors(token);
+        const topicColor = colors.find((item) => data.color === item.name);
+        console.log(topicColor);
+        setColor(topicColor)
+      } catch (e) {
+        console.log("Studymat Add modal: " + e.message);
+      }
+    }
+    fetchColor();
+   }, [token]);
+
   // ()=>console.log("checkBox = " + checkBox + ", inputText = " + inputText)
   return(
     <View>
@@ -96,10 +116,11 @@ function AddStudyMaterial({ topicId }) {
                  style={{color:'black', marginTop: 20, marginBottom: 10}}
                  placeholder="Enter title here:">
       </TextInput>
-      <Button mode="contained" 
-              buttonColor="#6749B9" 
-              textColor="#ffffff"
-              onPress={() => handleButtonPress()}> Add Study Material</Button>
+      <GradientButton onPress={() => handleButtonPress()}
+                      title="Add Study Material"
+                      color = {color}
+                      >
+      </GradientButton>
       {successMessage.length !== 0 ? 
         <Text style={{color: 'green', marginTop: 5, marginBottom: -20}}>{successMessage}</Text> : 
         <Text style={{color: 'red', marginTop: 5, marginBottom: -20}}>{errorMessage}</Text>}
@@ -107,6 +128,21 @@ function AddStudyMaterial({ topicId }) {
   )
 }
 
+function GradientButton({onPress, title, color}) {
+  return (
+    <TouchableOpacity onPress={onPress} style={{}}>
+      <LinearGradient
+        colors={[color.primary, color.gradient]} 
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.7 }}
+        style={{padding: 15, borderRadius: 10}}
+      >
+        <Text style={{color: 'white'}}>{title}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  )
+}
+// linear-gradient('to right', '#5F2EB3', '#29144D', '#3D1E73)
 function CheckBoxList({ checkBox, handleClick, names}) {
   return (
     <View>
@@ -172,6 +208,8 @@ function AddTopic() {
   )
 }
 
+// CSS
+
 const styles = StyleSheet.create({
   modalBackDrop: {
     flex: 1,
@@ -231,7 +269,28 @@ const styles = StyleSheet.create({
     fontSize: 20, 
     fontWeight: 500, 
     marginBottom: 20
-  }
+  }, 
+  button: {
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  gradient: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    alignItems: 'center'
+  },
+  buttonBox: {
+    borderRadius: 20
+  },
+  linearGradient: {
+    justifyContent: 'center'
+  }, 
 });
 
 export default AddModal;
