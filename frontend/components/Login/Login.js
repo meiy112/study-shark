@@ -33,7 +33,6 @@ export default function Login( {setModalVisible} ) {
 
       const data = await response.json();
       const token = data.token; // jwt access token
-      console.log(token);
       if (!token) {
         setErrorMessage(data.message);
         console.log(data.message);
@@ -69,7 +68,6 @@ export default function Login( {setModalVisible} ) {
 
       const data = await response.json();
       const token = data.token; // jwt access token
-      console.log(token);
       if (!token) {
         setErrorMessage("Error: " + data.message);
         console.log(data.message);

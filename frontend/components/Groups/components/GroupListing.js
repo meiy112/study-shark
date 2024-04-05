@@ -24,7 +24,12 @@ const {
   greyIcon,
 } = colors;
 
-export default function GroupListing({ group, showModal, navigation }) {
+export default function GroupListing({
+  group,
+  showModal,
+  navigation,
+  memberData,
+}) {
   const onGroupPress = () => {
     navigation.navigate("Group", { prevScreen: "Groups" });
   };
@@ -35,9 +40,9 @@ export default function GroupListing({ group, showModal, navigation }) {
       style={[styles.container, styles.shadow]}
     >
       <Header
-        numMats={group.numMats}
+        numMats={group.numMaterials}
         title={group.title}
-        members={group.members}
+        members={memberData}
       />
       <InviteButton joinCode={group.joinCode} showModal={showModal} />
     </TouchableOpacity>

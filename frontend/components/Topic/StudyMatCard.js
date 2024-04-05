@@ -7,8 +7,8 @@ import ColorContext from "../../context/TopicColorContext";
 // for the image icon
 const imageMapping = {
   Notes: require("../../assets/images/mat_icons/notes.png"),
-  Quiz: require("../../assets/images/mat_icons/flashcards.png"),
-  Flashcards: require("../../assets/images/mat_icons/quiz.png"),
+  Flashcards: require("../../assets/images/mat_icons/flashcards.png"),
+  Quiz: require("../../assets/images/mat_icons/quiz.png"),
 };
 
 
