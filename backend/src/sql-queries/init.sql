@@ -229,13 +229,13 @@ INSERT INTO `User` (`username`, `school`, `reputation`, `password`, `email`, `po
 
 
 INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened, dateCreated, color) VALUES
-    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', '1997-06-24', '1995-03-01', 'blue'),
-    ('2', 'test', 'Chem123', false, 'idk what to write here bro', '1998-06-24', '1967-07-18', 'green'),
+    ('1', 'test', 'Phys901', true, 'Random fake description very fake pretend this is a description', '2000-06-24', '2001-03-01', 'blue'),
+    ('2', 'test', 'Chem123', false, 'idk what to write here bro', '1998-06-24', '1998-07-18', 'green'),
     ('3', 'test', 'Math049', false, 'Man my neck hurts', '1997-08-24', '1994-03-30', 'red'),
-    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', '1297-06-24', '1241-11-23', 'blue'),
-    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', '1957-06-24', '1095-03-02', 'green'),
-    ('6', 'test', 'How to swim', false, 'description here', '1993-06-24', '1712-10-14', 'red'),
-    ('7', 'test', 'Bible studies', true, 'description here 2', '1237-06-24', '1095-12-01', 'blue');
+    ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', '2003-06-24', '2031-11-23', 'blue'),
+    ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', '1984-06-24', '2021-03-02', 'green'),
+    ('6', 'test', 'How to swim', false, 'description here', '1993-06-24', '1995-10-14', 'red'),
+    ('7', 'test', 'Bible studies', true, 'description here 2', '2019-06-24', '2020-12-01', 'blue');
 
 INSERT INTO Tag (name, color, subject) VALUES
     ('Physics', '#5F2EB3', 'SCIENCE'),
@@ -473,8 +473,8 @@ INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened
 VALUES ('times_tables', 'i_am_a_beginner', 'times_tables', TRUE, 'multiplication practice for grade four', '2024-03-01', '2024-03-01', 'purple'),
        ('Calculus 9', 'smug_person', 'Calculus 9', TRUE, 'Secrets of the Universe', '2021-12-25', '2021-12-24', 'blue'),
        ('List of Personal Achievements', 'smug_person', 'List of Personal Achievements', TRUE, 'I am so cool', '2024-03-01', '2024-01-01', 'red'),
-       ('nuclear_codes', 'admin2', 'nuclear_codes', TRUE, 'post to internet when app is dead', '2002-02-02', '1900-02-25', 'pink'),
-       ('gen6pokemon', 'ditto07', 'gen6pokemon', TRUE, 'memorize gen 6 pokemon before pokemon z-a comes out', '2024-03-01', '0193-08-27', 'green');
+       ('nuclear_codes', 'admin2', 'nuclear_codes', TRUE, 'post to internet when app is dead', '2002-02-02', '2000-02-25', 'pink'),
+       ('gen6pokemon', 'ditto07', 'gen6pokemon', TRUE, 'memorize gen 6 pokemon before pokemon z-a comes out', '2024-03-01', '2004-08-27', 'green');
 
 INSERT INTO Tag (name, color, subject)
 VALUES ('Games', 'green', 'GAM'),

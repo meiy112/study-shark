@@ -65,6 +65,7 @@ export default function Groups({ navigation }) {
         const data = await groupApi.getGroups(token);
         console.log("fetched groups! tee hee uwu");
         setGroups(data);
+        console.log(data);
       } catch (e) {
         console.log("Groups page: " + e.message);
       }
