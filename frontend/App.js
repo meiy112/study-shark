@@ -13,7 +13,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./components/Home/Home";
-import Groups from "./components/Groups/Groups";
 import NavBarAddButton from "./components/Misc/NavbarAddButton";
 import AddModal from "./components/Misc/AddModal";
 import colors from "./constants/Colors";

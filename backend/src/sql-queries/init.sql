@@ -533,6 +533,7 @@ VALUES ('i_am_a_beginner', '1'),
        ('smug_person', '1'),
        ('smug_person', '2'),
        ('smug_person', '5'),
+       ('test', '4'),
        ('ditto07', '3');
        
 INSERT INTO Shares (studyMaterialTitle, topicId, groupCode)
