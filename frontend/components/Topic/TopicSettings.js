@@ -416,7 +416,7 @@ function Dates() {
     let lastOpenedDateNum = Number(newDate);
 
     // check if date is valid
-    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 99999999999999 || creationDateNum < 99999999) {
+    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 99999999999999 || lastOpenedDateNum < 99999999) {
       return;
     }
     lastOpenedDateNum = Math.floor(lastOpenedDateNum);
