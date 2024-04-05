@@ -16,7 +16,7 @@ const { active, inactive, background, primary, shadow, line, grey } = appColors.
 const TopicContext = createContext();
 
 // Topic Settings Page
-export default function Settings({ closeSettings, id, navigation, lastPage }) {
+export default function Settings({ closeSettings, id, navigation, lastPage, isOwner }) {
   const [topic, setTopic] = useState({
     title: "",
     description: "",
@@ -147,7 +147,7 @@ export default function Settings({ closeSettings, id, navigation, lastPage }) {
     start={{ x: 0.5, y: 0 }}
     end={{ x: 0.5, y: 0.15 }}
   >
-      <TopicContext.Provider value={{topic, setTopic}}>
+      <TopicContext.Provider value={{topic, setTopic, isOwner}}>
         <ScrollView>
           <View>
             {/* Header */}
@@ -230,6 +230,7 @@ function ColorList({ colors }) {
 
 // Body
 function Body({ updateTopic, deleteTopic, successMessage, errorMessage }) {
+  const { isOwner } = useContext(TopicContext);
   return (
     <View style={styles.bodyContainer}>
       <OwnerDisplay />
@@ -238,22 +239,28 @@ function Body({ updateTopic, deleteTopic, successMessage, errorMessage }) {
       <Dates />
       <TransferOwner />
 
-      {/* update button */}
+      
+
+      {/* update + delete button */}
       <View style={styles.buttonsContainer}>
-        <Button 
-          style={{marginBottom: 10}} 
-          buttonColor="#444444" 
-          mode="contained" 
-          onPress={updateTopic} 
-        >Save Changes</Button>
+      { isOwner && 
+        (
+          <View>
+            <Button 
+              style={{marginBottom: 10}} 
+              buttonColor="#444444" 
+              mode="contained" 
+              onPress={updateTopic} 
+            >Save Changes</Button>
 
-        {/* Delete Button */}
-        <Button 
-          buttonColor="#444444" 
-          mode="contained" 
-          onPress={deleteTopic}
-        >Delete Topic</Button>
-
+            <Button 
+              buttonColor="#444444" 
+              mode="contained" 
+              onPress={deleteTopic}
+            >Delete Topic</Button>
+          </View>
+        )
+      }
         {/* Error + success messages */}
         <Text style={{color: 'green'}}>{successMessage}</Text>
         <Text style={{color: 'red'}}>{errorMessage}</Text>
@@ -392,7 +399,7 @@ function Dates() {
     console.log(newDate);
 
     // if date is invalid, do nothing
-    if (isNaN(creationDateNum) || creationDateNum > 99999999999999) {
+    if (isNaN(creationDateNum) || creationDateNum > 99999999999999 || creationDateNum < 99999999) {
       return;
     }
     creationDateNum = Math.floor(creationDateNum);
@@ -409,7 +416,7 @@ function Dates() {
     let lastOpenedDateNum = Number(newDate);
 
     // check if date is valid
-    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 99999999999999) {
+    if (isNaN(lastOpenedDateNum) || lastOpenedDateNum > 99999999999999 || creationDateNum < 99999999) {
       return;
     }
     lastOpenedDateNum = Math.floor(lastOpenedDateNum);

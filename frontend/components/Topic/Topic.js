@@ -142,7 +142,12 @@ export default function Topic({ route, navigation }) {
     onRequestClose={() => {
       setSettingsModalVisible(!modalVisible);
     }}>
-      <Settings closeSettings={() => setSettingsModalVisible(false)} id={topic.id} navigation={navigation} lastPage={route.params.prevScreen}/>
+      <Settings 
+        closeSettings={() => setSettingsModalVisible(false)} 
+        id={topic.id} navigation={navigation} 
+        lastPage={route.params.prevScreen}
+        isOwner={topic.isOwner}
+      />
     </Modal>
     </>
   );
