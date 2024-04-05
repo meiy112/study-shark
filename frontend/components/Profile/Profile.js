@@ -142,7 +142,14 @@ export default function Profile({ navigation }) {
           {/*Profile Info*/}
           <ProfileInfo />
           {/*Email and School*/}
-          <EmailSchoolContainer updateSchool={updateSchool} updateEmail={updateEmail} errorMessage={errorMessage} successMessage={successMessage} />
+          <EmailSchoolContainer 
+            updateSchool={updateSchool} 
+            updateEmail={updateEmail} 
+            errorMessage={errorMessage} 
+            successMessage={successMessage}
+            setSuccessMessage={setSuccessMessage}
+            setErrorMessage={setErrorMessage}
+          />
           {/*Numerical Data*/}
           <NumericalData />
           {/*Achievements*/}
@@ -243,7 +250,7 @@ const ProfileIcon = () => {
 };
 
 // Email and School Info
-const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, successMessage }) => {
+const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, successMessage, setSuccessMessage, setErrorMessage }) => {
   const user = useContext(UserContext);
   const { token } = useContext(AuthContext);
   const [email, setEmail] = useState(user.email);
@@ -253,7 +260,9 @@ const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, success
   useEffect(() => {
     setEmail(user.email);
     setSchool(user.school);
-  }, [token, user])
+    setSuccessMessage("");
+    setErrorMessage("");
+  }, [token, user]);
 
   // when editing email
   const handleEditButtonPress = () => {
