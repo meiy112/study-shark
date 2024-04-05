@@ -391,7 +391,7 @@ function Dates() {
     setLastOpenedDate(topic.lastOpenedDateMs)
     setCreationDateStr((new Date(topic.creationDateMs)).toDateString());
     setLastOpenedDateStr((new Date(topic.lastOpenedDateMs)).toDateString());
-  }, []);
+  }, [topic]);
 
   // handle creation date change
   function handleChangeCreationDate(newDate) {
@@ -457,7 +457,7 @@ function TransferOwner() {
 
   useEffect(() => {
     setOwner(topic.owner.name);
-  });
+  }, [topic]);
 
   // handle edit owner
   function handleEditOwner(newOwner) {

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,9 +14,11 @@ import AuthContext from "../../context/AuthContext";
 import UserUnauthenticatedPage from "../Login/UsedUnauthenticatedPage";
 import colors from "../../constants/Colors.js";
 import GroupListing from "./components/GroupListing.js";
-import GroupData from "./data/groupData.js";
+import memberData from "./data/groupData.js";
 import InviteModal from "./components/InviteModal.js";
 import CreateModal from "./components/CreateModal.js";
+import { groupApi } from "../../api/GroupApi.js";
+import { userApi } from "../../api/UserApi.js";
 
 const {
   active,
@@ -36,6 +38,7 @@ export default function Groups({ navigation }) {
   const [isJoinVisible, setIsJoinVisible] = useState(false);
   const [joinCode, setJoinCode] = useState("hi");
   const [isCreateVisible, setIsCreateVisible] = useState(false);
+  const [groups, setGroups] = useState(false);
 
   const showJoinModal = (currentCode) => {
     setIsJoinVisible(true);
@@ -53,11 +56,32 @@ export default function Groups({ navigation }) {
     setIsCreateVisible(false);
   };
 
+  // LOAD DATA------------------------------------
+  // fetch groups
+  useEffect(() => {
+    async function fetchGroups() {
+      try {
+        const user = await userApi.getUser(token);
+        const data = await groupApi.getGroups(token);
+        console.log("fetched groups! tee hee uwu");
+        setGroups(data);
+      } catch (e) {
+        console.log("Groups page: " + e.message);
+      }
+    }
+    fetchGroups();
+  }, [token, navigation]);
+  // END LOAD DATA ----------------------------------------------
+
   return token ? ( // conditionally renders pages based on if user is logged in
     <SafeAreaView style={{ flex: 1, backgroundColor: primary }}>
       <View style={{ backgroundColor: background, flex: 1 }}>
         <Header showCreateModal={showCreateModal} />
-        <ListingsContainer showModal={showJoinModal} navigation={navigation} />
+        <ListingsContainer
+          groups={groups}
+          showModal={showJoinModal}
+          navigation={navigation}
+        />
         <InviteModal
           isVisible={isJoinVisible}
           hideModal={hideJoinModal}
@@ -89,22 +113,23 @@ const Header = ({ showCreateModal }) => {
 };
 
 // Group Listings
-const ListingsContainer = ({ showModal, navigation }) => {
+const ListingsContainer = ({ showModal, navigation, groups }) => {
   return (
     <FlatList
-      data={GroupData}
-      renderItem={({ item }) => (
+      data={groups}
+      renderItem={({ item, index }) => (
         <GroupListing
           group={item}
           showModal={showModal}
           navigation={navigation}
+          memberData={memberData[index % 2]}
         />
       )}
       contentContainerStyle={styles.flatListContainer}
       ListHeaderComponent={() => (
         <View style={{ marginTop: 20, marginBottom: 10, width: 340 }}>
           <Text style={{ fontFamily: "mon-sb", fontSize: 12, opacity: 0.8 }}>
-            TOTAL: {GroupData.length}
+            TOTAL: {groups.length}
           </Text>
         </View>
       )}
