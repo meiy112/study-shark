@@ -9,7 +9,7 @@ import { useScrollToTop } from "@react-navigation/native";
 import { useRef, useState, useEffect, useContext, createContext } from "react";
 import SearchScreen from "./Search/SearchScreen";
 import PageContext from "../../context/PageContext";
-import AuthContext from '../../context/AuthContext';
+import AuthContext from "../../context/AuthContext";
 import NotifyContext from "../../context/NotifyContext";
 import { topicApi } from "../../api/TopicApi";
 
@@ -74,19 +74,6 @@ export default function Explore({ navigation }) {
     }
     fetchTopics();
   }, [token, subject, lastUpdateTime]);
-
-  // fetch studyMaterial
-  useEffect(() => {
-    async function fetchStudyMaterial() {
-      try {
-          const data = await topicApi.getFeaturedStudyMaterial(token, subject);
-          setStudyMaterial(data);
-        } catch (e) {
-          console.log("Explore page: " + e.message);
-        }
-      } 
-      fetchStudyMaterial();
-  }, [token, subject, lastUpdateTime]); 
   // END LOAD DATA ----------------------------------------------
 
   // HANDLERS ------------------------
@@ -282,13 +269,18 @@ const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
 const HotTopics = ({ topics, navigation, token }) => {
   const [isLikesShown, setIsLikesShown] = useState(false);
   const [listData, setListData] = useState([]);
-  const [avgLikes, setAvgLikes] = useState({});
+  const [avgLikes, setAvgLikes] = useState([]);
 
   useEffect(() => {
     const updatedListData = topics.map((item, index) => {
-      console.log("tee hee updating hot topics");
       const topicId = item.id;
-      const numLikes = avgLikes[topicId];
+      let numLikes = 0;
+      console.log(avgLikes);
+      avgLikes.forEach((item) => {
+        if (topicId === item.topicId) {
+          numLikes = item.averageLikes;
+        }
+      });
       return (
         <TopicExplore
           key={index}
