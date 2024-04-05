@@ -15,7 +15,9 @@ const Tag = (props) => {
 
   // ---------------------- ANIMATION THINGS ------------------------
   const switchTagHandler = () => {
-    callback({name: title, color: color}, !isSelected);
+    if (callback) {
+      callback({name: title, color: color}, !isSelected);
+    }
     setIsSelected(!isSelected);
     Animated.timing(animationValue, {
       toValue: isSelected ? 0 : 1,

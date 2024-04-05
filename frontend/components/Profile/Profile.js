@@ -73,7 +73,6 @@ export default function Profile({ navigation }) {
     async function fetchUser() {
       try {
         const data = await userApi.getUser(token);
-        console.log(data.username)
         setUser({...data, pfp: require("../../assets/images/misc/freud.jpg")});
       } catch (e) {
         console.log("Profile: " + e.message);
@@ -246,10 +245,15 @@ const ProfileIcon = () => {
 // Email and School Info
 const EmailSchoolContainer = ({ updateSchool, updateEmail, errorMessage, successMessage }) => {
   const user = useContext(UserContext);
-
+  const { token } = useContext(AuthContext);
   const [email, setEmail] = useState(user.email);
   const [school, setSchool] = useState(user.school);
   const textInputRef = useRef(null);
+
+  useEffect(() => {
+    setEmail(user.email);
+    setSchool(user.school);
+  }, [token, user])
 
   // when editing email
   const handleEditButtonPress = () => {
