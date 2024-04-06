@@ -299,6 +299,7 @@ VALUES ('Wave Interference', '1', 'Notes', TRUE, 'Description', '2025-01-25', '1
        ('Cheese', '100', 'Quiz', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('Banana', '100', 'Flashcards', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('Uranium (expensive)', '100', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('Life Insurance (children)', '100', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('1', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('2', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('3', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
