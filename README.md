@@ -36,8 +36,5 @@ The database schema consists of the following tables:
 - **Likes:** Represents likes given by users to study material.
 
 
-
-Note on the different accounts:
-We accidentally used our non ubc accounts at first:
-UBCStudent = oyik
-Falconfeather4 = ehuang07
+## Quote of the Day:
+"Better ask 40 dumb questions than make 40 dumb mistakes" - Maggie, 2024
