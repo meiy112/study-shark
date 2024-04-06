@@ -8,7 +8,7 @@ export const topicApi = {
   deleteStudyMaterial,
   getFeaturedTopics,
   getFeaturedStudyMaterial,
-  getAverageLikes,
+  getSumLikes,
   getSettingsTopic,
   updateTopic,
   deleteTopic,
@@ -65,7 +65,7 @@ async function deleteStudyMaterial(token, topicId, title) {
   await requests.deleteRequest(token, `/topic/${topicId}/studymaterial/${title}`);
 }
 
-async function getAverageLikes(token) {
+async function getSumLikes(token) {
   const data = await requests.getRequest(token, `/topic/likes`);
   return data;
 }

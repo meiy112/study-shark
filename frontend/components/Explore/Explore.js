@@ -269,16 +269,16 @@ const SubjectItem = ({ title, iconName, secondLine, handleSubjectPress }) => {
 const HotTopics = ({ topics, navigation, token }) => {
   const [isLikesShown, setIsLikesShown] = useState(false);
   const [listData, setListData] = useState([]);
-  const [avgLikes, setAvgLikes] = useState([]);
+  const [sumLikes, setSumLikes] = useState([]);
 
   useEffect(() => {
     const updatedListData = topics.map((item, index) => {
       const topicId = item.id;
       let numLikes = 0;
-      console.log(avgLikes);
-      avgLikes.forEach((item) => {
+      console.log(sumLikes);
+      sumLikes.forEach((item) => {
         if (topicId === item.topicId) {
-          numLikes = item.averageLikes;
+          numLikes = item.sumLikes;
         }
       });
       return (
@@ -307,9 +307,9 @@ const HotTopics = ({ topics, navigation, token }) => {
 
   const getLikes = async () => {
     try {
-      const data = await topicApi.getAverageLikes(token);
+      const data = await topicApi.getSumLikes(token);
       console.log("HAHAHA (got likes)");
-      setAvgLikes(data);
+      setSumLikes(data);
     } catch (e) {
       console.log("Explore page: " + e.message);
     }
