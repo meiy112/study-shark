@@ -14,7 +14,7 @@ const { active, inactive, background, primary, shadow, line } = colors;
 
 // check valid inputs
 function checkValidInput(str) {
-  const regex = /^[0-9a-zA-Z]*$/;
+  const regex = /^[0-9a-zA-Z ]*$/;
   if (!regex.test(str)) {
     throw new Error("Only 0-9 and alphabetical characters are allowed");
   }
