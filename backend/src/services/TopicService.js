@@ -544,9 +544,9 @@ class TopicService {
   // returns the average likes for all public topics
   async getTopicsAverageLikes() {
     try {
-      const head1 = "SELECT T.topicId, avg(c) AS averageLikes FROM ";
-      const head2 = "(SELECT csm.title, csm.topicId, COUNT(*) as c FROM Likes l, containsStudyMaterial csm ";
-      const tail2 = "WHERE l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID GROUP BY csm.title, csm.topicId) as T, ";
+      const head1 = "SELECT T.topicId, sum(c) AS averageLikes FROM ";
+      const head2 = "(SELECT csm.title, csm.topicId, COUNT(l.topicID) as c FROM containsStudyMaterial csm LEFT JOIN Likes l ON l.studyMaterialTitle = csm.title AND csm.topicID = l.topicID ";
+      const tail2 = "GROUP BY csm.title, csm.topicId) as T, ";
       const tail1 = "createsTopic t WHERE t.id = T.topicId AND t.isPublic = TRUE GROUP BY topicId;";
       return new Promise ((resolve, reject) => {
         db.query(head1 + head2 + tail2 + tail1,
