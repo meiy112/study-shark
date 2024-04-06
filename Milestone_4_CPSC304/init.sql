@@ -234,8 +234,13 @@ INSERT INTO CreatesTopic (id, username, title, isPublic, description, lastOpened
     ('3', 'test', 'Math049', false, 'Man my neck hurts', '1997-08-24', '1994-03-30', 'red'),
     ('4', 'test', 'Cpsc304', true, 'blah blah blah blah blah blah blah ahhhhhhhhhhhh', '2003-06-24', '2031-11-23', 'blue'),
     ('5', 'test', 'Hello World', false, 'someone save me im not creative enough to come up with these', '1984-06-24', '2021-03-02', 'green'),
+    ('100', 'test', 'Salty Cheese Banana', false, 'yum yum mmmmmmmm', '2034-06-24', '2021-03-02', 'green'),
     ('6', 'test', 'How to swim', false, 'description here', '1993-06-24', '1995-10-14', 'red'),
-    ('7', 'test', 'Bible studies', true, 'description here 2', '2019-06-24', '2020-12-01', 'blue');
+    ('7', 'test', 'Bible studies', true, 'description here 2', '2019-06-24', '2020-12-01', 'pink'),
+    ('8', 'test1', 'Stat 251', true, 'whys this class at 8am', '2119-04-04', '2020-02-01', 'blue'),
+    ('9', 'test1', 'New York Rat', true, 'awwww how cute', '2019-06-24', '2020-12-01', 'pink'),
+    ('10', 'test1', 'high quality IKEA lamp', true, 'Comes in five different colors!', '2000-06-24', '1996-09-01', 'red');
+
 
 INSERT INTO Tag (name, color, subject) VALUES
     ('Physics', '#5F2EB3', 'SCIENCE'),
@@ -258,13 +263,23 @@ INSERT INTO Has (tagName, topicId) VALUES
     ('Waves', '1'),
     ('Chemistry', '6'),
     ('Chemistry', '5'),
+    ('Chemistry', '9'),
+    ('Chemistry', '10'),
     ('Showering', '7'),
+    ('Showering', '9'),
     ('High Valyrian', '7'),
     ('Students', '5'),
+    ('Students', '1'),
+    ('Students', '2'),
+    ('Students', '3'),
     ('Rain', '7'),
     ('Books', '6'),
+    ('Books', '10'),
     ('Finance', '7'),
-    ('Finance', '5');
+    ('Finance', '5'),
+    ('Finance', '10'),
+    ('Finance', '9'),
+    ('Finance', '100');
 
 INSERT INTO StudyMaterialType (type, icon) VALUES
     ('Quiz', '1'),
@@ -279,7 +294,18 @@ VALUES ('Wave Interference', '1', 'Notes', TRUE, 'Description', '2025-01-25', '1
        ('1', '2', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
        ('2', '5', 'Flashcards', FALSE, 'Description', '1078-09-28', '998-06-13', 'spacessss     spacessss     ', 20),
        ('3', '6', 'Notes', FALSE, 'Description', '3057-02-09', '0000-12-25', 'lots of words here word word word word word', 7),
-       ('4', '7', 'Quiz', FALSE, 'Description', '2004-12-30', '1969-04-20', 'dummy dumbo', 32);
+       ('4', '7', 'Quiz', FALSE, 'Description', '2004-12-30', '1969-04-20', 'dummy dumbo', 32),
+       ('Salty', '100', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('Cheese', '100', 'Quiz', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('Banana', '100', 'Flashcards', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('Uranium (expensive)', '100', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('Life Insurance (children)', '100', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('1', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('2', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('3', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26),
+       ('4', '10', 'Notes', FALSE, 'Description', '2006-01-20', '1999-12-31', 'what am I doing', 26);
+
+
 
 INSERT INTO Likes (studyMaterialTitle, topicId, username) 
 VALUES ('Wave Interference', '1', 'test'),
@@ -302,7 +328,9 @@ VALUES ('Wave Interference', '1', 'test'),
        ('1', '2', 'test5'),
        ('2', '5', 'test4'),
        ('3', '6', 'test4'),
-       ('4', '7', 'test4');
+       ('4', '7', 'test4'),
+       ('1', '10', 'test1'),
+       ('2', '10', 'test2');
 
 INSERT INTO QuizQuestionDifficulty (type, icon) VALUES
     ('MCQ', '1'),
