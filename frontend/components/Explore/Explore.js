@@ -293,7 +293,7 @@ const HotTopics = ({ topics, navigation, token }) => {
           color={item.color}
           navigation={navigation}
           isLikesShown={isLikesShown}
-          numLikes={parseInt(numLikes)}
+          numLikes={numLikes}
         />
       );
     });
