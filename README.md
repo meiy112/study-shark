@@ -1,6 +1,11 @@
 # Project Summary
 Our project allows users to create and keep track of their own topics, notes, quizzes, and flashcards to help them study. They can also share their study material with other users, search for other user’s study material, and join study groups. Users can also search for and use other user’s shared study notes.
 
+## Demo
+
+https://github.com/meiy112/study-shark/assets/112028455/d4dad6af-6783-4bfb-8898-480864031ebc
+
+
 
 ## Features
 - **Create and Manage Topics:** Users can create their own topics to organize their study material. Each topic can have a title, description, and privacy settings.
