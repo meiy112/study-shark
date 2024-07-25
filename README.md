@@ -41,4 +41,4 @@ The database schema consists of the following tables:
 
 
 ## Quote of the Day:
-"Better ask 40 dumb questions than make 40 dumb mistakes" - Maggie, 2024
+"Better ask 40 dumb questions than make 40 dumb mistakes" - Maggie, 2024 
